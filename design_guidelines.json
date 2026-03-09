@@ -1,0 +1,132 @@
+{
+  "brand_identity": {
+    "name": "Petal & Paw",
+    "mission": "Pet-safe floral arrangements for the modern, conscious home.",
+    "aesthetic": "Scandinavian Minimalism (Ole & Steen inspired)",
+    "core_values": ["Pet Safety", "Sustainability", "Hygge", "Premium Simplicity"],
+    "tone": "Calm, Trustworthy, Organic, Premium"
+  },
+  "typography": {
+    "font_family": {
+      "headings": "Playfair Display, serif",
+      "body": "DM Sans, sans-serif",
+      "accent": "Manrope, sans-serif"
+    },
+    "scale": {
+      "h1": "text-5xl md:text-7xl font-medium tracking-tight leading-tight",
+      "h2": "text-4xl md:text-5xl font-medium tracking-tight",
+      "h3": "text-2xl md:text-3xl font-normal",
+      "body_lg": "text-lg md:text-xl font-light leading-relaxed",
+      "body": "text-base font-light leading-relaxed",
+      "caption": "text-sm uppercase tracking-widest font-semibold text-muted-foreground"
+    },
+    "imports": [
+      "@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,100..1000&family=Manrope:wght@200..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');"
+    ]
+  },
+  "colors": {
+    "palette": {
+      "background": "#FAF9F6",
+      "surface": "#FFFFFF",
+      "foreground": "#2C2C2C",
+      "primary": "#2C2C2C",
+      "primary_foreground": "#FAF9F6",
+      "secondary": "#E8E4D9",
+      "secondary_foreground": "#2C2C2C",
+      "accent": "#8DA399",
+      "accent_foreground": "#FFFFFF",
+      "muted": "#F2F0EB",
+      "muted_foreground": "#6B7280",
+      "border": "#E5E0D6",
+      "input": "#E5E0D6",
+      "ring": "#8DA399"
+    },
+    "usage": {
+      "body_bg": "bg-[#FAF9F6]",
+      "card_bg": "bg-white",
+      "text_main": "text-[#2C2C2C]",
+      "text_muted": "text-[#6B7280]",
+      "accent_sage": "bg-[#8DA399]",
+      "accent_beige": "bg-[#E8E4D9]"
+    }
+  },
+  "layout_and_spacing": {
+    "container": "container mx-auto px-4 md:px-8 max-w-7xl",
+    "section_spacing": "py-20 md:py-32",
+    "grid_gap": "gap-8 md:gap-12",
+    "radius": "rounded-none md:rounded-lg",
+    "visual_hierarchy": {
+      "hero": "Split layout: Text Left / Image Right or Full width immersive image with overlay",
+      "product_grid": "Grid of 3 or 4. Minimal cards. Image dominant.",
+      "builder": "Split screen. Fixed canvas (left/top), scrollable selection (right/bottom)."
+    }
+  },
+  "ui_components": {
+    "buttons": {
+      "primary": "rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-8 py-6 text-sm uppercase tracking-widest transition-all hover:scale-105",
+      "secondary": "rounded-full border border-[#2C2C2C] text-[#2C2C2C] hover:bg-[#2C2C2C] hover:text-[#FAF9F6] px-8 py-6 text-sm uppercase tracking-widest transition-all",
+      "ghost": "text-[#2C2C2C] hover:bg-[#E8E4D9]/50 hover:text-[#2C2C2C]"
+    },
+    "cards": {
+      "product": "group relative bg-transparent border-none shadow-none hover:shadow-none transition-all",
+      "feature": "bg-white p-8 border border-[#E5E0D6] hover:border-[#8DA399] transition-colors duration-300"
+    },
+    "inputs": {
+      "default": "border-0 border-b border-[#E5E0D6] bg-transparent rounded-none px-0 focus-visible:ring-0 focus-visible:border-[#2C2C2C] placeholder:text-[#6B7280]/50"
+    }
+  },
+  "visual_enhancers": {
+    "shadows": "shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)]",
+    "borders": "border border-[#E5E0D6]",
+    "glass": "bg-white/80 backdrop-blur-md border-b border-white/20",
+    "animation": {
+      "hover_lift": "hover:-translate-y-1 transition-transform duration-300 ease-out",
+      "fade_in": "animate-in fade-in duration-700",
+      "slide_up": "animate-in slide-in-from-bottom-8 fade-in duration-700"
+    }
+  },
+  "media": {
+    "image_style": "Warm, natural light, high contrast but soft shadows. Pet interactions or clean isolated florals.",
+    "icons": "Lucide React (stroke-width: 1.5px)",
+    "image_urls": {
+      "hero": {
+        "main": "https://images.unsplash.com/photo-1510771463146-e89e6e86560e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHwyfHxkb2clMjBzbmlmZmluZyUyMGZsb3dlcnMlMjBnZW50bGUlMjBhZXN0aGV0aWN8ZW58MHx8fHwxNzczMDg1MDgyfDA&ixlib=rb-4.1.0&q=85",
+        "secondary": "https://images.unsplash.com/photo-1738748986758-ed7bb4c47793?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzd8MHwxfHNlYXJjaHwyfHxtaW5pbWFsaXN0JTIwc2NhbmRpbmF2aWFuJTIwbGl2aW5nJTIwcm9vbSUyMHdpdGglMjBmbG93ZXJzJTIwYnJpZ2h0JTIwYWlyeXxlbnwwfHx8fDE3NzMwODUwODF8MA&ixlib=rb-4.1.0&q=85",
+        "interior": "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzd8MHwxfHNlYXJjaHwzfHxtaW5pbWFsaXN0JTIwc2NhbmRpbmF2aWFuJTIwbGl2aW5nJTIwcm9vbSUyMHdpdGglMjBmbG93ZXJzJTIwYnJpZ2h0JTIwYWlyeXxlbnwwfHx8fDE3NzMwODUwODF8MA&ixlib=rb-4.1.0&q=85"
+      },
+      "products": {
+        "rose": "https://images.unsplash.com/photo-1590419529505-dfa62e8263d1?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2ODh8MHwxfHNlYXJjaHw0fHxzaW5nbGUlMjBzdGVtJTIwcGluayUyMHJvc2UlMjB3aGl0ZSUyMGJhY2tncm91bmQlMjBoaWdoJTIwcXVhbGl0eXxlbnwwfHx8fDE3NzMwODUwODV8MA&ixlib=rb-4.1.0&q=85",
+        "sunflower": "https://images.unsplash.com/photo-1709235555476-1f9aa04ec21c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Nzd8MHwxfHNlYXJjaHwxfHxzaW5nbGUlMjBzdGVtJTIwc3VuZmxvd2VyJTIwd2hpdGUlMjBiYWNrZ3JvdW5kfGVufDB8fHx8MTc3MzA4NTA4Nnww&ixlib=rb-4.1.0&q=85",
+        "snapdragon": "https://images.unsplash.com/photo-1661606247607-6fad2073a9ca?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzd8MHwxfHNlYXJjaHwxfHxzaW5nbGUlMjBzdGVtJTIwc25hcGRyYWdvbiUyMGZsb3dlciUyMHdoaXRlJTIwYmFja2dyb3VuZHxlbnwwfHx8fDE3NzMwODUwODd8MA&ixlib=rb-4.1.0&q=85",
+        "bouquet_1": "https://images.unsplash.com/photo-1759960034301-19d191d80de3?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA3MDR8MHwxfHNlYXJjaHw0fHxmbG93ZXIlMjBib3VxdWV0JTIwb24lMjB3b29kZW4lMjB0YWJsZSUyMHN1bmxpZ2h0JTIwc2NhbmRpbmF2aWFuJTIwc3R5bGV8ZW58MHx8fHwxNzczMDg1MDg0fDA&ixlib=rb-4.1.0&q=85",
+        "bouquet_2": "https://images.unsplash.com/photo-1707566416738-97f0e0d9300b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA3MDR8MHwxfHNlYXJjaHwxfHxmbG93ZXIlMjBib3VxdWV0JTIwb24lMjB3b29kZW4lMjB0YWJsZSUyMHN1bmxpZ2h0JTIwc2NhbmRpbmF2aWFuJTIwc3R5bGV8ZW58MHx8fHwxNzczMDg1MDg0fDA&ixlib=rb-4.1.0&q=85"
+      },
+      "builder": {
+        "vase": "https://images.unsplash.com/photo-1617497098203-5592037e3e88?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzR8MHwxfHNlYXJjaHw0fHxlbXB0eSUyMGdsYXNzJTIwdmFzZSUyMHdoaXRlJTIwYmFja2dyb3VuZHxlbnwwfHx8fDE3NzMwODUwODl8MA&ixlib=rb-4.1.0&q=85"
+      },
+      "marketing": {
+        "cat_sleeping": "https://images.unsplash.com/photo-1548724582-1216ec5351ce?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1ODh8MHwxfHNlYXJjaHwzfHxjYXQlMjBzbGVlcGluZyUyMG5lYXIlMjB2YXNlJTIwb2YlMjBmbG93ZXJzJTIwc2FmZXxlbnwwfHx8fDE3NzMwODUwODR8MA&ixlib=rb-4.1.0&q=85"
+      }
+    }
+  },
+  "interactive_elements": {
+    "bouquet_builder": {
+      "description": "Drag and drop interface. Left side: Canvas with vase. Right side: Accordion of flower types.",
+      "states": {
+        "empty": "Show outline of vase",
+        "hover_flower": "Show ghost preview of flower in vase",
+        "selected": "Flower snaps to grid/position in vase"
+      }
+    }
+  },
+  "instructions_to_main_agent": [
+    "Install 'lucide-react' if not present.",
+    "Update tailwind.config.js with the specified color palette and fonts.",
+    "Create a 'Layout' component that wraps pages with the Navbar and Footer, applying the global background color #FAF9F6.",
+    "For the 'Create Your Own Bouquet' page, use HTML5 Drag and Drop API or just click-to-add logic for simplicity if libraries are restricted.",
+    "Ensure all text has sufficient contrast. Use #2C2C2C for body text, never pure black.",
+    "Use 'Playfair Display' for all Headings (H1-H4) to achieve the premium aesthetic.",
+    "Use 'sonner' for toast notifications.",
+    "Add 'data-testid' to all interactive elements."
+  ]
+}
