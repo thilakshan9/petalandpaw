@@ -4,6 +4,7 @@ import { ShieldCheck, Minus, Plus, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/components/CartProvider";
 import { toast } from "sonner";
+import SEOHead from "@/components/SEOHead";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -58,6 +59,7 @@ export default function ProductPage() {
 
   return (
     <div className="py-8 md:py-16" data-testid="product-page">
+      <SEOHead title={product.name} description={product.description} image={product.image_url} keywords={`${product.name}, pet safe flowers, ${product.category}`} />
       <div className="container mx-auto px-4 md:px-8 max-w-7xl">
         <Link to="/shop" className="inline-flex items-center gap-2 text-sm font-light text-[#6B7280] hover:text-[#2C2C2C] transition-colors mb-8" data-testid="back-to-shop">
           <ArrowLeft size={14} /> Back to Shop

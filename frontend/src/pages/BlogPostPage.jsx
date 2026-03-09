@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Calendar } from "lucide-react";
+import SEOHead from "@/components/SEOHead";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -47,6 +48,7 @@ export default function BlogPostPage() {
         </Link>
 
         <article className="animate-fade-in-up">
+          <SEOHead title={post.title} description={post.meta_description || post.excerpt} image={post.image_url} keywords={post.meta_keywords} />
           <div className="mb-8">
             <span className="text-xs uppercase tracking-widest font-semibold text-[#8DA399] mb-3 block">{post.author}</span>
             <h1 className="font-['Playfair_Display'] text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C] mb-4" data-testid="blog-post-title">

@@ -1,10 +1,11 @@
 import { useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function AuthCallback() {
   const navigate = useNavigate();
+  const location = useLocation();
   const hasProcessed = useRef(false);
 
   useEffect(() => {
@@ -19,34 +20,36 @@ export default function AuthCallback() {
       return;
     }
 
+    // Determine login type from the current path
+    const isAdmin = window.location.pathname.includes("/admin");
+    const loginType = isAdmin ? "admin" : "customer";
+    const redirectPath = isAdmin ? "/admin/dashboard" : "/account";
+
     const exchangeSession = async () => {
       try {
         const res = await fetch(`${API}/auth/session`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
-          body: JSON.stringify({ session_id: sessionId }),
+          body: JSON.stringify({ session_id: sessionId, login_type: loginType }),
         });
 
         if (!res.ok) throw new Error("Auth failed");
 
         const user = await res.json();
-        // Clean the hash and redirect to dashboard
         window.history.replaceState(null, "", window.location.pathname);
-        navigate("/admin/dashboard", { replace: true, state: { user } });
+        navigate(redirectPath, { replace: true, state: { user } });
       } catch {
-        navigate("/admin/login", { replace: true });
+        navigate(isAdmin ? "/admin/login" : "/login", { replace: true });
       }
     };
 
     exchangeSession();
-  }, [navigate]);
+  }, [navigate, location]);
 
   return (
     <div className="min-h-screen bg-[#FAF9F6] flex items-center justify-center">
-      <div className="animate-pulse text-[#6B7280] font-light tracking-widest text-sm uppercase">
-        Authenticating...
-      </div>
+      <div className="animate-pulse text-[#6B7280] font-light tracking-widest text-sm uppercase">Authenticating...</div>
     </div>
   );
 }

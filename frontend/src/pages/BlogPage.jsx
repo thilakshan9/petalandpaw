@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import SEOHead from "@/components/SEOHead";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -17,6 +18,7 @@ export default function BlogPage() {
 
   return (
     <div className="py-12 md:py-20" data-testid="blog-page">
+      <SEOHead title="Journal" description="Stories about flowers, pets, sustainability, and Scandinavian living." keywords="pet safe flowers blog, flower care, sustainable florals" />
       <div className="container mx-auto px-4 md:px-8 max-w-7xl">
         <div className="mb-12 animate-fade-in-up">
           <span className="text-xs uppercase tracking-[0.25em] font-semibold text-[#8DA399] mb-3 block">Journal</span>
