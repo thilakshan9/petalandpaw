@@ -1,34 +1,159 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+/* Petal & Paw - Custom Styles */
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
 
-.App-link {
-    color: #61dafb;
+.animate-fade-in-up {
+  animation: fadeInUp 0.7s ease-out forwards;
+  opacity: 0;
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+.delay-600 { animation-delay: 0.6s; }
+
+/* Product image hover */
+.product-image-wrapper {
+  overflow: hidden;
+}
+.product-image-wrapper img {
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.product-image-wrapper:hover img {
+  transform: scale(1.05);
+}
+
+/* Smooth scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #FAF9F6;
+}
+::-webkit-scrollbar-thumb {
+  background: #E5E0D6;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #8DA399;
+}
+
+/* Blog content styling */
+.blog-content h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.75rem;
+  font-weight: 500;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: #2C2C2C;
+}
+.blog-content p {
+  margin-bottom: 1.25rem;
+  line-height: 1.8;
+  color: #4B5563;
+}
+.blog-content ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.blog-content li {
+  margin-bottom: 0.5rem;
+  line-height: 1.7;
+  color: #4B5563;
+}
+.blog-content strong {
+  color: #2C2C2C;
+  font-weight: 600;
+}
+
+/* Bouquet builder canvas */
+.bouquet-canvas {
+  background: linear-gradient(180deg, #FAF9F6 0%, #F2F0EB 100%);
+  position: relative;
+  min-height: 400px;
+  border-radius: 12px;
+}
+
+.bouquet-flower-item {
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bouquet-flower-item:hover {
+  transform: scale(1.08);
+}
+
+/* Vase shape */
+.vase-shape {
+  width: 100px;
+  height: 120px;
+  background: linear-gradient(135deg, #E8E4D9 0%, #d4cfc4 100%);
+  border-radius: 10px 10px 30px 30px;
+  position: relative;
+}
+.vase-shape::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -5px;
+  right: -5px;
+  height: 16px;
+  background: linear-gradient(135deg, #E8E4D9 0%, #d4cfc4 100%);
+  border-radius: 4px;
+}
+
+/* Nav link hover */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: #2C2C2C;
+  transition: width 0.3s ease;
+}
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* Pet safe badge */
+.pet-safe-badge {
+  background: rgba(141, 163, 153, 0.12);
+  color: #6B8F7E;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 4px 10px;
+  border-radius: 100px;
+  font-weight: 600;
 }

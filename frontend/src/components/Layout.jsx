@@ -1,0 +1,12 @@
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+
+export default function Layout({ children }) {
+  return (
+    <div className="min-h-screen bg-[#FAF9F6] text-[#2C2C2C] flex flex-col">
+      <Navbar />
+      <main className="flex-1">{children}</main>
+      <Footer />
+    </div>
+  );
+}
