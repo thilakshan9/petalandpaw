@@ -58,23 +58,23 @@ export default function ProductPage() {
   }
 
   return (
-    <div className="py-8 md:py-16" data-testid="product-page">
+    <div className="py-6 sm:py-8 md:py-16" data-testid="product-page">
       <SEOHead title={product.name} description={product.description} image={product.image_url} keywords={`${product.name}, pet safe flowers, ${product.category}`} />
-      <div className="container mx-auto px-4 md:px-8 max-w-7xl">
-        <Link to="/shop" className="inline-flex items-center gap-2 text-sm font-light text-[#6B7280] hover:text-[#2C2C2C] transition-colors mb-8" data-testid="back-to-shop">
+      <div className="container mx-auto px-5 md:px-8 max-w-7xl">
+        <Link to="/shop" className="inline-flex items-center gap-2 text-sm font-light text-[#6B7280] hover:text-[#2C2C2C] transition-colors mb-6 sm:mb-8" data-testid="back-to-shop">
           <ArrowLeft size={14} /> Back to Shop
         </Link>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-16">
           <div className="animate-fade-in-up">
-            <div className="aspect-[3/4] bg-[#F2F0EB] rounded-2xl overflow-hidden">
+            <div className="aspect-[3/4] max-h-[50vh] sm:max-h-[60vh] lg:max-h-none bg-[#F2F0EB] rounded-2xl overflow-hidden">
               <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
             </div>
           </div>
 
           <div className="animate-fade-in-up delay-200 flex flex-col justify-center">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-xs uppercase tracking-[0.25em] font-semibold text-[#6B7280]">{product.category}</span>
+            <div className="flex items-center gap-3 mb-3 sm:mb-4">
+              <span className="text-[10px] sm:text-xs uppercase tracking-[0.25em] font-semibold text-[#6B7280]">{product.category}</span>
               {product.pet_safe && (
                 <span className="pet-safe-badge inline-flex items-center gap-1">
                   <ShieldCheck size={10} /> Pet Safe
@@ -82,15 +82,15 @@ export default function ProductPage() {
               )}
             </div>
 
-            <h1 className="font-['Playfair_Display'] text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C] mb-4" data-testid="product-name">
+            <h1 className="font-['Playfair_Display'] text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C] mb-3 sm:mb-4" data-testid="product-name">
               {product.name}
             </h1>
 
-            <p className="text-2xl font-light text-[#2C2C2C] mb-6" data-testid="product-price">
+            <p className="text-xl sm:text-2xl font-light text-[#2C2C2C] mb-4 sm:mb-6" data-testid="product-price">
               ${product.price.toFixed(2)}
             </p>
 
-            <p className="text-base font-light leading-relaxed text-[#6B7280] mb-8">
+            <p className="text-sm sm:text-base font-light leading-relaxed text-[#6B7280] mb-6 sm:mb-8">
               {product.description}
             </p>
 
@@ -104,7 +104,7 @@ export default function ProductPage() {
               </div>
             )}
 
-            <div className="flex items-center gap-4 mb-8">
+            <div className="flex items-center gap-4 mb-6 sm:mb-8">
               <span className="text-sm font-light text-[#6B7280]">Quantity</span>
               <div className="flex items-center border border-[#E5E0D6] rounded-full">
                 <button

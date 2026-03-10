@@ -17,21 +17,21 @@ export default function BlogPage() {
   }, []);
 
   return (
-    <div className="py-12 md:py-20" data-testid="blog-page">
+    <div className="py-8 sm:py-12 md:py-20" data-testid="blog-page">
       <SEOHead title="Journal" description="Stories about flowers, pets, sustainability, and Scandinavian living." keywords="pet safe flowers blog, flower care, sustainable florals" />
-      <div className="container mx-auto px-4 md:px-8 max-w-7xl">
-        <div className="mb-12 animate-fade-in-up">
-          <span className="text-xs uppercase tracking-[0.25em] font-semibold text-[#8DA399] mb-3 block">Journal</span>
-          <h1 className="font-['Playfair_Display'] text-5xl md:text-7xl font-medium tracking-tight text-[#2C2C2C]">
+      <div className="container mx-auto px-5 md:px-8 max-w-7xl">
+        <div className="mb-8 sm:mb-12 animate-fade-in-up">
+          <span className="text-[10px] sm:text-xs uppercase tracking-[0.25em] font-semibold text-[#8DA399] mb-2 sm:mb-3 block">Journal</span>
+          <h1 className="font-['Playfair_Display'] text-3xl sm:text-5xl md:text-7xl font-medium tracking-tight text-[#2C2C2C]">
             Our Journal
           </h1>
-          <p className="text-base md:text-lg font-light text-[#6B7280] mt-4 max-w-lg">
+          <p className="text-sm md:text-lg font-light text-[#6B7280] mt-3 sm:mt-4 max-w-lg">
             Stories about flowers, pets, sustainability, and the art of Scandinavian living.
           </p>
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
             {[...Array(3)].map((_, i) => (
               <div key={i} className="animate-pulse">
                 <div className="aspect-[16/10] bg-[#F2F0EB] rounded-xl mb-4" />
@@ -41,7 +41,7 @@ export default function BlogPage() {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 md:gap-10">
             {posts.map((post, i) => (
               <Link
                 key={post.id}

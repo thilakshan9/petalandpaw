@@ -37,15 +37,15 @@ export default function SubscriptionPage() {
   };
 
   return (
-    <div className="py-12 md:py-20" data-testid="subscription-page">
+    <div className="py-8 sm:py-12 md:py-20" data-testid="subscription-page">
       <SEOHead title="Subscriptions" description="Monthly pet-safe flower subscriptions. Three plans with optional pet toy add-on." keywords="flower subscription, monthly flowers, pet safe subscription" />
-      <div className="container mx-auto px-4 md:px-8 max-w-7xl">
-        <div className="text-center mb-16 animate-fade-in-up">
-          <span className="text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 block">Subscribe</span>
-          <h1 className="font-['Playfair_Display'] text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tight text-[#2C2C2C] mb-4">
+      <div className="container mx-auto px-5 md:px-8 max-w-7xl">
+        <div className="text-center mb-10 sm:mb-16 animate-fade-in-up">
+          <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-2 sm:mb-3 block">Subscribe</span>
+          <h1 className="font-['Playfair_Display'] text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-medium tracking-tight text-[#2C2C2C] mb-3 sm:mb-4">
             Monthly Subscriptions
           </h1>
-          <p className="text-base md:text-lg font-light text-[#6B7280] max-w-xl mx-auto">
+          <p className="text-sm md:text-lg font-light text-[#6B7280] max-w-xl mx-auto">
             Fresh, pet-safe flowers delivered monthly. Cancel anytime.
           </p>
         </div>
@@ -55,7 +55,7 @@ export default function SubscriptionPage() {
             {[...Array(3)].map((_, i) => <div key={i} className="animate-pulse bg-white rounded-2xl p-8 h-[520px]" />)}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 md:gap-8">
             {plans.map((plan, i) => {
               const isPop = i === 1;
               const toyOn = !!petToy[plan.id];
@@ -63,7 +63,7 @@ export default function SubscriptionPage() {
               return (
                 <div
                   key={plan.id}
-                  className={`animate-fade-in-up bg-white border rounded-2xl p-8 flex flex-col transition-all hover:-translate-y-1 ${
+                  className={`animate-fade-in-up bg-white border rounded-2xl p-5 sm:p-8 flex flex-col transition-all hover:-translate-y-1 ${
                     isPop ? "border-[#8DA399] ring-1 ring-[#8DA399]/20 relative" : "border-[#E5E0D6]"
                   }`}
                   style={{ animationDelay: `${(i + 1) * 0.1}s` }}

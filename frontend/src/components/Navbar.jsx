@@ -21,7 +21,7 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E0D6]/50" data-testid="navbar">
       <div className="container mx-auto px-4 md:px-8 max-w-7xl flex items-center justify-between h-16 md:h-20">
         <Link to="/" className="flex items-center gap-2" data-testid="nav-logo">
-          <span className="font-['Playfair_Display'] text-xl md:text-2xl font-medium tracking-tight text-[#2C2C2C]">Petal & Paw</span>
+          <img src="/assets/logo.png" alt="Petal & Paw" className="h-10 md:h-12 w-auto" />
         </Link>
 
         <div className="hidden md:flex items-center gap-10">

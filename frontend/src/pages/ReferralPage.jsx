@@ -31,9 +31,9 @@ export default function ReferralPage() {
   }, [code]);
 
   return (
-    <div className="py-20 md:py-32" data-testid="referral-page">
+    <div className="py-12 sm:py-20 md:py-32" data-testid="referral-page">
       <SEOHead title="Referral" description="Get $10 off your first order at Petal & Paw." />
-      <div className="container mx-auto px-4 md:px-8 max-w-lg text-center">
+      <div className="container mx-auto px-5 md:px-8 max-w-lg text-center">
         <div className="w-16 h-16 rounded-full bg-[#8DA399]/10 flex items-center justify-center mx-auto mb-6">
           <Gift size={28} className="text-[#8DA399]" />
         </div>
@@ -42,7 +42,7 @@ export default function ReferralPage() {
           <div className="animate-pulse text-[#6B7280] font-light tracking-widest text-sm uppercase">Checking referral...</div>
         ) : valid ? (
           <div className="animate-fade-in-up">
-            <h1 className="font-['Playfair_Display'] text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C] mb-4">
+            <h1 className="font-['Playfair_Display'] text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C] mb-4">
               You've been invited!
             </h1>
             <p className="text-base font-light text-[#6B7280] mb-2">

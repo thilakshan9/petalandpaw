@@ -82,11 +82,11 @@ export default function CartPage() {
   }
 
   return (
-    <div className="py-12 md:py-20" data-testid="cart-page">
+    <div className="py-8 sm:py-12 md:py-20" data-testid="cart-page">
       <SEOHead title="Cart" />
-      <div className="container mx-auto px-4 md:px-8 max-w-7xl">
-        <h1 className="font-['Playfair_Display'] text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C] mb-10 animate-fade-in-up">Your Cart</h1>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
+      <div className="container mx-auto px-5 md:px-8 max-w-7xl">
+        <h1 className="font-['Playfair_Display'] text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C] mb-6 sm:mb-10 animate-fade-in-up">Your Cart</h1>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-12">
           <div className="lg:col-span-2 space-y-4">
             {items.map((item) => (
               <div key={item.product_id} className="flex gap-4 md:gap-6 bg-white border border-[#E5E0D6] rounded-xl p-4 md:p-6 animate-fade-in-up" data-testid={`cart-item-${item.product_id}`}>

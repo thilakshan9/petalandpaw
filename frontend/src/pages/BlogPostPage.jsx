@@ -41,17 +41,17 @@ export default function BlogPostPage() {
     : "";
 
   return (
-    <div className="py-8 md:py-16" data-testid="blog-post-page">
-      <div className="container mx-auto px-4 md:px-8 max-w-3xl">
-        <Link to="/blog" className="inline-flex items-center gap-2 text-sm font-light text-[#6B7280] hover:text-[#2C2C2C] transition-colors mb-8" data-testid="back-to-blog">
+    <div className="py-6 sm:py-8 md:py-16" data-testid="blog-post-page">
+      <div className="container mx-auto px-5 md:px-8 max-w-3xl">
+        <Link to="/blog" className="inline-flex items-center gap-2 text-sm font-light text-[#6B7280] hover:text-[#2C2C2C] transition-colors mb-6 sm:mb-8" data-testid="back-to-blog">
           <ArrowLeft size={14} /> Back to Journal
         </Link>
 
         <article className="animate-fade-in-up">
           <SEOHead title={post.title} description={post.meta_description || post.excerpt} image={post.image_url} keywords={post.meta_keywords} />
-          <div className="mb-8">
-            <span className="text-xs uppercase tracking-widest font-semibold text-[#8DA399] mb-3 block">{post.author}</span>
-            <h1 className="font-['Playfair_Display'] text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C] mb-4" data-testid="blog-post-title">
+          <div className="mb-6 sm:mb-8">
+            <span className="text-[10px] sm:text-xs uppercase tracking-widest font-semibold text-[#8DA399] mb-2 sm:mb-3 block">{post.author}</span>
+            <h1 className="font-['Playfair_Display'] text-2xl sm:text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C] mb-3 sm:mb-4" data-testid="blog-post-title">
               {post.title}
             </h1>
             {formattedDate && (

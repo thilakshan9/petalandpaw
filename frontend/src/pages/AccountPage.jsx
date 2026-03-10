@@ -56,12 +56,12 @@ export default function AccountPage() {
   }
 
   return (
-    <div className="py-12 md:py-20" data-testid="account-page">
+    <div className="py-8 sm:py-12 md:py-20" data-testid="account-page">
       <SEOHead title="My Account" description="View your order history and manage your account." />
-      <div className="container mx-auto px-4 md:px-8 max-w-5xl">
-        <div className="flex items-center justify-between mb-10">
+      <div className="container mx-auto px-5 md:px-8 max-w-5xl">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 sm:mb-10 gap-4">
           <div>
-            <h1 className="font-['Playfair_Display'] text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C]">
+            <h1 className="font-['Playfair_Display'] text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C]">
               My Account
             </h1>
             {user && <p className="text-base font-light text-[#6B7280] mt-2">{user.email}</p>}

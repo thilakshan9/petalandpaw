@@ -3,11 +3,11 @@ import { Leaf } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#2C2C2C] text-[#FAF9F6] py-16 md:py-20" data-testid="footer">
-      <div className="container mx-auto px-4 md:px-8 max-w-7xl">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-12">
-          <div className="md:col-span-1">
-            <h3 className="font-['Playfair_Display'] text-2xl font-medium mb-4">Petal & Paw</h3>
+    <footer className="bg-[#2C2C2C] text-[#FAF9F6] py-12 sm:py-16 md:py-20" data-testid="footer">
+      <div className="container mx-auto px-5 md:px-8 max-w-7xl">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+          <div className="col-span-2 md:col-span-1">
+            <img src="/assets/logo.png" alt="Petal & Paw" className="h-14 w-auto mb-4 brightness-0 invert" />
             <p className="text-sm font-light text-[#FAF9F6]/60 leading-relaxed max-w-xs">
               Pet-safe floral arrangements for the modern, conscious home. Because your pets deserve beautiful too.
             </p>

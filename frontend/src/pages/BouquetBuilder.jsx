@@ -105,30 +105,30 @@ export default function BouquetBuilder() {
   }, [flowers]);
 
   return (
-    <div className="py-8 md:py-16" data-testid="bouquet-builder-page">
+    <div className="py-6 sm:py-8 md:py-16" data-testid="bouquet-builder-page">
       <SEOHead title="Build Your Bouquet" description="Create a custom pet-safe bouquet. Choose size, flowers, and tell us about your pet." />
-      <div className="container mx-auto px-4 md:px-8 max-w-3xl">
-        <div className="text-center mb-12 animate-fade-in-up">
-          <span className="text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 block">Create</span>
-          <h1 className="font-['Playfair_Display'] text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tight text-[#2C2C2C]">
+      <div className="container mx-auto px-5 md:px-8 max-w-3xl">
+        <div className="text-center mb-8 sm:mb-12 animate-fade-in-up">
+          <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-2 sm:mb-3 block">Create</span>
+          <h1 className="font-['Playfair_Display'] text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-medium tracking-tight text-[#2C2C2C]">
             Build Your Bouquet
           </h1>
         </div>
 
         {/* Step Indicator */}
-        <div className="flex items-center justify-center gap-2 mb-12 animate-fade-in-up delay-100">
+        <div className="flex items-center justify-center gap-1 sm:gap-2 mb-8 sm:mb-12 animate-fade-in-up delay-100">
           {[1, 2, 3, 4].map((s) => (
             <div key={s} className="flex items-center gap-2">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold transition-colors ${
+              <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-semibold transition-colors ${
                 step === s ? "bg-[#2C2C2C] text-[#FAF9F6]" : step > s ? "bg-[#8DA399] text-white" : "bg-[#E8E4D9] text-[#6B7280]"
               }`}>{step > s ? <Check size={14} /> : s}</div>
-              {s < 4 && <div className={`w-8 md:w-12 h-px ${step > s ? "bg-[#8DA399]" : "bg-[#E5E0D6]"}`} />}
+              {s < 4 && <div className={`w-6 sm:w-8 md:w-12 h-px ${step > s ? "bg-[#8DA399]" : "bg-[#E5E0D6]"}`} />}
             </div>
           ))}
         </div>
 
         {/* Step Content */}
-        <div className="bg-white border border-[#E5E0D6] rounded-2xl p-6 md:p-10 animate-fade-in-up delay-200">
+        <div className="bg-white border border-[#E5E0D6] rounded-2xl p-5 sm:p-6 md:p-10 animate-fade-in-up delay-200">
           {/* Step 1: Size */}
           {step === 1 && (
             <div data-testid="step-1-size">
