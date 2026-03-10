@@ -9,71 +9,55 @@ Modern, minimal ecommerce website for pet-safe flowers with Scandinavian design 
 - **Auth**: Emergent Google OAuth (admin + customer)
 - **Payments**: Stripe via emergentintegrations library
 
-## What's Been Implemented (March 9, 2026 - Phase 2)
+## What's Been Implemented
 
-### Homepage (Ole & Steen Inspired)
-- [x] Full-width hero with lifestyle image, minimal headline, single CTA
-- [x] Promise strip (pet-safe, sustainable, free delivery)
-- [x] 3 feature sections: Pet-Safe Flowers, Letterbox Subscriptions, Create Your Own Bouquet
-- [x] Featured products grid
-- [x] Clean, image-first, calm premium aesthetic
+### Phase 1 (March 9, 2026)
+- Full-stack scaffolding: Homepage, Shop, Product, Subscriptions, Bouquet Builder, Cart, Admin Dashboard
+- Core integrations: Emergent Google Auth (admin), Stripe (payments)
 
-### Products
-- [x] 10 products across 4 categories: bouquet, single-stem, arrangement, letterbox
-- [x] 3 letterbox flower products
-- [x] Product search (name, description, category)
-- [x] Category filtering
+### Phase 2 (March 9, 2026)
+- Customer accounts with Google OAuth and order history
+- Referral program (Give $10, Get $10)
+- Product search functionality
+- SendGrid integration (MOCKED)
+- Delivery date picker for checkout
+- Letterbox flower products
+- Enhanced step-based bouquet builder
+- SEO metadata management
+- Blog with SEO metadata
+- Admin dashboard: order management, product CRUD, blog CRUD
 
-### Subscriptions (Monthly Only)
-- [x] 3 tiers: Petite Paws ($29.99), Classic Bloom ($44.99), Grand Garden ($64.99)
-- [x] Pet toy add-on ($8.99) toggle per plan
-- [x] Stripe checkout integration
-
-### Bouquet Builder (Step-Based)
-- [x] Step 1: Select size (Petite/Classic/Grand)
-- [x] Step 2: Choose flowers from categorized lists
-- [x] Step 3: Pet type dropdown (Dog, Cat, Rabbit, Other + text input)
-- [x] Step 4: Review + optional pet toy add-on
-- [x] Safety notice always displayed
-- [x] Clean form UI with step indicator
-
-### Cart & Checkout
-- [x] Delivery date picker (calendar component)
-- [x] Referral code input with validation
-- [x] Stripe checkout with delivery date and referral support
-- [x] Free delivery over $50
-
-### Customer Accounts
-- [x] Google OAuth login for customers
-- [x] Order history view
-- [x] Referral code display and copy link
-
-### Referral Program (Give $10, Get $10)
-- [x] Auto-generated 8-char referral code per user
-- [x] Referral landing page with validation
-- [x] $10 discount applied at checkout
-- [x] Credit tracking in user account
-
-### Admin Dashboard
-- [x] Order status: To Do / Complete (toggleable)
-- [x] Subscription orders tab
-- [x] Order details view (items, pet notes, add-ons, delivery date)
-- [x] Product CRUD with letterbox category
-- [x] Blog CRUD with SEO metadata (meta description, keywords)
-- [x] Dashboard stats including subscription orders and todo count
-
-### SEO
-- [x] react-helmet-async for per-page meta tags
-- [x] Title, description, og:image, keywords per page
-- [x] Blog posts with meta_description and meta_keywords
-
-### Email Notifications
-- [x] SendGrid integration (MOCKED - add SENDGRID_API_KEY + SENDER_EMAIL to .env)
-- [x] Order confirmation HTML email template
+### Phase 3 (March 10, 2026) - Mobile Responsiveness & Logo
+- [x] Integrated user-provided Petal + Paw circular logo in Navbar and Footer
+- [x] Full mobile responsiveness across all pages:
+  - HomePage: Responsive hero (60vh mobile, 85vh desktop), vertical promise strip, scaled feature sections
+  - ShopPage: Responsive filters, 2-col mobile / 4-col desktop product grid
+  - ProductPage: Stacked layout on mobile, readable text sizes
+  - SubscriptionPage: Stacked plan cards on mobile
+  - BouquetBuilder: Responsive step indicator and form
+  - CartPage: Responsive cart items and order summary
+  - BlogPage: 1-col mobile / 3-col desktop blog grid
+  - AccountPage: Responsive header and referral section
+  - Footer: 2-col mobile / 4-col desktop grid with inverted logo
+  - Navbar: Mobile hamburger menu with Sheet component
+  - ProductCard: Responsive text sizes
 
 ## Test Results
-- Backend: 100% pass rate (19 endpoints)
-- Frontend: 95% pass rate (minor subscription loading delay)
+- Backend: 100% pass rate (19 endpoints) - iteration 2
+- Frontend: 100% pass rate (24 mobile/desktop layout tests) - iteration 3
+- Subscription page "loading delay" investigated: API responds in ~300ms, not a real bug
+
+## Products
+- 10 products across 4 categories: bouquet, single-stem, arrangement, letterbox
+- 3 letterbox flower products
+- 3 subscription tiers: Petite Paws ($29.99), Classic Bloom ($44.99), Grand Garden ($64.99)
+
+## Key DB Collections
+- `users`: email, password_hash, created_at, referral_code, referred_by
+- `products`: name, price, description, image, category, stock
+- `subscriptions`: name, price, description, features, is_monthly
+- `orders`: user_id, items, total, status, delivery_date, created_at
+- `blog_posts`: title, content, author, date, seo_title, seo_description
 
 ## Backlog
 ### P1
@@ -92,3 +76,6 @@ Modern, minimal ecommerce website for pet-safe flowers with Scandinavian design 
 - Gift cards
 - Analytics dashboard with charts
 - Push notifications
+
+## Refactoring Backlog
+- Break down monolithic server.py into modular route files (routes/, models/)
