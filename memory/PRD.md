@@ -29,7 +29,8 @@ Modern, minimal ecommerce website for pet-safe flowers with Scandinavian design 
 
 ### Phase 3 (March 10, 2026) - Mobile Responsiveness & Logo
 - [x] Integrated user-provided Petal + Paw circular logo in Navbar and Footer
-- [x] Full mobile responsiveness across all pages:
+- [x] Full mobile responsiveness across all pages
+- [x] Quick View modal: hover bar on desktop, eye icon on mobile, adds to cart without navigating away
   - HomePage: Responsive hero (60vh mobile, 85vh desktop), vertical promise strip, scaled feature sections
   - ShopPage: Responsive filters, 2-col mobile / 4-col desktop product grid
   - ProductPage: Stacked layout on mobile, readable text sizes

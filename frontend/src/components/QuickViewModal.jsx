@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ShieldCheck, Minus, Plus, ArrowRight, X } from "lucide-react";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/components/CartProvider";
 import { toast } from "sonner";
@@ -32,6 +32,7 @@ export default function QuickViewModal({ product, open, onClose }) {
         data-testid="quick-view-modal"
       >
         <DialogTitle className="sr-only">{product.name} - Quick View</DialogTitle>
+        <DialogDescription className="sr-only">Quick view of {product.name} - ${product.price.toFixed(2)}</DialogDescription>
         <div className="grid grid-cols-1 sm:grid-cols-2">
           {/* Image */}
           <div className="aspect-square sm:aspect-auto sm:h-full bg-[#F2F0EB] overflow-hidden">
