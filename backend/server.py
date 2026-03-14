@@ -22,10 +22,9 @@ client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
 # Stripe
-from emergentintegrations.payments.stripe.checkout import (
-    StripeCheckout, CheckoutSessionRequest
-)
+import stripe
 stripe_api_key = os.environ.get('STRIPE_API_KEY')
+stripe.api_key = stripe_api_key
 
 # SendGrid (optional - works without key)
 sendgrid_api_key = os.environ.get('SENDGRID_API_KEY')
@@ -351,26 +350,27 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
     if req.add_pet_toy:
         total += pet_toy_price
     host_url = str(request.base_url).rstrip("/")
-    webhook_url = f"{host_url}/api/webhook/stripe"
-    stripe_checkout = StripeCheckout(api_key=stripe_api_key, webhook_url=webhook_url)
     success_url = f"{req.origin_url}/checkout/success?session_id={{CHECKOUT_SESSION_ID}}"
     cancel_url = f"{req.origin_url}/subscriptions"
-    checkout_req = CheckoutSessionRequest(
-        amount=float(total), currency="usd",
-        success_url=success_url, cancel_url=cancel_url,
+    session = stripe.checkout.Session.create(
+        payment_method_types=["card"],
+        line_items=[{"price_data": {"currency": "usd", "unit_amount": int(total * 100),
+            "product_data": {"name": plan["name"]}}, "quantity": 1}],
+        mode="payment",
+        success_url=success_url,
+        cancel_url=cancel_url,
         metadata={"type": "subscription", "plan_id": plan["id"], "plan_name": plan["name"],
                   "add_pet_toy": str(req.add_pet_toy)}
     )
-    session = await stripe_checkout.create_checkout_session(checkout_req)
     await db.payment_transactions.insert_one({
-        "id": str(uuid.uuid4()), "session_id": session.session_id,
+        "id": str(uuid.uuid4()), "session_id": session.id,
         "amount": float(total), "currency": "usd",
         "status": "initiated", "payment_status": "pending",
         "metadata": {"type": "subscription", "plan_id": plan["id"],
                      "plan_name": plan["name"], "add_pet_toy": str(req.add_pet_toy)},
         "created_at": datetime.now(timezone.utc).isoformat()
     })
-    return {"url": session.url, "session_id": session.session_id}
+    return {"url": session.url, "session_id": session.id}
 
 # ============================================================
 # BOUQUET BUILDER ROUTES (Step-based)
@@ -453,21 +453,22 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
             total = max(0.01, total - credit_applied)
 
     host_url = str(request.base_url).rstrip("/")
-    webhook_url = f"{host_url}/api/webhook/stripe"
-    stripe_checkout = StripeCheckout(api_key=stripe_api_key, webhook_url=webhook_url)
     success_url = f"{req.origin_url}/checkout/success?session_id={{CHECKOUT_SESSION_ID}}"
     cancel_url = f"{req.origin_url}/cart"
     order_id = str(uuid.uuid4())
-    checkout_req = CheckoutSessionRequest(
-        amount=float(total), currency="usd",
-        success_url=success_url, cancel_url=cancel_url,
+    session = stripe.checkout.Session.create(
+        payment_method_types=["card"],
+        line_items=[{"price_data": {"currency": "usd", "unit_amount": int(total * 100),
+            "product_data": {"name": f"Order {order_id[:8]}"}}, "quantity": 1}],
+        mode="payment",
+        success_url=success_url,
+        cancel_url=cancel_url,
         metadata={"order_id": order_id, "order_type": req.order_type,
                   "item_count": str(len(validated_items))}
     )
-    session = await stripe_checkout.create_checkout_session(checkout_req)
     order_doc = {
         "id": order_id, "items": validated_items, "total": float(total),
-        "status": "todo", "stripe_session_id": session.session_id,
+        "status": "todo", "stripe_session_id": session.id,
         "customer_email": req.customer_email, "order_type": req.order_type,
         "delivery_date": req.delivery_date, "pet_notes": req.pet_notes,
         "referral_code": req.referral_code, "credit_applied": credit_applied,
@@ -475,23 +476,23 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
     }
     await db.orders.insert_one(order_doc)
     await db.payment_transactions.insert_one({
-        "id": str(uuid.uuid4()), "session_id": session.session_id,
+        "id": str(uuid.uuid4()), "session_id": session.id,
         "amount": float(total), "currency": "usd",
         "status": "initiated", "payment_status": "pending", "order_id": order_id,
         "metadata": {"order_type": req.order_type, "item_count": str(len(validated_items))},
         "created_at": datetime.now(timezone.utc).isoformat()
     })
-    return {"url": session.url, "session_id": session.session_id, "order_id": order_id}
+    return {"url": session.url, "session_id": session.id, "order_id": order_id}
 
 @api_router.get("/orders/status/{session_id}")
 async def get_order_status(session_id: str, request: Request, background_tasks: BackgroundTasks):
     host_url = str(request.base_url).rstrip("/")
-    webhook_url = f"{host_url}/api/webhook/stripe"
-    stripe_checkout = StripeCheckout(api_key=stripe_api_key, webhook_url=webhook_url)
-    status = await stripe_checkout.get_checkout_status(session_id)
-    update_data = {"status": status.status, "payment_status": status.payment_status,
+    session = stripe.checkout.Session.retrieve(session_id)
+    payment_status = session.payment_status or "unpaid"
+    status = session.status or "open"
+    update_data = {"status": status, "payment_status": payment_status,
                    "updated_at": datetime.now(timezone.utc).isoformat()}
-    if status.payment_status == "paid":
+    if payment_status == "paid":
         tx = await db.payment_transactions.find_one({"session_id": session_id}, {"_id": 0})
         if tx and tx.get("payment_status") != "paid":
             order = await db.orders.find_one({"stripe_session_id": session_id}, {"_id": 0})
@@ -509,8 +510,8 @@ async def get_order_status(session_id: str, request: Request, background_tasks: 
             if order and order.get("customer_email"):
                 background_tasks.add_task(send_order_confirmation_email, order["customer_email"], order)
     await db.payment_transactions.update_one({"session_id": session_id}, {"$set": update_data})
-    return {"status": status.status, "payment_status": status.payment_status,
-            "amount_total": status.amount_total, "currency": status.currency}
+    return {"status": status, "payment_status": payment_status,
+            "amount_total": session.amount_total, "currency": session.currency}
 
 @api_router.get("/orders")
 async def get_orders(user=Depends(get_current_user)):
@@ -526,20 +527,21 @@ async def stripe_webhook(request: Request):
     body = await request.body()
     signature = request.headers.get("Stripe-Signature")
     try:
-        host_url = str(request.base_url).rstrip("/")
-        webhook_url = f"{host_url}/api/webhook/stripe"
-        stripe_checkout = StripeCheckout(api_key=stripe_api_key, webhook_url=webhook_url)
-        webhook_response = await stripe_checkout.handle_webhook(body, signature)
-        if webhook_response.payment_status == "paid":
-            await db.payment_transactions.update_one(
-                {"session_id": webhook_response.session_id},
-                {"$set": {"status": "complete", "payment_status": "paid",
-                          "updated_at": datetime.now(timezone.utc).isoformat()}}
-            )
-            await db.orders.update_one(
-                {"stripe_session_id": webhook_response.session_id},
-                {"$set": {"status": "todo", "updated_at": datetime.now(timezone.utc).isoformat()}}
-            )
+        event = stripe.Webhook.construct_event(body, signature, os.environ.get("STRIPE_WEBHOOK_SECRET", ""))
+        if event["type"] == "checkout.session.completed":
+            session = event["data"]["object"]
+            session_id = session["id"]
+            payment_status = session.get("payment_status", "unpaid")
+            if payment_status == "paid":
+                await db.payment_transactions.update_one(
+                    {"session_id": session_id},
+                    {"$set": {"status": "complete", "payment_status": "paid",
+                              "updated_at": datetime.now(timezone.utc).isoformat()}}
+                )
+                await db.orders.update_one(
+                    {"stripe_session_id": session_id},
+                    {"$set": {"status": "todo", "updated_at": datetime.now(timezone.utc).isoformat()}}
+                )
         return {"status": "ok"}
     except Exception as e:
         logger.error(f"Webhook error: {e}")
