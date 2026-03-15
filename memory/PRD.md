@@ -31,6 +31,17 @@ Modern, minimal ecommerce website for pet-safe flowers with Scandinavian design 
 - [x] Integrated user-provided Petal + Paw circular logo in Navbar and Footer
 - [x] Full mobile responsiveness across all pages
 - [x] Quick View modal: hover bar on desktop, eye icon on mobile, adds to cart without navigating away
+
+### Phase 4 (March 15, 2026) - Content & Feature Updates
+- [x] Removed all Scandinavian references from frontend, backend seed data, and blog posts
+- [x] Changed all currency from $ (USD) to £ (GBP) — frontend + Stripe backend
+- [x] Updated homepage text: scientific data, subscription CTA, bouquet builder → COMING SOON (disabled)
+- [x] Added About Us page (/about) with mission, values, and feature cards
+- [x] Added Contact page (/contact) with form and info sidebar (MOCKED — no backend endpoint)
+- [x] Removed shop category filters (kept search bar)
+- [x] Removed free vase references from subscription plans
+- [x] Replaced emergentintegrations Stripe wrapper with standard stripe library for deployment
+- [x] Cleaned index.html (removed Made with Emergent badge, PostHog analytics)
   - HomePage: Responsive hero (60vh mobile, 85vh desktop), vertical promise strip, scaled feature sections
   - ShopPage: Responsive filters, 2-col mobile / 4-col desktop product grid
   - ProductPage: Stacked layout on mobile, readable text sizes

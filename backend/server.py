@@ -637,7 +637,7 @@ async def seed_data():
              "images": [], "pet_safe": True, "pet_safe_details": "Sunflowers are completely safe for all pets.",
              "in_stock": True, "featured": True, "created_at": datetime.now(timezone.utc).isoformat()},
             {"id": str(uuid.uuid4()), "name": "Nordic Snapdragon Stems", "slug": "nordic-snapdragon-stems",
-             "description": "Elegant snapdragon stems in muted pastels, arranged in our signature Scandinavian style.",
+             "description": "Elegant snapdragon stems in muted pastels, arranged in our signature minimal style.",
              "price": 32.00, "category": "single-stem",
              "image_url": "https://images.unsplash.com/photo-1661606247607-6fad2073a9ca?w=800",
              "images": [], "pet_safe": True, "pet_safe_details": "Snapdragons are non-toxic and safe for curious pets.",
