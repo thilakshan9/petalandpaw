@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Mail, MapPin, Clock, Send } from "lucide-react";
+import { Mail, MapPin, Clock, Send, Instagram } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -44,6 +44,7 @@ export default function ContactPage() {
             <div className="space-y-6">
               {[
                 { icon: Mail, label: "Email", value: "hello@petalandpaw.co.uk", href: "mailto:hello@petalandpaw.co.uk" },
+                { icon: Instagram, label: "Instagram", value: "@petalandpawflorist", href: "https://instagram.com/petalandpawflorist" },
                 { icon: MapPin, label: "Location", value: "United Kingdom" },
                 { icon: Clock, label: "Response Time", value: "Within 24 hours" },
               ].map(({ icon: Icon, label, value, href }) => (
@@ -54,7 +55,7 @@ export default function ContactPage() {
                   <div>
                     <p className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1">{label}</p>
                     {href ? (
-                      <a href={href} className="text-sm font-light text-[#2C2C2C] hover:text-[#8DA399] transition-colors">{value}</a>
+                      <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel={href.startsWith("http") ? "noopener noreferrer" : undefined} className="text-sm font-light text-[#2C2C2C] hover:text-[#8DA399] transition-colors">{value}</a>
                     ) : (
                       <p className="text-sm font-light text-[#2C2C2C]">{value}</p>
                     )}

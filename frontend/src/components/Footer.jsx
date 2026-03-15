@@ -1,5 +1,15 @@
-import { Link } from "react-router-dom";
-import { Leaf } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Leaf, Instagram } from "lucide-react";
+
+function ScrollLink({ to, children, ...props }) {
+  const navigate = useNavigate();
+  const handleClick = (e) => {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    navigate(to);
+  };
+  return <a href={to} onClick={handleClick} {...props}>{children}</a>;
+}
 
 export default function Footer() {
   return (
@@ -11,27 +21,33 @@ export default function Footer() {
             <p className="text-sm font-light text-[#FAF9F6]/60 leading-relaxed max-w-xs">
               Pet-safe floral arrangements for the modern, conscious home. Because your pets deserve beautiful too.
             </p>
-            <div className="flex items-center gap-2 mt-4 text-[#8DA399]">
-              <Leaf size={14} strokeWidth={1.5} />
-              <span className="text-xs uppercase tracking-widest font-semibold">100% Pet Safe</span>
+            <div className="flex items-center gap-4 mt-4">
+              <div className="flex items-center gap-2 text-[#8DA399]">
+                <Leaf size={14} strokeWidth={1.5} />
+                <span className="text-xs uppercase tracking-widest font-semibold">100% Pet Safe</span>
+              </div>
             </div>
+            <a href="https://instagram.com/petalandpawflorist" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-4 text-[#FAF9F6]/60 hover:text-[#FAF9F6] transition-colors" data-testid="footer-instagram">
+              <Instagram size={16} strokeWidth={1.5} />
+              <span className="text-xs font-light">@petalandpawflorist</span>
+            </a>
           </div>
 
           <div>
             <h4 className="text-xs uppercase tracking-widest font-semibold mb-6 text-[#FAF9F6]/40">Shop</h4>
             <nav className="flex flex-col gap-3">
-              <Link to="/shop" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-shop">All Products</Link>
-              <Link to="/shop?category=bouquet" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-bouquets">Bouquets</Link>
-              <Link to="/subscriptions" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-subscriptions">Subscriptions</Link>
-              <Link to="/bouquet-builder" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-builder">Build a Bouquet</Link>
+              <ScrollLink to="/shop" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-shop">All Products</ScrollLink>
+              <ScrollLink to="/shop?category=bouquet" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-bouquets">Bouquets</ScrollLink>
+              <ScrollLink to="/subscriptions" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-subscriptions">Subscriptions</ScrollLink>
+              <ScrollLink to="/bouquet-builder" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-builder">Build a Bouquet</ScrollLink>
             </nav>
           </div>
 
           <div>
             <h4 className="text-xs uppercase tracking-widest font-semibold mb-6 text-[#FAF9F6]/40">Company</h4>
             <nav className="flex flex-col gap-3">
-              <Link to="/blog" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-blog">Journal</Link>
-              <Link to="/about" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-about">About Us</Link>
+              <ScrollLink to="/blog" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-blog">Journal</ScrollLink>
+              <ScrollLink to="/about" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-about">About Us</ScrollLink>
               <span className="text-sm font-light text-[#FAF9F6]/70">Sustainability</span>
               <span className="text-sm font-light text-[#FAF9F6]/70">Pet Safety Promise</span>
             </nav>
@@ -40,7 +56,7 @@ export default function Footer() {
           <div>
             <h4 className="text-xs uppercase tracking-widest font-semibold mb-6 text-[#FAF9F6]/40">Support</h4>
             <nav className="flex flex-col gap-3">
-              <Link to="/contact" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-contact">Contact</Link>
+              <ScrollLink to="/contact" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-contact">Contact</ScrollLink>
               <span className="text-sm font-light text-[#FAF9F6]/70">FAQ</span>
               <span className="text-sm font-light text-[#FAF9F6]/70">Delivery Info</span>
               <span className="text-sm font-light text-[#FAF9F6]/70">Returns</span>
