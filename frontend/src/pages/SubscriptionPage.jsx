@@ -29,9 +29,14 @@ export default function SubscriptionPage() {
         body: JSON.stringify({ plan_id: planId, origin_url: window.location.origin, add_pet_toy: !!petToy[planId] }),
       });
       const data = await res.json();
-      if (data.url) window.location.href = data.url;
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        toast.error(data.detail || "Something went wrong.");
+        setSubscribing(null);
+      }
     } catch {
-      toast.error("Something went wrong.");
+      toast.error("Something went wrong. Please try again.");
       setSubscribing(null);
     }
   };

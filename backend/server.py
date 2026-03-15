@@ -352,16 +352,22 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
     host_url = str(request.base_url).rstrip("/")
     success_url = f"{req.origin_url}/checkout/success?session_id={{CHECKOUT_SESSION_ID}}"
     cancel_url = f"{req.origin_url}/subscriptions"
-    session = stripe.checkout.Session.create(
-        payment_method_types=["card"],
-        line_items=[{"price_data": {"currency": "gbp", "unit_amount": int(total * 100),
-            "product_data": {"name": plan["name"]}}, "quantity": 1}],
-        mode="payment",
-        success_url=success_url,
-        cancel_url=cancel_url,
-        metadata={"type": "subscription", "plan_id": plan["id"], "plan_name": plan["name"],
-                  "add_pet_toy": str(req.add_pet_toy)}
-    )
+    try:
+        session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            line_items=[{"price_data": {"currency": "gbp", "unit_amount": int(total * 100),
+                "product_data": {"name": plan["name"]}}, "quantity": 1}],
+            mode="payment",
+            success_url=success_url,
+            cancel_url=cancel_url,
+            metadata={"type": "subscription", "plan_id": plan["id"], "plan_name": plan["name"],
+                      "add_pet_toy": str(req.add_pet_toy)}
+        )
+    except stripe._error.AuthenticationError:
+        raise HTTPException(status_code=503, detail="Payment service is not configured. Please contact support.")
+    except Exception as e:
+        logger.error(f"Stripe error: {e}")
+        raise HTTPException(status_code=500, detail="Payment processing failed. Please try again.")
     await db.payment_transactions.insert_one({
         "id": str(uuid.uuid4()), "session_id": session.id,
         "amount": float(total), "currency": "gbp",
@@ -456,16 +462,22 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
     success_url = f"{req.origin_url}/checkout/success?session_id={{CHECKOUT_SESSION_ID}}"
     cancel_url = f"{req.origin_url}/cart"
     order_id = str(uuid.uuid4())
-    session = stripe.checkout.Session.create(
-        payment_method_types=["card"],
-        line_items=[{"price_data": {"currency": "gbp", "unit_amount": int(total * 100),
-            "product_data": {"name": f"Order {order_id[:8]}"}}, "quantity": 1}],
-        mode="payment",
-        success_url=success_url,
-        cancel_url=cancel_url,
-        metadata={"order_id": order_id, "order_type": req.order_type,
-                  "item_count": str(len(validated_items))}
-    )
+    try:
+        session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            line_items=[{"price_data": {"currency": "gbp", "unit_amount": int(total * 100),
+                "product_data": {"name": f"Order {order_id[:8]}"}}, "quantity": 1}],
+            mode="payment",
+            success_url=success_url,
+            cancel_url=cancel_url,
+            metadata={"order_id": order_id, "order_type": req.order_type,
+                      "item_count": str(len(validated_items))}
+        )
+    except stripe._error.AuthenticationError:
+        raise HTTPException(status_code=503, detail="Payment service is not configured. Please contact support.")
+    except Exception as e:
+        logger.error(f"Stripe error: {e}")
+        raise HTTPException(status_code=500, detail="Payment processing failed. Please try again.")
     order_doc = {
         "id": order_id, "items": validated_items, "total": float(total),
         "status": "todo", "stripe_session_id": session.id,
