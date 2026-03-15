@@ -32,7 +32,7 @@ export default function ReferralPage() {
 
   return (
     <div className="py-12 sm:py-20 md:py-32" data-testid="referral-page">
-      <SEOHead title="Referral" description="Get $10 off your first order at Petal & Paw." />
+      <SEOHead title="Referral" description="Get £10 off your first order at Petal & Paw." />
       <div className="container mx-auto px-5 md:px-8 max-w-lg text-center">
         <div className="w-16 h-16 rounded-full bg-[#8DA399]/10 flex items-center justify-center mx-auto mb-6">
           <Gift size={28} className="text-[#8DA399]" />
@@ -51,7 +51,7 @@ export default function ReferralPage() {
             <div className="bg-[#8DA399]/8 border border-[#8DA399]/20 rounded-xl p-6 my-8">
               <div className="flex items-center justify-center gap-2 text-[#8DA399] mb-2">
                 <Check size={18} />
-                <span className="text-lg font-semibold">$10 off your first order</span>
+                <span className="text-lg font-semibold">£10 off your first order</span>
               </div>
               <p className="text-sm font-light text-[#6B7280]">
                 Your referral code <span className="font-mono font-semibold text-[#2C2C2C]">{code}</span> will be automatically applied at checkout.

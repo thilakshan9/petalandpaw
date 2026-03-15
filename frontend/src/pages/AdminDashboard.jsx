@@ -40,7 +40,7 @@ function ProductForm({ product, onSave, onClose }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div><Label className="text-xs uppercase tracking-widest text-[#6B7280]">Name</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="border-[#E5E0D6] mt-1" required data-testid="product-form-name" /></div>
-      <div><Label className="text-xs uppercase tracking-widest text-[#6B7280]">Price ($)</Label><Input type="number" step="0.01" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className="border-[#E5E0D6] mt-1" required data-testid="product-form-price" /></div>
+      <div><Label className="text-xs uppercase tracking-widest text-[#6B7280]">Price (£)</Label><Input type="number" step="0.01" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className="border-[#E5E0D6] mt-1" required data-testid="product-form-price" /></div>
       <div><Label className="text-xs uppercase tracking-widest text-[#6B7280]">Category</Label>
         <Select value={form.category} onValueChange={(v) => setForm({ ...form, category: v })}>
           <SelectTrigger className="border-[#E5E0D6] mt-1" data-testid="product-form-category"><SelectValue /></SelectTrigger>
@@ -112,18 +112,18 @@ function OrderDetailDialog({ order }) {
         {order.items?.map((item, i) => (
           <div key={i} className="flex justify-between text-sm">
             <span className="text-[#4B5563]">{item.name} x{item.quantity}</span>
-            <span className="text-[#2C2C2C]">${(item.price * item.quantity).toFixed(2)}</span>
+            <span className="text-[#2C2C2C]">£{(item.price * item.quantity).toFixed(2)}</span>
           </div>
         ))}
       </div>
       <div className="border-t border-[#E5E0D6] pt-3 flex justify-between font-medium">
-        <span>Total</span><span>${order.total?.toFixed(2)}</span>
+        <span>Total</span><span>£{order.total?.toFixed(2)}</span>
       </div>
       {order.customer_email && <p className="text-xs text-[#6B7280]">Email: {order.customer_email}</p>}
       {order.delivery_date && <p className="text-xs text-[#6B7280]">Delivery: {order.delivery_date}</p>}
       {order.pet_notes && <p className="text-xs text-[#6B7280]">Pet Notes: {order.pet_notes}</p>}
       {order.order_type && <p className="text-xs text-[#6B7280]">Type: {order.order_type}</p>}
-      {order.referral_code && <p className="text-xs text-[#8DA399]">Referral: {order.referral_code} (-${order.credit_applied?.toFixed(2)})</p>}
+      {order.referral_code && <p className="text-xs text-[#8DA399]">Referral: {order.referral_code} (-£{order.credit_applied?.toFixed(2)})</p>}
       <p className="text-xs text-[#6B7280]">{order.created_at ? new Date(order.created_at).toLocaleString() : ""}</p>
     </div>
   );
@@ -238,7 +238,7 @@ export default function AdminDashboard() {
           }`}>{o.status}</span>
           {o.order_type === "subscription" && <span className="text-[9px] uppercase tracking-widest font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-500">Subscription</span>}
         </div>
-        <p className="text-sm text-[#4B5563] mt-1">{o.items?.length || 0} items &middot; ${o.total?.toFixed(2)}</p>
+        <p className="text-sm text-[#4B5563] mt-1">{o.items?.length || 0} items &middot; £{o.total?.toFixed(2)}</p>
       </div>
       <Dialog>
         <DialogTrigger asChild>
@@ -285,7 +285,7 @@ export default function AdminDashboard() {
               <StatCard label="To Do" value={stats.todo_orders} icon={Clock} />
               <StatCard label="Subscriptions" value={stats.subscription_orders} icon={Package} />
               <StatCard label="Blog Posts" value={stats.blog_posts} icon={FileText} />
-              <StatCard label="Revenue" value={`$${stats.revenue.toFixed(2)}`} icon={BarChart3} accent />
+              <StatCard label="Revenue" value={`£${stats.revenue.toFixed(2)}`} icon={BarChart3} accent />
             </div>
           </TabsContent>
 
@@ -306,7 +306,7 @@ export default function AdminDashboard() {
                   <div className="w-14 h-14 rounded-lg overflow-hidden bg-[#F2F0EB] flex-shrink-0"><img src={p.image_url} alt={p.name} className="w-full h-full object-cover" /></div>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-sm font-medium text-[#2C2C2C] truncate">{p.name}</h3>
-                    <p className="text-xs font-light text-[#6B7280]">${p.price?.toFixed(2)} &middot; {p.category}</p>
+                    <p className="text-xs font-light text-[#6B7280]">£{p.price?.toFixed(2)} &middot; {p.category}</p>
                   </div>
                   <div className="flex items-center gap-2">
                     {p.featured && <span className="text-[9px] uppercase tracking-widest font-semibold text-[#8DA399] bg-[#8DA399]/10 px-2 py-1 rounded-full">Featured</span>}

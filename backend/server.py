@@ -354,7 +354,7 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
     cancel_url = f"{req.origin_url}/subscriptions"
     session = stripe.checkout.Session.create(
         payment_method_types=["card"],
-        line_items=[{"price_data": {"currency": "usd", "unit_amount": int(total * 100),
+        line_items=[{"price_data": {"currency": "gbp", "unit_amount": int(total * 100),
             "product_data": {"name": plan["name"]}}, "quantity": 1}],
         mode="payment",
         success_url=success_url,
@@ -364,7 +364,7 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
     )
     await db.payment_transactions.insert_one({
         "id": str(uuid.uuid4()), "session_id": session.id,
-        "amount": float(total), "currency": "usd",
+        "amount": float(total), "currency": "gbp",
         "status": "initiated", "payment_status": "pending",
         "metadata": {"type": "subscription", "plan_id": plan["id"],
                      "plan_name": plan["name"], "add_pet_toy": str(req.add_pet_toy)},
@@ -458,7 +458,7 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
     order_id = str(uuid.uuid4())
     session = stripe.checkout.Session.create(
         payment_method_types=["card"],
-        line_items=[{"price_data": {"currency": "usd", "unit_amount": int(total * 100),
+        line_items=[{"price_data": {"currency": "gbp", "unit_amount": int(total * 100),
             "product_data": {"name": f"Order {order_id[:8]}"}}, "quantity": 1}],
         mode="payment",
         success_url=success_url,
@@ -477,7 +477,7 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
     await db.orders.insert_one(order_doc)
     await db.payment_transactions.insert_one({
         "id": str(uuid.uuid4()), "session_id": session.id,
-        "amount": float(total), "currency": "usd",
+        "amount": float(total), "currency": "gbp",
         "status": "initiated", "payment_status": "pending", "order_id": order_id,
         "metadata": {"order_type": req.order_type, "item_count": str(len(validated_items))},
         "created_at": datetime.now(timezone.utc).isoformat()
@@ -700,12 +700,12 @@ async def seed_data():
              "description": "A hand-tied premium bouquet of curated pet-safe flowers, delivered monthly.",
              "price": 44.99, "frequency": "monthly",
              "image_url": "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=800",
-             "features": ["10-12 pet-safe stems", "Hand-tied bouquet", "Free delivery", "Seasonal variety", "Free vase on first order", "Care guide included"]},
+             "features": ["10-12 pet-safe stems", "Hand-tied bouquet", "Free delivery", "Seasonal variety", "Care guide included"]},
             {"id": str(uuid.uuid4()), "name": "Grand Garden", "slug": "grand-garden",
-             "description": "Our most luxurious monthly arrangement with premium pet-safe flowers and a ceramic vase.",
+             "description": "Our most luxurious monthly arrangement with premium pet-safe flowers.",
              "price": 64.99, "frequency": "monthly",
              "image_url": "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=800",
-             "features": ["15-20 pet-safe stems", "Luxury designer arrangement", "Free priority delivery", "Premium ceramic vase included", "Seasonal exclusive flowers", "Personalized care guide", "10% shop discount"]},
+             "features": ["15-20 pet-safe stems", "Luxury designer arrangement", "Free priority delivery", "Seasonal exclusive flowers", "Personalized care guide", "10% shop discount"]},
         ]
         await db.subscription_plans.insert_many(plans)
         logger.info("Seeded subscription plans")
@@ -718,11 +718,11 @@ async def seed_data():
              "image_url": "https://images.unsplash.com/photo-1548724582-1216ec5351ce?w=800",
              "author": "Dr. Sarah Chen", "published": True, "meta_description": "Complete guide to pet-safe flowers. Learn which flowers are safe for cats and dogs.", "meta_keywords": "pet safe flowers, dog safe flowers, cat safe flowers",
              "created_at": datetime.now(timezone.utc).isoformat(), "updated_at": datetime.now(timezone.utc).isoformat()},
-            {"id": str(uuid.uuid4()), "title": "Scandinavian Flower Arranging for Beginners", "slug": "scandinavian-flower-arranging-beginners",
-             "excerpt": "Learn the art of minimal, elegant flower arrangement inspired by Scandinavian design.",
-             "content": "<h2>The Art of Nordic Simplicity</h2><p>Scandinavian design is about simplicity, functionality, and connection with nature. A single stem in a beautiful vase can be more impactful than a dozen flowers.</p><h2>Key Principles</h2><ul><li><strong>Less is more</strong> - Let each bloom speak for itself.</li><li><strong>Natural materials</strong> - Choose ceramic, glass, or wooden vessels.</li><li><strong>Muted tones</strong> - Favor soft pastels, whites, and greens.</li></ul>",
+            {"id": str(uuid.uuid4()), "title": "Minimal Flower Arranging for Beginners", "slug": "minimal-flower-arranging-beginners",
+             "excerpt": "Learn the art of minimal, elegant flower arrangement for the modern home.",
+             "content": "<h2>The Art of Simplicity</h2><p>Great design is about simplicity, functionality, and connection with nature. A single stem in a beautiful vase can be more impactful than a dozen flowers.</p><h2>Key Principles</h2><ul><li><strong>Less is more</strong> - Let each bloom speak for itself.</li><li><strong>Natural materials</strong> - Choose ceramic, glass, or wooden vessels.</li><li><strong>Muted tones</strong> - Favor soft pastels, whites, and greens.</li></ul>",
              "image_url": "https://images.unsplash.com/photo-1738748986758-ed7bb4c47793?w=800",
-             "author": "Emma Lindstrom", "published": True, "meta_description": "Learn Scandinavian flower arranging techniques for a minimal, elegant home.", "meta_keywords": "scandinavian flower arranging, minimal florals, nordic design",
+             "author": "Emma Lindstrom", "published": True, "meta_description": "Learn minimal flower arranging techniques for an elegant home.", "meta_keywords": "flower arranging, minimal florals, modern design",
              "created_at": datetime.now(timezone.utc).isoformat(), "updated_at": datetime.now(timezone.utc).isoformat()},
             {"id": str(uuid.uuid4()), "title": "Why Sustainable Packaging Matters", "slug": "sustainable-packaging-matters",
              "excerpt": "Our commitment to the planet goes beyond pet-safe flowers.",

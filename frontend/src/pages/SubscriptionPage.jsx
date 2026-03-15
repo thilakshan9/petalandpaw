@@ -79,10 +79,10 @@ export default function SubscriptionPage() {
                   </div>
                   <h3 className="font-['Playfair_Display'] text-2xl font-medium text-[#2C2C2C] mb-2">{plan.name}</h3>
                   <div className="flex items-baseline gap-1 mb-1">
-                    <span className="text-3xl font-light text-[#2C2C2C]">${displayPrice.toFixed(2)}</span>
+                    <span className="text-3xl font-light text-[#2C2C2C]">£{displayPrice.toFixed(2)}</span>
                     <span className="text-sm font-light text-[#6B7280]">/month</span>
                   </div>
-                  {toyOn && <span className="text-xs text-[#8DA399] font-light mb-3">includes pet toy (+$8.99)</span>}
+                  {toyOn && <span className="text-xs text-[#8DA399] font-light mb-3">includes pet toy (+£8.99)</span>}
                   <p className="text-sm font-light text-[#6B7280] mb-6">{plan.description}</p>
                   <ul className="space-y-3 mb-6 flex-1">
                     {plan.features?.map((f) => (
@@ -97,7 +97,7 @@ export default function SubscriptionPage() {
                     <div className="flex items-center gap-2">
                       <PawPrint size={14} className="text-[#8DA399]" />
                       <span className="text-sm text-[#2C2C2C]">Add pet toy</span>
-                      <span className="text-xs text-[#6B7280]">+$8.99</span>
+                      <span className="text-xs text-[#6B7280]">+£8.99</span>
                     </div>
                     <Switch
                       checked={toyOn}

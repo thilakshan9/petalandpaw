@@ -30,7 +30,7 @@ export default function CartPage() {
       if (res.ok) {
         const data = await res.json();
         setReferralValid(data);
-        toast.success(`$${data.discount} discount from ${data.referrer_name}!`);
+        toast.success(`£${data.discount} discount from ${data.referrer_name}!`);
       } else {
         setReferralValid(false);
         toast.error("Invalid referral code.");
@@ -97,7 +97,7 @@ export default function CartPage() {
                 )}
                 <div className="flex-1 min-w-0">
                   <h3 className="font-['Playfair_Display'] text-lg font-medium text-[#2C2C2C] truncate">{item.name}</h3>
-                  <p className="text-sm font-light text-[#6B7280] mt-1">${item.price.toFixed(2)} each</p>
+                  <p className="text-sm font-light text-[#6B7280] mt-1">£{item.price.toFixed(2)} each</p>
                   <div className="flex items-center gap-3 mt-3">
                     <div className="flex items-center border border-[#E5E0D6] rounded-full">
                       <button onClick={() => updateQuantity(item.product_id, item.quantity - 1)} className="p-2 hover:bg-[#F2F0EB] rounded-l-full transition-colors" data-testid={`cart-decrease-${item.product_id}`}><Minus size={12} /></button>
@@ -107,7 +107,7 @@ export default function CartPage() {
                     <button onClick={() => removeFromCart(item.product_id)} className="p-2 text-[#6B7280] hover:text-red-500 transition-colors" data-testid={`cart-remove-${item.product_id}`}><Trash2 size={14} /></button>
                   </div>
                 </div>
-                <div className="text-right"><p className="text-lg font-light text-[#2C2C2C]">${(item.price * item.quantity).toFixed(2)}</p></div>
+                <div className="text-right"><p className="text-lg font-light text-[#2C2C2C]">£{(item.price * item.quantity).toFixed(2)}</p></div>
               </div>
             ))}
           </div>
@@ -148,28 +148,28 @@ export default function CartPage() {
                   </Button>
                 </div>
                 {referralValid === false && <p className="text-xs text-red-400 mt-1">Invalid code</p>}
-                {referralValid?.valid && <p className="text-xs text-[#8DA399] mt-1">-${referralValid.discount.toFixed(2)} discount applied</p>}
+                {referralValid?.valid && <p className="text-xs text-[#8DA399] mt-1">-£{referralValid.discount.toFixed(2)} discount applied</p>}
               </div>
 
               {/* Totals */}
               <div className="space-y-3 pt-2 border-t border-[#E5E0D6]">
                 <div className="flex justify-between text-sm font-light text-[#6B7280]">
-                  <span>Subtotal</span><span>${total.toFixed(2)}</span>
+                  <span>Subtotal</span><span>£{total.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm font-light text-[#6B7280]">
-                  <span>Delivery</span><span>{delivery === 0 ? "Free" : `$${delivery.toFixed(2)}`}</span>
+                  <span>Delivery</span><span>{delivery === 0 ? "Free" : `£${delivery.toFixed(2)}`}</span>
                 </div>
                 {discount > 0 && (
                   <div className="flex justify-between text-sm font-light text-[#8DA399]">
-                    <span>Referral discount</span><span>-${discount.toFixed(2)}</span>
+                    <span>Referral discount</span><span>-£{discount.toFixed(2)}</span>
                   </div>
                 )}
                 <div className="border-t border-[#E5E0D6] pt-3 flex justify-between">
                   <span className="text-base font-medium text-[#2C2C2C]">Total</span>
-                  <span className="text-base font-medium text-[#2C2C2C]" data-testid="cart-total">${finalTotal.toFixed(2)}</span>
+                  <span className="text-base font-medium text-[#2C2C2C]" data-testid="cart-total">£{finalTotal.toFixed(2)}</span>
                 </div>
               </div>
-              {total < 50 && <p className="text-xs font-light text-[#8DA399]">Add ${(50 - total).toFixed(2)} more for free delivery</p>}
+              {total < 50 && <p className="text-xs font-light text-[#8DA399]">Add £{(50 - total).toFixed(2)} more for free delivery</p>}
               <Button onClick={handleCheckout} className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-8 py-6 text-sm uppercase tracking-widest transition-all hover:scale-105 w-full" data-testid="checkout-btn">
                 Checkout <ArrowRight size={14} className="ml-2" />
               </Button>

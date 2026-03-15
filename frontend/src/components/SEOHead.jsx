@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet-async";
 export default function SEOHead({ title, description, keywords, image, url }) {
   const siteName = "Petal & Paw";
   const fullTitle = title ? `${title} | ${siteName}` : `${siteName} - Pet-Safe Flowers`;
-  const defaultDesc = "Hand-crafted pet-safe floral arrangements. Scandinavian simplicity meets conscious living.";
+  const defaultDesc = "Hand-crafted pet-safe floral arrangements for the modern, conscious home.";
 
   return (
     <Helmet>

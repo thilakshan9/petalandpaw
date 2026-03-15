@@ -1,51 +1,36 @@
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import ProductCard from "@/components/ProductCard";
 import SEOHead from "@/components/SEOHead";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-const categories = [
-  { value: "", label: "All" },
-  { value: "bouquet", label: "Bouquets" },
-  { value: "single-stem", label: "Single Stems" },
-  { value: "arrangement", label: "Arrangements" },
-  { value: "letterbox", label: "Letterbox" },
-];
-
 export default function ShopPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
-  const activeCategory = searchParams.get("category") || "";
 
   useEffect(() => {
-    setLoading(true);
-    const url = activeCategory ? `${API}/products?category=${activeCategory}` : `${API}/products`;
-    fetch(url)
+    fetch(`${API}/products`)
       .then((r) => r.json())
       .then((data) => { setProducts(data); setLoading(false); })
       .catch(() => setLoading(false));
-  }, [activeCategory]);
+  }, []);
 
   const handleSearch = async (e) => {
     e?.preventDefault();
     if (!searchQuery.trim()) {
-      setSearchParams(activeCategory ? { category: activeCategory } : {});
-      const url = activeCategory ? `${API}/products?category=${activeCategory}` : `${API}/products`;
-      const res = await fetch(url);
+      setLoading(true);
+      const res = await fetch(`${API}/products`);
       setProducts(await res.json());
+      setLoading(false);
       return;
     }
     setLoading(true);
     try {
       const res = await fetch(`${API}/products/search?q=${encodeURIComponent(searchQuery)}`);
-      const data = await res.json();
-      setProducts(data);
+      setProducts(await res.json());
     } catch {}
     setLoading(false);
   };
@@ -63,7 +48,7 @@ export default function ShopPage() {
         </div>
 
         {/* Search */}
-        <form onSubmit={handleSearch} className="mb-6 sm:mb-8 animate-fade-in-up delay-100" data-testid="search-form">
+        <form onSubmit={handleSearch} className="mb-8 sm:mb-10 animate-fade-in-up delay-100" data-testid="search-form">
           <div className="relative max-w-md">
             <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#6B7280]" />
             <Input
@@ -77,25 +62,6 @@ export default function ShopPage() {
             />
           </div>
         </form>
-
-        {/* Filters */}
-        <div className="flex flex-wrap gap-2 sm:gap-3 mb-8 sm:mb-10 animate-fade-in-up delay-200 overflow-x-auto pb-1">
-          {categories.map((cat) => (
-            <Button
-              key={cat.value}
-              variant={activeCategory === cat.value ? "default" : "outline"}
-              className={`rounded-full text-[10px] sm:text-xs uppercase tracking-widest px-4 sm:px-6 py-4 sm:py-5 transition-all whitespace-nowrap ${
-                activeCategory === cat.value
-                  ? "bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90"
-                  : "border-[#E5E0D6] text-[#6B7280] hover:border-[#2C2C2C] hover:text-[#2C2C2C]"
-              }`}
-              onClick={() => { setSearchQuery(""); setSearchParams(cat.value ? { category: cat.value } : {}); }}
-              data-testid={`filter-${cat.value || 'all'}`}
-            >
-              {cat.label}
-            </Button>
-          ))}
-        </div>
 
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">

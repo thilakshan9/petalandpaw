@@ -68,7 +68,7 @@ export default function CheckoutSuccess() {
             <p className="text-base font-light text-[#6B7280] mb-2">Your order has been confirmed.</p>
             {paymentData && (
               <p className="text-sm font-light text-[#6B7280] mb-8">
-                Amount: ${(paymentData.amount_total / 100).toFixed(2)} {paymentData.currency?.toUpperCase()}
+                Amount: £{(paymentData.amount_total / 100).toFixed(2)}
               </p>
             )}
             <Link to="/shop">

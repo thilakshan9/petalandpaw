@@ -18,6 +18,8 @@ import AuthCallback from "@/pages/AuthCallback";
 import AdminDashboard from "@/pages/AdminDashboard";
 import AccountPage from "@/pages/AccountPage";
 import ReferralPage from "@/pages/ReferralPage";
+import AboutPage from "@/pages/AboutPage";
+import ContactPage from "@/pages/ContactPage";
 import "@/App.css";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -119,6 +121,8 @@ function AppRouter() {
       <Route path="/checkout/success" element={<Layout><CheckoutSuccess /></Layout>} />
       <Route path="/blog" element={<Layout><BlogPage /></Layout>} />
       <Route path="/blog/:slug" element={<Layout><BlogPostPage /></Layout>} />
+      <Route path="/about" element={<Layout><AboutPage /></Layout>} />
+      <Route path="/contact" element={<Layout><ContactPage /></Layout>} />
       <Route path="/login" element={<Layout><CustomerLogin /></Layout>} />
       <Route path="/account" element={<ProtectedRoute><Layout><AccountPage /></Layout></ProtectedRoute>} />
       <Route path="/referral/:code" element={<Layout><ReferralPage /></Layout>} />

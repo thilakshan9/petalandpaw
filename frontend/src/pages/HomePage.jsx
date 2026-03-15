@@ -19,7 +19,7 @@ export default function HomePage() {
 
   return (
     <div>
-      <SEOHead title="Home" description="Pet-safe floral arrangements for the modern, conscious home. Scandinavian simplicity meets conscious living." image="https://images.unsplash.com/photo-1510771463146-e89e6e86560e?w=1200" />
+      <SEOHead title="Home" description="Pet-safe floral arrangements for the modern, conscious home." image="https://images.unsplash.com/photo-1510771463146-e89e6e86560e?w=1200" />
 
       {/* Full-Width Hero */}
       <section className="relative h-[60vh] sm:h-[70vh] md:h-[85vh] min-h-[420px] md:min-h-[600px] overflow-hidden" data-testid="hero-section">
@@ -38,7 +38,7 @@ export default function HomePage() {
               Flowers Your Pets Will Love Too
             </h1>
             <p className="text-sm sm:text-base md:text-lg font-light leading-relaxed text-[#4B5563] mb-6 sm:mb-10 max-w-md">
-              Hand-crafted arrangements using only verified pet-safe blooms. Scandinavian simplicity meets conscious living.
+              Hand-crafted arrangements using only verified pet-safe blooms.
             </p>
             <Link to="/shop">
               <Button className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-7 py-5 sm:px-10 sm:py-7 text-xs sm:text-sm uppercase tracking-[0.2em] transition-all hover:scale-105" data-testid="hero-shop-btn">
@@ -56,7 +56,7 @@ export default function HomePage() {
             {[
               { icon: ShieldCheck, text: "100% Pet Safe" },
               { icon: Leaf, text: "Sustainably Sourced" },
-              { icon: Truck, text: "Free Delivery Over $50" },
+              { icon: Truck, text: "Free Delivery Over £50" },
             ].map(({ icon: Icon, text }) => (
               <div key={text} className="flex items-center justify-center gap-2 text-[#6B7280]">
                 <Icon size={15} strokeWidth={1.5} className="text-[#8DA399]" />
@@ -80,7 +80,7 @@ export default function HomePage() {
                 Safe for Every Member of Your Family
               </h2>
               <p className="text-sm sm:text-base font-light leading-relaxed text-[#6B7280] mb-6 sm:mb-8 max-w-md">
-                Every flower we sell is carefully checked against veterinary databases. No lilies, no tulips, no daffodils. Just beautiful, worry-free blooms for homes with curious cats, playful dogs, and everything in between.
+                Every flower we sell is carefully checked against scientific data. Just beautiful, worry-free blooms for homes with curious cats, playful dogs, and everything in between.
               </p>
               <Link to="/shop">
                 <Button variant="outline" className="rounded-full border-[#2C2C2C] text-[#2C2C2C] hover:bg-[#2C2C2C] hover:text-[#FAF9F6] px-6 py-5 sm:px-8 sm:py-6 text-xs sm:text-sm uppercase tracking-[0.15em] transition-all" data-testid="feature-shop-btn">
@@ -102,7 +102,7 @@ export default function HomePage() {
                 Pet-Safe Letterbox Subscriptions
               </h2>
               <p className="text-sm sm:text-base font-light leading-relaxed text-[#6B7280] mb-6 sm:mb-8 max-w-md">
-                Fresh, seasonal flowers delivered through your letterbox every month. Three plans to choose from, each one guaranteed pet-safe. Add a pet toy to any subscription.
+                Fresh, seasonal flowers delivered through your letterbox every month. Three plans to choose from, each one guaranteed pet-safe. Surprise your pet with a toy by adding to any subscription.
               </p>
               <Link to="/subscriptions">
                 <Button className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-6 py-5 sm:px-8 sm:py-6 text-xs sm:text-sm uppercase tracking-[0.15em] transition-all hover:scale-105" data-testid="feature-sub-btn">
@@ -130,10 +130,10 @@ export default function HomePage() {
                 Create Your Own Bouquet
               </h2>
               <p className="text-sm sm:text-base font-light leading-relaxed text-[#6B7280] mb-6 sm:mb-8 max-w-md">
-                Choose your size, pick your flowers, tell us about your pet, and we'll craft a custom arrangement that's perfectly safe and perfectly beautiful.
+                Coming Soon
               </p>
               <Link to="/bouquet-builder">
-                <Button variant="outline" className="rounded-full border-[#2C2C2C] text-[#2C2C2C] hover:bg-[#2C2C2C] hover:text-[#FAF9F6] px-6 py-5 sm:px-8 sm:py-6 text-xs sm:text-sm uppercase tracking-[0.15em] transition-all" data-testid="feature-builder-btn">
+                <Button variant="outline" className="rounded-full border-[#E5E0D6] text-[#6B7280] px-6 py-5 sm:px-8 sm:py-6 text-xs sm:text-sm uppercase tracking-[0.15em] cursor-not-allowed opacity-50" data-testid="feature-builder-btn" disabled>
                   Start Building
                 </Button>
               </Link>

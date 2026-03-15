@@ -18,7 +18,7 @@ export default function BlogPage() {
 
   return (
     <div className="py-8 sm:py-12 md:py-20" data-testid="blog-page">
-      <SEOHead title="Journal" description="Stories about flowers, pets, sustainability, and Scandinavian living." keywords="pet safe flowers blog, flower care, sustainable florals" />
+      <SEOHead title="Journal" description="Stories about flowers, pets, and sustainability." keywords="pet safe flowers blog, flower care, sustainable florals" />
       <div className="container mx-auto px-5 md:px-8 max-w-7xl">
         <div className="mb-8 sm:mb-12 animate-fade-in-up">
           <span className="text-[10px] sm:text-xs uppercase tracking-[0.25em] font-semibold text-[#8DA399] mb-2 sm:mb-3 block">Journal</span>
@@ -26,7 +26,7 @@ export default function BlogPage() {
             Our Journal
           </h1>
           <p className="text-sm md:text-lg font-light text-[#6B7280] mt-3 sm:mt-4 max-w-lg">
-            Stories about flowers, pets, sustainability, and the art of Scandinavian living.
+            Stories about flowers, pets, sustainability, and the art of mindful living.
           </p>
         </div>
 

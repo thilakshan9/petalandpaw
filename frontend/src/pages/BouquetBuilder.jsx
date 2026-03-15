@@ -146,7 +146,7 @@ export default function BouquetBuilder() {
                   >
                     <h3 className="font-['Playfair_Display'] text-lg font-medium text-[#2C2C2C] mb-1">{s.name}</h3>
                     <p className="text-xs font-light text-[#6B7280] mb-2">{s.stems}</p>
-                    <p className="text-xl font-light text-[#2C2C2C]">${s.price.toFixed(2)}</p>
+                    <p className="text-xl font-light text-[#2C2C2C]">£{s.price.toFixed(2)}</p>
                   </button>
                 ))}
               </div>
@@ -176,7 +176,7 @@ export default function BouquetBuilder() {
                               </div>
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm font-medium text-[#2C2C2C]">{flower.name}</p>
-                                <p className="text-xs font-light text-[#6B7280]">${flower.price.toFixed(2)}/stem</p>
+                                <p className="text-xs font-light text-[#6B7280]">£{flower.price.toFixed(2)}/stem</p>
                               </div>
                               <div className="flex items-center gap-1">
                                 {qty > 0 && (
@@ -232,12 +232,12 @@ export default function BouquetBuilder() {
               <div className="space-y-4 mb-8">
                 <div className="flex justify-between text-sm">
                   <span className="text-[#6B7280]">Size: {SIZES.find((s) => s.id === size)?.name}</span>
-                  <span className="text-[#2C2C2C]">${SIZES.find((s) => s.id === size)?.price.toFixed(2)}</span>
+                  <span className="text-[#2C2C2C]">£{SIZES.find((s) => s.id === size)?.price.toFixed(2)}</span>
                 </div>
                 {selectedFlowers.map((f) => (
                   <div key={f.id} className="flex justify-between text-sm">
                     <span className="text-[#6B7280]">{f.name} x{f.quantity}</span>
-                    <span className="text-[#2C2C2C]">${(f.price * f.quantity).toFixed(2)}</span>
+                    <span className="text-[#2C2C2C]">£{(f.price * f.quantity).toFixed(2)}</span>
                   </div>
                 ))}
                 <div className="flex justify-between text-sm">
@@ -251,7 +251,7 @@ export default function BouquetBuilder() {
                   <PawPrint size={16} className="text-[#8DA399]" />
                   <div>
                     <p className="text-sm font-medium text-[#2C2C2C]">Add a pet toy</p>
-                    <p className="text-xs font-light text-[#6B7280]">A safe plush toy for your furry friend (+$8.99)</p>
+                    <p className="text-xs font-light text-[#6B7280]">A safe plush toy for your furry friend (+£8.99)</p>
                   </div>
                 </div>
                 <Switch checked={addPetToy} onCheckedChange={setAddPetToy} />
@@ -260,13 +260,13 @@ export default function BouquetBuilder() {
               {addPetToy && (
                 <div className="flex justify-between text-sm mb-4">
                   <span className="text-[#6B7280]">Pet toy</span>
-                  <span className="text-[#2C2C2C]">$8.99</span>
+                  <span className="text-[#2C2C2C]">£8.99</span>
                 </div>
               )}
 
               <div className="border-t border-[#E5E0D6] pt-4 flex justify-between text-lg">
                 <span className="font-medium text-[#2C2C2C]">Total</span>
-                <span className="font-medium text-[#2C2C2C]" data-testid="bouquet-total">${totalPrice.toFixed(2)}</span>
+                <span className="font-medium text-[#2C2C2C]" data-testid="bouquet-total">£{totalPrice.toFixed(2)}</span>
               </div>
             </div>
           )}

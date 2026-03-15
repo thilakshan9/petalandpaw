@@ -10,6 +10,8 @@ const navLinks = [
   { href: "/subscriptions", label: "Subscriptions" },
   { href: "/bouquet-builder", label: "Build a Bouquet" },
   { href: "/blog", label: "Journal" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export default function Navbar() {

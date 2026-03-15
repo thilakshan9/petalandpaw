@@ -32,7 +32,7 @@ export default function QuickViewModal({ product, open, onClose }) {
         data-testid="quick-view-modal"
       >
         <DialogTitle className="sr-only">{product.name} - Quick View</DialogTitle>
-        <DialogDescription className="sr-only">Quick view of {product.name} - ${product.price.toFixed(2)}</DialogDescription>
+        <DialogDescription className="sr-only">Quick view of {product.name} - £{product.price.toFixed(2)}</DialogDescription>
         <div className="grid grid-cols-1 sm:grid-cols-2">
           {/* Image */}
           <div className="aspect-square sm:aspect-auto sm:h-full bg-[#F2F0EB] overflow-hidden">
@@ -64,7 +64,7 @@ export default function QuickViewModal({ product, open, onClose }) {
             </h2>
 
             <p className="text-xl font-light text-[#2C2C2C] mb-4" data-testid="quick-view-product-price">
-              ${product.price.toFixed(2)}
+              £{product.price.toFixed(2)}
             </p>
 
             <p className="text-sm font-light leading-relaxed text-[#6B7280] mb-6 line-clamp-3">
@@ -101,7 +101,7 @@ export default function QuickViewModal({ product, open, onClose }) {
               className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 py-6 text-xs uppercase tracking-widest transition-all hover:scale-[1.02] w-full mb-3"
               data-testid="quick-view-add-to-cart"
             >
-              Add to Cart &mdash; ${(product.price * quantity).toFixed(2)}
+              Add to Cart &mdash; £{(product.price * quantity).toFixed(2)}
             </Button>
 
             <Link

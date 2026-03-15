@@ -31,7 +31,7 @@ export default function Footer() {
             <h4 className="text-xs uppercase tracking-widest font-semibold mb-6 text-[#FAF9F6]/40">Company</h4>
             <nav className="flex flex-col gap-3">
               <Link to="/blog" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-blog">Journal</Link>
-              <span className="text-sm font-light text-[#FAF9F6]/70">About Us</span>
+              <Link to="/about" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-about">About Us</Link>
               <span className="text-sm font-light text-[#FAF9F6]/70">Sustainability</span>
               <span className="text-sm font-light text-[#FAF9F6]/70">Pet Safety Promise</span>
             </nav>
@@ -40,7 +40,7 @@ export default function Footer() {
           <div>
             <h4 className="text-xs uppercase tracking-widest font-semibold mb-6 text-[#FAF9F6]/40">Support</h4>
             <nav className="flex flex-col gap-3">
-              <span className="text-sm font-light text-[#FAF9F6]/70">Contact</span>
+              <Link to="/contact" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-contact">Contact</Link>
               <span className="text-sm font-light text-[#FAF9F6]/70">FAQ</span>
               <span className="text-sm font-light text-[#FAF9F6]/70">Delivery Info</span>
               <span className="text-sm font-light text-[#FAF9F6]/70">Returns</span>

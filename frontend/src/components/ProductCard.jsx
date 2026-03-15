@@ -54,7 +54,7 @@ export default function ProductCard({ product, index = 0 }) {
           <h3 className="font-['Playfair_Display'] text-base sm:text-lg font-medium text-[#2C2C2C] group-hover:text-[#8DA399] transition-colors">
             {product.name}
           </h3>
-          <p className="text-xs sm:text-sm font-light text-[#6B7280]">${product.price.toFixed(2)}</p>
+          <p className="text-xs sm:text-sm font-light text-[#6B7280]">£{product.price.toFixed(2)}</p>
         </div>
       </Link>
 

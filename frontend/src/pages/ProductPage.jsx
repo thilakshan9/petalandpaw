@@ -87,7 +87,7 @@ export default function ProductPage() {
             </h1>
 
             <p className="text-xl sm:text-2xl font-light text-[#2C2C2C] mb-4 sm:mb-6" data-testid="product-price">
-              ${product.price.toFixed(2)}
+              £{product.price.toFixed(2)}
             </p>
 
             <p className="text-sm sm:text-base font-light leading-relaxed text-[#6B7280] mb-6 sm:mb-8">
@@ -130,7 +130,7 @@ export default function ProductPage() {
               className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-10 py-6 text-sm uppercase tracking-widest transition-all hover:scale-105 w-full md:w-auto"
               data-testid="add-to-cart-btn"
             >
-              Add to Cart &mdash; ${(product.price * quantity).toFixed(2)}
+              Add to Cart &mdash; £{(product.price * quantity).toFixed(2)}
             </Button>
           </div>
         </div>

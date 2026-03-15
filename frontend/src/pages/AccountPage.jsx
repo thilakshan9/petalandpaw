@@ -79,9 +79,9 @@ export default function AccountPage() {
                 <Gift size={20} className="text-[#8DA399]" />
               </div>
               <div className="flex-1">
-                <h3 className="font-['Playfair_Display'] text-xl font-medium text-[#2C2C2C] mb-1">Give $10, Get $10</h3>
+                <h3 className="font-['Playfair_Display'] text-xl font-medium text-[#2C2C2C] mb-1">Give £10, Get £10</h3>
                 <p className="text-sm font-light text-[#6B7280] mb-4">
-                  Share your referral code with friends. When they make their first purchase, you both get $10 credit.
+                  Share your referral code with friends. When they make their first purchase, you both get £10 credit.
                 </p>
                 <div className="flex items-center gap-3 flex-wrap">
                   <div className="bg-white border border-[#E5E0D6] rounded-full px-5 py-2.5 font-mono text-sm tracking-widest font-semibold text-[#2C2C2C]" data-testid="referral-code">
@@ -94,7 +94,7 @@ export default function AccountPage() {
                 {referral.credits > 0 && (
                   <div className="flex items-center gap-2 mt-4 text-[#8DA399]">
                     <CreditCard size={14} />
-                    <span className="text-sm font-semibold">Your credit: ${referral.credits.toFixed(2)}</span>
+                    <span className="text-sm font-semibold">Your credit: £{referral.credits.toFixed(2)}</span>
                   </div>
                 )}
               </div>
@@ -135,7 +135,7 @@ export default function AccountPage() {
                     <span className="text-xs font-light text-[#6B7280]">
                       {o.created_at ? new Date(o.created_at).toLocaleDateString() : ""}
                     </span>
-                    <span className="text-lg font-light text-[#2C2C2C]">${o.total?.toFixed(2)}</span>
+                    <span className="text-lg font-light text-[#2C2C2C]">£{o.total?.toFixed(2)}</span>
                   </div>
                 </div>
               ))}
