@@ -96,6 +96,12 @@ class StepBouquetRequest(BaseModel):
 class ReferralApplyRequest(BaseModel):
     code: str
 
+class ContactFormRequest(BaseModel):
+    name: str
+    email: str
+    subject: str = ""
+    message: str
+
 # ============================================================
 # EMAIL HELPER (SendGrid - graceful when not configured)
 # ============================================================
@@ -109,7 +115,7 @@ async def send_order_confirmation_email(to_email: str, order_data: dict):
         from sendgrid.helpers.mail import Mail
         items_html = ""
         for item in order_data.get("items", []):
-            items_html += f"<li>{item['name']} x{item['quantity']} - ${item['price'] * item['quantity']:.2f}</li>"
+            items_html += f"<li>{item['name']} x{item['quantity']} - £{item['price'] * item['quantity']:.2f}</li>"
         html_content = f"""
         <div style="font-family: 'Helvetica', sans-serif; max-width: 600px; margin: 0 auto; background: #FAF9F6; padding: 40px;">
             <h1 style="font-family: serif; color: #2C2C2C; font-weight: 400;">Thank you for your order!</h1>
@@ -118,7 +124,7 @@ async def send_order_confirmation_email(to_email: str, order_data: dict):
                 <h3 style="color: #2C2C2C; font-weight: 500;">Order Summary</h3>
                 <ul style="color: #4B5563; padding-left: 20px;">{items_html}</ul>
                 <p style="font-size: 18px; color: #2C2C2C; border-top: 1px solid #E5E0D6; padding-top: 12px;">
-                    <strong>Total: ${order_data.get('total', 0):.2f}</strong>
+                    <strong>Total: £{order_data.get('total', 0):.2f}</strong>
                 </p>
                 {f'<p style="color: #8DA399;">Delivery date: {order_data.get("delivery_date", "")}</p>' if order_data.get("delivery_date") else ""}
             </div>
@@ -132,6 +138,38 @@ async def send_order_confirmation_email(to_email: str, order_data: dict):
         return True
     except Exception as e:
         logger.error(f"Failed to send email: {e}")
+        return False
+
+async def send_contact_form_email(name: str, email: str, subject: str, message: str):
+    contact_email = os.environ.get('CONTACT_EMAIL', 'b.thilakshan9@gmail.com')
+    if not sendgrid_api_key:
+        logger.info(f"[EMAIL MOCK] Contact form from {name} ({email}): {subject} - {message}")
+        return True
+    try:
+        from sendgrid import SendGridAPIClient
+        from sendgrid.helpers.mail import Mail
+        html_content = f"""
+        <div style="font-family: 'Helvetica', sans-serif; max-width: 600px; margin: 0 auto; background: #FAF9F6; padding: 40px;">
+            <h1 style="font-family: serif; color: #2C2C2C; font-weight: 400;">New Contact Form Message</h1>
+            <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <p style="color: #6B7280; margin: 0 0 8px;"><strong>From:</strong> {name}</p>
+                <p style="color: #6B7280; margin: 0 0 8px;"><strong>Email:</strong> <a href="mailto:{email}">{email}</a></p>
+                <p style="color: #6B7280; margin: 0 0 8px;"><strong>Subject:</strong> {subject or 'No subject'}</p>
+                <hr style="border: none; border-top: 1px solid #E5E0D6; margin: 16px 0;" />
+                <p style="color: #4B5563; white-space: pre-wrap;">{message}</p>
+            </div>
+            <p style="color: #8DA399; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;">Petal & Paw - Contact Form</p>
+        </div>
+        """
+        mail = Mail(from_email=sender_email, to_emails=contact_email,
+                    subject=f"[Petal & Paw] {subject or 'Contact Form Message'}", html_content=html_content)
+        mail.reply_to = email
+        sg = SendGridAPIClient(sendgrid_api_key)
+        sg.send(mail)
+        logger.info(f"Contact form email sent to {contact_email} from {email}")
+        return True
+    except Exception as e:
+        logger.error(f"Failed to send contact form email: {e}")
         return False
 
 # ============================================================
@@ -353,16 +391,20 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
     success_url = f"{req.origin_url}/checkout/success?session_id={{CHECKOUT_SESSION_ID}}"
     cancel_url = f"{req.origin_url}/subscriptions"
     try:
-        session = stripe.checkout.Session.create(
-            payment_method_types=["card"],
-            line_items=[{"price_data": {"currency": "gbp", "unit_amount": int(total * 100),
+        checkout_params = {
+            "payment_method_types": ["card"],
+            "line_items": [{"price_data": {"currency": "gbp", "unit_amount": int(total * 100),
                 "product_data": {"name": plan["name"]}}, "quantity": 1}],
-            mode="payment",
-            success_url=success_url,
-            cancel_url=cancel_url,
-            metadata={"type": "subscription", "plan_id": plan["id"], "plan_name": plan["name"],
-                      "add_pet_toy": str(req.add_pet_toy)}
-        )
+            "mode": "payment",
+            "success_url": success_url,
+            "cancel_url": cancel_url,
+            "metadata": {"type": "subscription", "plan_id": plan["id"], "plan_name": plan["name"],
+                          "add_pet_toy": str(req.add_pet_toy)},
+            "payment_intent_data": {"receipt_email": req.customer_email} if req.customer_email else {},
+        }
+        if req.customer_email:
+            checkout_params["customer_email"] = req.customer_email
+        session = stripe.checkout.Session.create(**checkout_params)
     except stripe._error.AuthenticationError:
         raise HTTPException(status_code=503, detail="Payment service is not configured. Please contact support.")
     except Exception as e:
@@ -463,16 +505,20 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
     cancel_url = f"{req.origin_url}/cart"
     order_id = str(uuid.uuid4())
     try:
-        session = stripe.checkout.Session.create(
-            payment_method_types=["card"],
-            line_items=[{"price_data": {"currency": "gbp", "unit_amount": int(total * 100),
+        checkout_params = {
+            "payment_method_types": ["card"],
+            "line_items": [{"price_data": {"currency": "gbp", "unit_amount": int(total * 100),
                 "product_data": {"name": f"Order {order_id[:8]}"}}, "quantity": 1}],
-            mode="payment",
-            success_url=success_url,
-            cancel_url=cancel_url,
-            metadata={"order_id": order_id, "order_type": req.order_type,
-                      "item_count": str(len(validated_items))}
-        )
+            "mode": "payment",
+            "success_url": success_url,
+            "cancel_url": cancel_url,
+            "metadata": {"order_id": order_id, "order_type": req.order_type,
+                          "item_count": str(len(validated_items))},
+            "payment_intent_data": {"receipt_email": req.customer_email} if req.customer_email else {},
+        }
+        if req.customer_email:
+            checkout_params["customer_email"] = req.customer_email
+        session = stripe.checkout.Session.create(**checkout_params)
     except stripe._error.AuthenticationError:
         raise HTTPException(status_code=503, detail="Payment service is not configured. Please contact support.")
     except Exception as e:
@@ -529,6 +575,24 @@ async def get_order_status(session_id: str, request: Request, background_tasks: 
 async def get_orders(user=Depends(get_current_user)):
     orders = await db.orders.find({}, {"_id": 0}).sort("created_at", -1).to_list(100)
     return orders
+
+
+# ============================================================
+# CONTACT FORM
+# ============================================================
+
+@api_router.post("/contact")
+async def submit_contact_form(req: ContactFormRequest, background_tasks: BackgroundTasks):
+    if not req.name or not req.email or not req.message:
+        raise HTTPException(status_code=400, detail="Name, email, and message are required")
+    await db.contact_messages.insert_one({
+        "id": str(uuid.uuid4()),
+        "name": req.name, "email": req.email,
+        "subject": req.subject, "message": req.message,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    })
+    background_tasks.add_task(send_contact_form_email, req.name, req.email, req.subject, req.message)
+    return {"success": True, "message": "Message received. We'll get back to you soon."}
 
 # ============================================================
 # STRIPE WEBHOOK

@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { Check, ArrowRight, PawPrint } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import SEOHead from "@/components/SEOHead";
 
@@ -12,6 +14,8 @@ export default function SubscriptionPage() {
   const [loading, setLoading] = useState(true);
   const [subscribing, setSubscribing] = useState(null);
   const [petToy, setPetToy] = useState({});
+  const [emailDialog, setEmailDialog] = useState(null);
+  const [customerEmail, setCustomerEmail] = useState("");
 
   useEffect(() => {
     fetch(`${API}/subscriptions/plans`)
@@ -20,13 +24,24 @@ export default function SubscriptionPage() {
       .catch(() => setLoading(false));
   }, []);
 
-  const handleSubscribe = async (planId) => {
+  const handleSubscribeClick = (planId) => {
+    setEmailDialog(planId);
+    setCustomerEmail("");
+  };
+
+  const handleSubscribe = async () => {
+    if (!customerEmail || !customerEmail.includes("@")) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+    const planId = emailDialog;
+    setEmailDialog(null);
     setSubscribing(planId);
     try {
       const res = await fetch(`${API}/subscriptions/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan_id: planId, origin_url: window.location.origin, add_pet_toy: !!petToy[planId] }),
+        body: JSON.stringify({ plan_id: planId, origin_url: window.location.origin, add_pet_toy: !!petToy[planId], customer_email: customerEmail }),
       });
       const data = await res.json();
       if (data.url) {
@@ -111,7 +126,7 @@ export default function SubscriptionPage() {
                   </div>
 
                   <Button
-                    onClick={() => handleSubscribe(plan.id)}
+                    onClick={() => handleSubscribeClick(plan.id)}
                     disabled={subscribing === plan.id}
                     className={`rounded-full px-8 py-6 text-sm uppercase tracking-widest transition-all hover:scale-105 w-full ${
                       isPop ? "bg-[#8DA399] text-white hover:bg-[#8DA399]/90" : "bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90"
@@ -125,6 +140,35 @@ export default function SubscriptionPage() {
             })}
           </div>
         )}
+
+        {/* Email Dialog */}
+        <Dialog open={!!emailDialog} onOpenChange={(v) => { if (!v) setEmailDialog(null); }}>
+          <DialogContent className="max-w-sm border-[#E5E0D6] bg-[#FAF9F6] rounded-2xl" data-testid="email-dialog">
+            <DialogTitle className="font-['Playfair_Display'] text-xl font-medium text-[#2C2C2C]">Your Email</DialogTitle>
+            <DialogDescription className="text-sm font-light text-[#6B7280]">
+              Enter your email to receive order confirmation and receipt.
+            </DialogDescription>
+            <div className="mt-4 space-y-4">
+              <Input
+                type="email"
+                placeholder="your@email.com"
+                value={customerEmail}
+                onChange={(e) => setCustomerEmail(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
+                className="border-[#E5E0D6] text-sm py-5"
+                data-testid="checkout-email-input"
+                autoFocus
+              />
+              <Button
+                onClick={handleSubscribe}
+                className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-8 py-6 text-xs uppercase tracking-widest w-full"
+                data-testid="checkout-email-submit"
+              >
+                Continue to Payment <ArrowRight size={14} className="ml-2" />
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

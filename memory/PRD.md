@@ -42,6 +42,16 @@ Modern, minimal ecommerce website for pet-safe flowers with Scandinavian design 
 - [x] Removed free vase references from subscription plans
 - [x] Replaced emergentintegrations Stripe wrapper with standard stripe library for deployment
 - [x] Cleaned index.html (removed Made with Emergent badge, PostHog analytics)
+
+### Phase 5 (April 6, 2026) - Stripe Payments, Email Receipts & Contact Form
+- [x] Stripe integration with real test key — subscription and order checkout working
+- [x] Email collection dialog before payment (subscription + cart checkout)
+- [x] Stripe receipt emails sent automatically via receipt_email on payment intent
+- [x] Contact form wired to backend API (/api/contact) — stores in DB + sends email (SendGrid ready, MOCKED until key provided)
+- [x] Instagram handle @petalandpawflorist added to Contact page and Footer
+- [x] Footer links scroll to top on navigation
+- [x] Better Stripe error handling (clear user-facing messages)
+- [x] Order confirmation emails prepared (SendGrid ready, MOCKED until key provided)
   - HomePage: Responsive hero (60vh mobile, 85vh desktop), vertical promise strip, scaled feature sections
   - ShopPage: Responsive filters, 2-col mobile / 4-col desktop product grid
   - ProductPage: Stacked layout on mobile, readable text sizes

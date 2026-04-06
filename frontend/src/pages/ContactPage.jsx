@@ -16,10 +16,22 @@ export default function ContactPage() {
       return;
     }
     setSending(true);
-    // Simulate sending
-    await new Promise((r) => setTimeout(r, 1000));
-    toast.success("Message sent! We'll get back to you soon.");
-    setForm({ name: "", email: "", subject: "", message: "" });
+    try {
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success(data.message || "Message sent! We'll get back to you soon.");
+        setForm({ name: "", email: "", subject: "", message: "" });
+      } else {
+        toast.error(data.detail || "Failed to send message. Please try again.");
+      }
+    } catch {
+      toast.error("Failed to send message. Please try again.");
+    }
     setSending(false);
   };
 
