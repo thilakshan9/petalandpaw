@@ -100,7 +100,7 @@ export default function SubscriptionPage() {
                     </span>
                   )}
                   <div className="aspect-[16/10] rounded-xl overflow-hidden mb-6 bg-[#F2F0EB]">
-                    <img src={plan.image_url} alt={plan.name} className="w-full h-full object-cover" />
+                    <img src={plan.image_url} alt={plan.name} className="w-full h-full object-cover blur-[6px] scale-105" />
                   </div>
                   <h3 className="font-['Playfair_Display'] text-2xl font-medium text-[#2C2C2C] mb-2">{plan.name}</h3>
                   <div className="flex items-baseline gap-1 mb-1">
