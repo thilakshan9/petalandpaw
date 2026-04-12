@@ -18,7 +18,7 @@ export default function AboutPage() {
           <img
             src="https://lh3.googleusercontent.com/d/1Bb6vOtqJUPBQElYkHNqj8cAa4jnTIOIH=w1200"
             alt="Beautiful flowers in a bright, minimal home"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-[center_70%]"
           />
         </div>
 
