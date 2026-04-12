@@ -1,5 +1,11 @@
 import { useState } from "react";
 import { Mail, MapPin, Clock, Send, Instagram } from "lucide-react";
+
+const TikTokIcon = ({ size = 18, className = "" }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" width={size} height={size} className={className}>
+    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 0 0-.79-.05A6.34 6.34 0 0 0 3.15 15a6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.7a8.16 8.16 0 0 0 4.76 1.52v-3.4a4.85 4.85 0 0 1-1-.13z"/>
+  </svg>
+);
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -57,6 +63,7 @@ export default function ContactPage() {
               {[
                 { icon: Mail, label: "Email", value: "info@petalandpaw.co.uk", href: "mailto:info@petalandpaw.co.uk" },
                 { icon: Instagram, label: "Instagram", value: "@petalandpawflorist", href: "https://instagram.com/petalandpawflorist" },
+                { icon: TikTokIcon, label: "TikTok", value: "@petalandpawflorist", href: "https://tiktok.com/@petalandpawflorist" },
                 { icon: MapPin, label: "Location", value: "United Kingdom" },
                 { icon: Clock, label: "Response Time", value: "Within 24 hours" },
               ].map(({ icon: Icon, label, value, href }) => (
