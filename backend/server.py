@@ -85,6 +85,7 @@ class SubscriptionCheckoutRequest(BaseModel):
     origin_url: str
     customer_email: str = ""
     add_pet_toy: bool = False
+    checkout_mode: str = "subscription"
 
 class StepBouquetRequest(BaseModel):
     size: str  # small, medium, large
@@ -391,19 +392,28 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
     success_url = f"{req.origin_url}/checkout/success?session_id={{CHECKOUT_SESSION_ID}}"
     cancel_url = f"{req.origin_url}/subscriptions"
     try:
+        is_recurring = req.checkout_mode == "subscription"
+        price_data = {
+            "currency": "gbp",
+            "unit_amount": int(total * 100),
+            "product_data": {"name": plan["name"]},
+        }
+        if is_recurring:
+            price_data["recurring"] = {"interval": "month"}
+
         checkout_params = {
             "payment_method_types": ["card"],
-            "line_items": [{"price_data": {"currency": "gbp", "unit_amount": int(total * 100),
-                "product_data": {"name": plan["name"]}}, "quantity": 1}],
-            "mode": "payment",
+            "line_items": [{"price_data": price_data, "quantity": 1}],
+            "mode": "subscription" if is_recurring else "payment",
             "success_url": success_url,
             "cancel_url": cancel_url,
-            "metadata": {"type": "subscription", "plan_id": plan["id"], "plan_name": plan["name"],
+            "metadata": {"type": req.checkout_mode, "plan_id": plan["id"], "plan_name": plan["name"],
                           "add_pet_toy": str(req.add_pet_toy)},
-            "payment_intent_data": {"receipt_email": req.customer_email} if req.customer_email else {},
         }
         if req.customer_email:
             checkout_params["customer_email"] = req.customer_email
+        if not is_recurring and req.customer_email:
+            checkout_params["payment_intent_data"] = {"receipt_email": req.customer_email}
         session = stripe.checkout.Session.create(**checkout_params)
     except stripe._error.AuthenticationError:
         raise HTTPException(status_code=503, detail="Payment service is not configured. Please contact support.")
@@ -414,7 +424,7 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
         "id": str(uuid.uuid4()), "session_id": session.id,
         "amount": float(total), "currency": "gbp",
         "status": "initiated", "payment_status": "pending",
-        "metadata": {"type": "subscription", "plan_id": plan["id"],
+        "metadata": {"type": req.checkout_mode, "plan_id": plan["id"],
                      "plan_name": plan["name"], "add_pet_toy": str(req.add_pet_toy)},
         "created_at": datetime.now(timezone.utc).isoformat()
     })

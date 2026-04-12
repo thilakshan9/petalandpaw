@@ -44,7 +44,7 @@ export default function SubscriptionPage() {
       const res = await fetch(`${API}/subscriptions/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan_id: planId, origin_url: window.location.origin, add_pet_toy: !!petToy[planId], customer_email: customerEmail }),
+        body: JSON.stringify({ plan_id: planId, origin_url: window.location.origin, add_pet_toy: !!petToy[planId], customer_email: customerEmail, checkout_mode: orderType }),
       });
       const data = await res.json();
       if (data.url) {
