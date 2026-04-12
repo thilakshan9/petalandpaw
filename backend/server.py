@@ -108,74 +108,73 @@ class ContactFormRequest(BaseModel):
     message: str
 
 # ============================================================
-# EMAIL HELPER (SendGrid - graceful when not configured)
+# EMAIL HELPER (Gmail SMTP)
 # ============================================================
 
-async def send_order_confirmation_email(to_email: str, order_data: dict):
-    if not sendgrid_api_key:
-        logger.info(f"[EMAIL MOCK] Order confirmation would be sent to {to_email} for order {order_data.get('id', 'N/A')}")
-        return True
+gmail_user = os.environ.get('GMAIL_USER', '')
+gmail_app_password = os.environ.get('GMAIL_APP_PASSWORD', '')
+
+def _send_email_smtp(to_email: str, subject: str, html_content: str, reply_to: str = ""):
+    if not gmail_user or not gmail_app_password:
+        logger.info(f"[EMAIL NOT CONFIGURED] Would send to {to_email}: {subject}")
+        return False
     try:
-        from sendgrid import SendGridAPIClient
-        from sendgrid.helpers.mail import Mail
-        items_html = ""
-        for item in order_data.get("items", []):
-            items_html += f"<li>{item['name']} x{item['quantity']} - £{item['price'] * item['quantity']:.2f}</li>"
-        html_content = f"""
-        <div style="font-family: 'Helvetica', sans-serif; max-width: 600px; margin: 0 auto; background: #FAF9F6; padding: 40px;">
-            <h1 style="font-family: serif; color: #2C2C2C; font-weight: 400;">Thank you for your order!</h1>
-            <p style="color: #6B7280;">Your order has been confirmed and is being prepared with care.</p>
-            <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                <h3 style="color: #2C2C2C; font-weight: 500;">Order Summary</h3>
-                <ul style="color: #4B5563; padding-left: 20px;">{items_html}</ul>
-                <p style="font-size: 18px; color: #2C2C2C; border-top: 1px solid #E5E0D6; padding-top: 12px;">
-                    <strong>Total: £{order_data.get('total', 0):.2f}</strong>
-                </p>
-                {f'<p style="color: #8DA399;">Delivery date: {order_data.get("delivery_date", "")}</p>' if order_data.get("delivery_date") else ""}
-            </div>
-            <p style="color: #8DA399; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;">Petal & Paw - Pet-Safe Florals</p>
-        </div>
-        """
-        message = Mail(from_email=sender_email, to_emails=to_email, subject="Your Petal & Paw Order Confirmation", html_content=html_content)
-        sg = SendGridAPIClient(sendgrid_api_key)
-        sg.send(message)
-        logger.info(f"Order confirmation sent to {to_email}")
+        import smtplib
+        from email.mime.text import MIMEText
+        from email.mime.multipart import MIMEMultipart
+        msg = MIMEMultipart("alternative")
+        msg["From"] = gmail_user
+        msg["To"] = to_email
+        msg["Subject"] = subject
+        if reply_to:
+            msg["Reply-To"] = reply_to
+        msg.attach(MIMEText(html_content, "html"))
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(gmail_user, gmail_app_password)
+            server.sendmail(gmail_user, to_email, msg.as_string())
+        logger.info(f"Email sent to {to_email}: {subject}")
         return True
     except Exception as e:
         logger.error(f"Failed to send email: {e}")
         return False
 
-async def send_contact_form_email(name: str, email: str, subject: str, message: str):
-    contact_email = os.environ.get('CONTACT_EMAIL', 'b.thilakshan9@gmail.com')
-    if not sendgrid_api_key:
-        logger.info(f"[EMAIL MOCK] Contact form from {name} ({email}): {subject} - {message}")
-        return True
-    try:
-        from sendgrid import SendGridAPIClient
-        from sendgrid.helpers.mail import Mail
-        html_content = f"""
-        <div style="font-family: 'Helvetica', sans-serif; max-width: 600px; margin: 0 auto; background: #FAF9F6; padding: 40px;">
-            <h1 style="font-family: serif; color: #2C2C2C; font-weight: 400;">New Contact Form Message</h1>
-            <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                <p style="color: #6B7280; margin: 0 0 8px;"><strong>From:</strong> {name}</p>
-                <p style="color: #6B7280; margin: 0 0 8px;"><strong>Email:</strong> <a href="mailto:{email}">{email}</a></p>
-                <p style="color: #6B7280; margin: 0 0 8px;"><strong>Subject:</strong> {subject or 'No subject'}</p>
-                <hr style="border: none; border-top: 1px solid #E5E0D6; margin: 16px 0;" />
-                <p style="color: #4B5563; white-space: pre-wrap;">{message}</p>
-            </div>
-            <p style="color: #8DA399; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;">Petal & Paw - Contact Form</p>
+async def send_order_confirmation_email(to_email: str, order_data: dict):
+    items_html = ""
+    for item in order_data.get("items", []):
+        items_html += f"<li>{item['name']} x{item['quantity']} - £{item['price'] * item['quantity']:.2f}</li>"
+    html_content = f"""
+    <div style="font-family: 'Helvetica', sans-serif; max-width: 600px; margin: 0 auto; background: #FAF9F6; padding: 40px;">
+        <h1 style="font-family: serif; color: #2C2C2C; font-weight: 400;">Thank you for your order!</h1>
+        <p style="color: #6B7280;">Your order has been confirmed and is being prepared with care.</p>
+        <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="color: #2C2C2C; font-weight: 500;">Order Summary</h3>
+            <ul style="color: #4B5563; padding-left: 20px;">{items_html}</ul>
+            <p style="font-size: 18px; color: #2C2C2C; border-top: 1px solid #E5E0D6; padding-top: 12px;">
+                <strong>Total: £{order_data.get('total', 0):.2f}</strong>
+            </p>
+            {f'<p style="color: #8DA399;">Delivery date: {order_data.get("delivery_date", "")}</p>' if order_data.get("delivery_date") else ""}
         </div>
-        """
-        mail = Mail(from_email=sender_email, to_emails=contact_email,
-                    subject=f"[Petal & Paw] {subject or 'Contact Form Message'}", html_content=html_content)
-        mail.reply_to = email
-        sg = SendGridAPIClient(sendgrid_api_key)
-        sg.send(mail)
-        logger.info(f"Contact form email sent to {contact_email} from {email}")
-        return True
-    except Exception as e:
-        logger.error(f"Failed to send contact form email: {e}")
-        return False
+        <p style="color: #8DA399; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;">Petal & Paw - Pet-Safe Florals</p>
+    </div>
+    """
+    return _send_email_smtp(to_email, "Your Petal & Paw Order Confirmation", html_content)
+
+async def send_contact_form_email(name: str, email: str, subject: str, message: str):
+    contact_email = os.environ.get('CONTACT_EMAIL', 'petalandpawflorist@gmail.com')
+    html_content = f"""
+    <div style="font-family: 'Helvetica', sans-serif; max-width: 600px; margin: 0 auto; background: #FAF9F6; padding: 40px;">
+        <h1 style="font-family: serif; color: #2C2C2C; font-weight: 400;">New Contact Form Message</h1>
+        <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <p style="color: #6B7280; margin: 0 0 8px;"><strong>From:</strong> {name}</p>
+            <p style="color: #6B7280; margin: 0 0 8px;"><strong>Email:</strong> <a href="mailto:{email}">{email}</a></p>
+            <p style="color: #6B7280; margin: 0 0 8px;"><strong>Subject:</strong> {subject or 'No subject'}</p>
+            <hr style="border: none; border-top: 1px solid #E5E0D6; margin: 16px 0;" />
+            <p style="color: #4B5563; white-space: pre-wrap;">{message}</p>
+        </div>
+        <p style="color: #8DA399; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;">Petal & Paw - Contact Form</p>
+    </div>
+    """
+    return _send_email_smtp(contact_email, f"[Petal & Paw] {subject or 'Contact Form Message'}", html_content, reply_to=email)
 
 # ============================================================
 # AUTH HELPERS
