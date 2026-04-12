@@ -8,10 +8,10 @@ const GALLERY_IMAGES = [
   { id: 3, src: "https://lh3.googleusercontent.com/d/1hKJr7ft65mLEFxNtMLEBrXfrUusZ83qQ", name: "Blush & Gold Bouquet" },
   { id: 4, src: "https://lh3.googleusercontent.com/d/1T5-AGmpGJ3OHJ0to7l5KHKaXDFt_A6k4", name: "Vibrant Wildflower Mix" },
   { id: 5, src: "https://lh3.googleusercontent.com/d/1Pwy6ZZbUwDnNeoDlcLbOGwVBPfcjwk39", name: "Gerbera Daisy Delight" },
-  { id: 6, src: "https://lh3.googleusercontent.com/d/1tytAeDhgCklRmh1DQcID82_k1QNDqENY", name: "Soft Pink Elegance" },
+  { id: 6, src: "https://lh3.googleusercontent.com/d/1gHZ1JMFc4x1_vmoJb27QobEQpfHVNl2P", name: "Gallery 6" },
   { id: 7, src: "https://lh3.googleusercontent.com/d/1FoeVcqPJ5-6036Y0JwV4_UhBrEM0EWjL", name: "Single Stem Gerbera" },
-  { id: 8, src: "https://lh3.googleusercontent.com/d/1fM8ju9g1vllQAi2THcAEAaXaHQuH4tbH", name: "Sunset Rose Arrangement" },
-  { id: 9, src: "https://lh3.googleusercontent.com/d/1T3Q2Fkl1fssyXjlnNj3-85xdys11AGWb", name: "Orange Gerbera Bouquet" },
+  { id: 8, src: "https://lh3.googleusercontent.com/d/1G4QLamKvACjefvAU6ejbcsKAuYpb4JHL", name: "Gallery 8" },
+  { id: 9, src: "https://lh3.googleusercontent.com/d/1rn5Vk3psbpdD8IckBL4mkb9gWAT-jVMu", name: "Gallery 9" },
   { id: 10, src: "https://lh3.googleusercontent.com/d/10ZfxvDRc93OzzvXVJrNqnoShsVEDOMB-", name: "Cat with Flowers" },
 ];
 
