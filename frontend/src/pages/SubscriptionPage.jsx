@@ -148,9 +148,8 @@ export default function SubscriptionPage() {
                   {/* Classic Bloom: Limited stock bar */}
                   {isPop && (
                     <div className="mb-5" data-testid="stock-indicator">
-                      <div className="flex items-center justify-between mb-1.5">
+                      <div className="flex items-center mb-1.5">
                         <span className="text-xs font-semibold uppercase tracking-wider text-[#2C2C2C]">Limited to {stockLimit}</span>
-                        <span className="text-xs font-light text-[#6B7280]">{spotsLeft} left</span>
                       </div>
                       <div className="w-full h-2 bg-[#F2F0EB] rounded-full overflow-hidden">
                         <div
@@ -180,7 +179,7 @@ export default function SubscriptionPage() {
                         className="w-full appearance-none border border-[#E5E0D6] rounded-lg px-3 py-2.5 text-sm font-light text-[#2C2C2C] bg-white focus:outline-none focus:ring-1 focus:ring-[#8DA399] pr-8"
                         data-testid={`pet-type-select-${plan.slug}`}
                       >
-                        <option value="">Select pet type...</option>
+                        <option value="">Select pet...</option>
                         <option value="cat">Cat</option>
                         <option value="dog">Dog</option>
                         <option value="other">Other</option>
