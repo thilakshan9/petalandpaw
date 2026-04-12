@@ -88,6 +88,8 @@ class SubscriptionCheckoutRequest(BaseModel):
     add_pet_toy: bool = False
     checkout_mode: str = "subscription"
     personalized_message: str = ""
+    pet_type: str = ""
+    pet_type_other: str = ""
 
 class StepBouquetRequest(BaseModel):
     size: str  # small, medium, large
@@ -381,6 +383,18 @@ async def get_subscription_plans():
     plans = await db.subscription_plans.find({}, {"_id": 0}).to_list(10)
     return plans
 
+@api_router.get("/subscriptions/order-count/{plan_slug}")
+async def get_subscription_order_count(plan_slug: str):
+    plan = await db.subscription_plans.find_one({"slug": plan_slug}, {"_id": 0})
+    if not plan:
+        raise HTTPException(status_code=404, detail="Plan not found")
+    count = await db.payment_transactions.count_documents({
+        "metadata.plan_id": plan["id"],
+        "payment_status": "paid"
+    })
+    stock_limit = plan.get("stock_limit", 0)
+    return {"count": count, "limit": stock_limit}
+
 @api_router.post("/subscriptions/checkout")
 async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Request):
     plan = await db.subscription_plans.find_one({"id": req.plan_id}, {"_id": 0})
@@ -412,7 +426,8 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
             "shipping_address_collection": {"allowed_countries": ["GB"]},
             "metadata": {"type": req.checkout_mode, "plan_id": plan["id"], "plan_name": plan["name"],
                           "add_pet_toy": str(req.add_pet_toy),
-                          "personalized_message": req.personalized_message[:500] if req.personalized_message else ""},
+                          "personalized_message": req.personalized_message[:500] if req.personalized_message else "",
+                          "pet_type": req.pet_type_other if req.pet_type == "other" else req.pet_type},
         }
         if req.customer_email:
             checkout_params["customer_email"] = req.customer_email
@@ -430,7 +445,8 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
         "status": "initiated", "payment_status": "pending",
         "metadata": {"type": req.checkout_mode, "plan_id": plan["id"],
                      "plan_name": plan["name"], "add_pet_toy": str(req.add_pet_toy),
-                     "personalized_message": req.personalized_message[:500] if req.personalized_message else ""},
+                     "personalized_message": req.personalized_message[:500] if req.personalized_message else "",
+                     "pet_type": req.pet_type_other if req.pet_type == "other" else req.pet_type},
         "created_at": datetime.now(timezone.utc).isoformat()
     })
     return {"url": session.url, "session_id": session.id}
@@ -821,20 +837,34 @@ async def seed_data():
              "description": "A compact, letterbox-friendly arrangement of pet-safe blooms delivered monthly.",
              "price": 34.99, "frequency": "monthly",
              "image_url": "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=800",
-             "features": ["5-7 pet-safe stems", "Letterbox friendly", "Free delivery", "Biodegradable packaging", "Monthly care guide"]},
+             "features": ["Letterbox friendly", "Free delivery", "Biodegradable packaging", "Care guide included"]},
             {"id": str(uuid.uuid4()), "name": "Classic Bloom", "slug": "classic-bloom",
              "description": "A hand-tied premium bouquet of curated pet-safe flowers, delivered monthly.",
-             "price": 59.99, "frequency": "monthly",
+             "price": 59.99, "frequency": "monthly", "stock_limit": 60,
              "image_url": "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=800",
-             "features": ["10-12 pet-safe stems", "Hand-tied bouquet", "Free delivery", "Seasonal variety", "Care guide included"]},
+             "features": ["Hand-tied bouquet", "Free delivery", "Seasonal variety", "Care guide included"]},
             {"id": str(uuid.uuid4()), "name": "Grand Garden", "slug": "grand-garden",
              "description": "Our most luxurious monthly arrangement with premium pet-safe flowers.",
              "price": 79.99, "frequency": "monthly",
              "image_url": "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=800",
-             "features": ["15-20 pet-safe stems", "Luxury designer arrangement", "Free priority delivery", "Seasonal exclusive flowers", "Personalized care guide", "10% shop discount"]},
+             "features": ["Free delivery", "Seasonal variety"]},
         ]
         await db.subscription_plans.insert_many(plans)
         logger.info("Seeded subscription plans")
+
+    # Migrate existing subscription plan features
+    await db.subscription_plans.update_one(
+        {"slug": "petite-paws"},
+        {"$set": {"features": ["Letterbox friendly", "Free delivery", "Biodegradable packaging", "Care guide included"]}}
+    )
+    await db.subscription_plans.update_one(
+        {"slug": "classic-bloom"},
+        {"$set": {"features": ["Hand-tied bouquet", "Free delivery", "Seasonal variety", "Care guide included"], "stock_limit": 60}}
+    )
+    await db.subscription_plans.update_one(
+        {"slug": "grand-garden"},
+        {"$set": {"features": ["Free delivery", "Seasonal variety"]}}
+    )
 
     if await db.blog_posts.count_documents({}) == 0:
         posts = [

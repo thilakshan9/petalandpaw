@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Check, ArrowRight, PawPrint } from "lucide-react";
+import { Check, ArrowRight, PawPrint, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -19,15 +19,36 @@ export default function SubscriptionPage() {
   const [preOrderExpanded, setPreOrderExpanded] = useState(null);
   const [orderType, setOrderType] = useState(null);
   const [personalizedMessage, setPersonalizedMessage] = useState("");
+  const [petType, setPetType] = useState({});
+  const [petTypeOther, setPetTypeOther] = useState({});
+  const [orderCount, setOrderCount] = useState(0);
+  const [stockLimit, setStockLimit] = useState(60);
 
   useEffect(() => {
     fetch(`${API}/subscriptions/plans`)
       .then((r) => r.json())
       .then((data) => { setPlans(data); setLoading(false); })
       .catch(() => setLoading(false));
+
+    fetch(`${API}/subscriptions/order-count/classic-bloom`)
+      .then((r) => r.json())
+      .then((data) => {
+        setOrderCount(data.count || 0);
+        setStockLimit(data.limit || 60);
+      })
+      .catch(() => {});
   }, []);
 
   const handleSubscribeClick = (planId, type = "subscription") => {
+    const selectedPet = petType[planId] || "";
+    if (!selectedPet) {
+      toast.error("Please select your pet type first");
+      return;
+    }
+    if (selectedPet === "other" && !(petTypeOther[planId] || "").trim()) {
+      toast.error("Please enter your pet type");
+      return;
+    }
     setOrderType(type);
     setEmailDialog(planId);
     setCustomerEmail("");
@@ -46,7 +67,16 @@ export default function SubscriptionPage() {
       const res = await fetch(`${API}/subscriptions/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan_id: planId, origin_url: window.location.origin, add_pet_toy: !!petToy[planId], customer_email: customerEmail, checkout_mode: orderType, personalized_message: personalizedMessage }),
+        body: JSON.stringify({
+          plan_id: planId,
+          origin_url: window.location.origin,
+          add_pet_toy: !!petToy[planId],
+          customer_email: customerEmail,
+          checkout_mode: orderType,
+          personalized_message: personalizedMessage,
+          pet_type: petType[planId] || "",
+          pet_type_other: petTypeOther[planId] || "",
+        }),
       });
       const data = await res.json();
       if (data.url) {
@@ -60,6 +90,10 @@ export default function SubscriptionPage() {
       setSubscribing(null);
     }
   };
+
+  // Progress bar: starts at 20% minimum, scales to 100% at stockLimit orders
+  const progressPercent = Math.min(100, Math.max(20, (orderCount / stockLimit) * 100));
+  const spotsLeft = Math.max(0, stockLimit - orderCount);
 
   return (
     <div className="py-8 sm:py-12 md:py-20" data-testid="subscription-page">
@@ -85,6 +119,7 @@ export default function SubscriptionPage() {
               const isPop = i === 1;
               const toyOn = !!petToy[plan.id];
               const displayPrice = toyOn ? plan.price + 8.99 : plan.price;
+              const selectedPet = petType[plan.id] || "";
               return (
                 <div
                   key={plan.id}
@@ -109,6 +144,24 @@ export default function SubscriptionPage() {
                   </div>
                   {toyOn && <span className="text-xs text-[#8DA399] font-light mb-3">includes pet toy (+£8.99)</span>}
                   <p className="text-sm font-light text-[#6B7280] mb-6">{plan.description}</p>
+
+                  {/* Classic Bloom: Limited stock bar */}
+                  {isPop && (
+                    <div className="mb-5" data-testid="stock-indicator">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-xs font-semibold uppercase tracking-wider text-[#2C2C2C]">Limited to {stockLimit}</span>
+                        <span className="text-xs font-light text-[#6B7280]">{spotsLeft} left</span>
+                      </div>
+                      <div className="w-full h-2 bg-[#F2F0EB] rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-[#8DA399] rounded-full transition-all duration-700"
+                          style={{ width: `${progressPercent}%` }}
+                          data-testid="stock-progress-bar"
+                        />
+                      </div>
+                    </div>
+                  )}
+
                   <ul className="space-y-3 mb-6 flex-1">
                     {plan.features?.map((f) => (
                       <li key={f} className="flex items-start gap-2 text-sm font-light text-[#4B5563]">
@@ -116,6 +169,35 @@ export default function SubscriptionPage() {
                       </li>
                     ))}
                   </ul>
+
+                  {/* Pet Type Selector */}
+                  <div className="mb-4" data-testid={`pet-type-section-${plan.slug}`}>
+                    <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Your Pet Type</label>
+                    <div className="relative">
+                      <select
+                        value={selectedPet}
+                        onChange={(e) => setPetType({ ...petType, [plan.id]: e.target.value })}
+                        className="w-full appearance-none border border-[#E5E0D6] rounded-lg px-3 py-2.5 text-sm font-light text-[#2C2C2C] bg-white focus:outline-none focus:ring-1 focus:ring-[#8DA399] pr-8"
+                        data-testid={`pet-type-select-${plan.slug}`}
+                      >
+                        <option value="">Select pet type...</option>
+                        <option value="cat">Cat</option>
+                        <option value="dog">Dog</option>
+                        <option value="other">Other</option>
+                      </select>
+                      <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280] pointer-events-none" />
+                    </div>
+                    {selectedPet === "other" && (
+                      <Input
+                        type="text"
+                        placeholder="Enter your pet type..."
+                        value={petTypeOther[plan.id] || ""}
+                        onChange={(e) => setPetTypeOther({ ...petTypeOther, [plan.id]: e.target.value })}
+                        className="mt-2 border-[#E5E0D6] text-sm"
+                        data-testid={`pet-type-other-input-${plan.slug}`}
+                      />
+                    )}
+                  </div>
 
                   {/* Pet Toy Add-on */}
                   <div className="flex items-center justify-between bg-[#F2F0EB]/60 rounded-xl px-4 py-3 mb-6" data-testid={`pet-toy-toggle-${plan.slug}`}>
