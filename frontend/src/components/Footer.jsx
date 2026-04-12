@@ -59,8 +59,7 @@ export default function Footer() {
             <nav className="flex flex-col gap-3">
               <ScrollLink to="/contact" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-contact">Contact</ScrollLink>
               <ScrollLink to="/faq" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-faq">FAQ</ScrollLink>
-              <span className="text-sm font-light text-[#FAF9F6]/70">Delivery Info</span>
-              <span className="text-sm font-light text-[#FAF9F6]/70">Returns</span>
+              <ScrollLink to="/returns" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-returns">Returns</ScrollLink>
             </nav>
           </div>
         </div>

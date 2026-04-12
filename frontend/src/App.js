@@ -18,6 +18,7 @@ import ReferralPage from "@/pages/ReferralPage";
 import AboutPage from "@/pages/AboutPage";
 import ContactPage from "@/pages/ContactPage";
 import FaqPage from "@/pages/FaqPage";
+import ReturnsPage from "@/pages/ReturnsPage";
 import "@/App.css";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -119,6 +120,7 @@ function AppRouter() {
       <Route path="/about" element={<Layout><AboutPage /></Layout>} />
       <Route path="/contact" element={<Layout><ContactPage /></Layout>} />
       <Route path="/faq" element={<Layout><FaqPage /></Layout>} />
+      <Route path="/returns" element={<Layout><ReturnsPage /></Layout>} />
       <Route path="/login" element={<Layout><CustomerLogin /></Layout>} />
       <Route path="/account" element={<ProtectedRoute><Layout><AccountPage /></Layout></ProtectedRoute>} />
       <Route path="/referral/:code" element={<Layout><ReferralPage /></Layout>} />
