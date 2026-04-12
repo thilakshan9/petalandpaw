@@ -6,19 +6,19 @@ import SEOHead from "@/components/SEOHead";
 const faqs = [
   {
     q: "Are your flowers completely safe for pets?",
-    a: `All of our bouquets are thoughtfully designed with pet-friendly flowers in mind. We carefully avoid commonly known toxic varieties and select stems that are considered safer for homes with cats and dogs.\n\nThat said, we always recommend keeping flowers out of reach and supervising curious pets — every animal is different.`
+    a: `All of our bouquets are thoughtfully designed with pet-friendly flowers in mind. We carefully avoid commonly known toxic varieties and select stems that are considered safer for homes with cats and dogs.\n\nThat said, we always recommend keeping flowers out of reach and supervising curious pets - every animal is different.`
   },
   {
     q: 'What do you mean by "pet-friendly"?',
-    a: `"Pet-friendly" means we avoid flowers that are widely known to be toxic to cats and dogs.\n\nMany people don't realise how common toxic flowers are, so we've done the research for you — so you don't have to second guess what's in your home.`
+    a: `"Pet-friendly" means we avoid flowers that are widely known to be toxic to cats and dogs.\n\nMany people don't realise how common toxic flowers are, so we've done the research for you - so you don't have to second guess what's in your home.`
   },
   {
     q: "Why are some flowers dangerous for pets?",
-    a: `Many popular flowers — including some of the most commonly sold bouquets — can be toxic to cats and dogs.\n\nFor example, flowers like Lilies are well known for being highly toxic to cats, even in small amounts. Others can cause milder reactions like skin irritation, upset stomachs, or breathing discomfort.\n\nThe tricky part is that this isn't always widely communicated, and most bouquets don't come with any guidance — so it's easy to bring something into your home without realising the risk.\n\nThat's why we've taken the guesswork out of it.\n\nAt Petal & Paw, we carefully select flowers that are considered safer for homes with pets, so you can enjoy your space without second-guessing what's in it.`
+    a: `Many popular flowers - including some of the most commonly sold bouquets - can be toxic to cats and dogs.\n\nFor example, flowers like Lilies are well known for being highly toxic to cats, even in small amounts. Others can cause milder reactions like skin irritation, upset stomachs, or breathing discomfort.\n\nThe tricky part is that this isn't always widely communicated, and most bouquets don't come with any guidance - so it's easy to bring something into your home without realising the risk.\n\nThat's why we've taken the guesswork out of it.\n\nAt Petal & Paw, we carefully select flowers that are considered safer for homes with pets, so you can enjoy your space without second-guessing what's in it.`
   },
   {
     q: "Are your bouquets handmade?",
-    a: `Yes — every single one.\n\nI personally select each stem and handcraft every bouquet with care. No mass production, no pre-made arrangements — just thoughtfully put together flowers, every time.`
+    a: `Yes - every single one.\n\nI personally select each stem and handcraft every bouquet with care. No mass production, no pre-made arrangements - just thoughtfully put together flowers, every time.`
   },
   {
     q: "Will my bouquet look exactly like the photos?",
@@ -30,11 +30,11 @@ const faqs = [
   },
   {
     q: "How long will my flowers last?",
-    a: `With proper care, most bouquets last around 5–10 days.\n\nWe include a care card with every order to help you get the most out of your flowers.`
+    a: `With proper care, most bouquets last around 5-10 days.\n\nWe include a care card with every order to help you get the most out of your flowers.`
   },
   {
     q: "Do you offer letterbox flowers?",
-    a: `Yes! We offer both standard bouquets and letterbox-friendly options — perfect for gifting or treating yourself.`
+    a: `Yes! We offer both standard bouquets and letterbox-friendly options - perfect for gifting or treating yourself.`
   },
   {
     q: "Can I send this as a gift?",
@@ -42,11 +42,11 @@ const faqs = [
   },
   {
     q: "Do you offer flowers for events?",
-    a: `Yes — we'd love to!\n\nWe offer flowers for small events, gatherings, and special occasions, all designed with the same care and attention as our bouquets.\n\nIf your event includes pets, we can create beautiful arrangements using our pet-friendly stems. And if there are no pets involved, we're also happy to work with a wider range of flowers to suit your vision.\n\nEvery event is slightly different, so we recommend getting in touch to chat through your ideas — we'll work with you to create something that feels just right.`
+    a: `Yes - we'd love to!\n\nWe offer flowers for small events, gatherings, and special occasions, all designed with the same care and attention as our bouquets.\n\nIf your event includes pets, we can create beautiful arrangements using our pet-friendly stems. And if there are no pets involved, we're also happy to work with a wider range of flowers to suit your vision.\n\nEvery event is slightly different, so we recommend getting in touch to chat through your ideas - we'll work with you to create something that feels just right.`
   },
   {
     q: "Do you offer custom bouquets?",
-    a: `Right now, we focus on curated designs to ensure quality and consistency.\n\nAs we grow, we may introduce custom options — so keep an eye out!`
+    a: `Right now, we focus on curated designs to ensure quality and consistency.\n\nAs we grow, we may introduce custom options - so keep an eye out!`
   },
   {
     q: "Why Petal & Paw?",
@@ -107,7 +107,7 @@ export default function FaqPage() {
             Still have a question?
           </h2>
           <p className="text-sm font-light text-[#6B7280] mb-5">
-            Drop us a message on Instagram — we're always happy to help!
+            Drop us a message on Instagram - we're always happy to help!
           </p>
           <a
             href="https://instagram.com/petalandpawflorist"

@@ -27,7 +27,7 @@ export default function AboutPage() {
             Petal & Paw started on a random winter evening.
           </p>
           <p className="text-sm sm:text-base md:text-lg font-light leading-[1.9] text-[#4B5563]">
-            I was feeling a bit low, wandered into my local supermarket, and picked up a bunch of flowers — no plan, just whatever looked pretty. When I got home, I pulled out every vase I owned and spent the evening arranging them, filling my living room with little bouquets.
+            I was feeling a bit low, wandered into my local supermarket, and picked up a bunch of flowers - no plan, just whatever looked pretty. When I got home, I pulled out every vase I owned and spent the evening arranging them, filling my living room with little bouquets.
           </p>
           <p className="text-sm sm:text-base md:text-lg font-light leading-[1.9] text-[#4B5563]">
             I'd never done anything like it before, but I loved it.
