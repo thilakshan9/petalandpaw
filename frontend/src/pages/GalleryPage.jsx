@@ -91,11 +91,6 @@ export default function GalleryPage() {
                   />
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-t from-[#2C2C2C]/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-5 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                  <h3 className="font-['Playfair_Display'] text-sm sm:text-lg font-medium text-white">
-                    {image.name}
-                  </h3>
-                </div>
               </div>
             ))}
           </div>
@@ -150,9 +145,6 @@ export default function GalleryPage() {
               data-testid="lightbox-image"
             />
             <div className="text-center mt-4">
-              <h3 className="font-['Playfair_Display'] text-lg sm:text-xl font-medium text-white">
-                {GALLERY_IMAGES[lightbox].name}
-              </h3>
               <p className="text-xs text-white/50 mt-1">
                 {lightbox + 1} / {GALLERY_IMAGES.length}
               </p>
