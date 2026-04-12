@@ -137,6 +137,7 @@ export default function AdminDashboard() {
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [subOrders, setSubOrders] = useState([]);
+  const [transactions, setTransactions] = useState([]);
   const [blogPosts, setBlogPosts] = useState([]);
   const [productDialog, setProductDialog] = useState(false);
   const [blogDialog, setBlogDialog] = useState(false);
@@ -147,18 +148,20 @@ export default function AdminDashboard() {
 
   const fetchData = useCallback(async () => {
     try {
-      const [statsR, prodR, ordR, subR, blogR] = await Promise.all([
+      const [statsR, prodR, ordR, subR, blogR, txR] = await Promise.all([
         fetch(`${API}/admin/stats`, { credentials: "include" }),
         fetch(`${API}/products`),
         fetch(`${API}/orders`, { credentials: "include" }),
         fetch(`${API}/admin/orders/subscriptions`, { credentials: "include" }),
         fetch(`${API}/blog`),
+        fetch(`${API}/admin/transactions`, { credentials: "include" }),
       ]);
       if (statsR.ok) setStats(await statsR.json());
       setProducts(await prodR.json());
       if (ordR.ok) setOrders(await ordR.json());
       if (subR.ok) setSubOrders(await subR.json());
       setBlogPosts(await blogR.json());
+      if (txR.ok) setTransactions(await txR.json());
     } catch {}
   }, []);
 
@@ -276,6 +279,7 @@ export default function AdminDashboard() {
             <TabsTrigger value="orders" className="rounded-full text-xs uppercase tracking-widest data-[state=active]:bg-white" data-testid="tab-orders"><ShoppingCart size={14} className="mr-1" /> Orders</TabsTrigger>
             <TabsTrigger value="subscriptions" className="rounded-full text-xs uppercase tracking-widest data-[state=active]:bg-white" data-testid="tab-subscriptions"><Package size={14} className="mr-1" /> Subscriptions</TabsTrigger>
             <TabsTrigger value="blog" className="rounded-full text-xs uppercase tracking-widest data-[state=active]:bg-white" data-testid="tab-blog"><FileText size={14} className="mr-1" /> Blog</TabsTrigger>
+            <TabsTrigger value="transactions" className="rounded-full text-xs uppercase tracking-widest data-[state=active]:bg-white" data-testid="tab-transactions"><BarChart3 size={14} className="mr-1" /> Transactions</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview">
@@ -359,6 +363,40 @@ export default function AdminDashboard() {
                 </div>
               ))}
             </div>
+          </TabsContent>
+
+          <TabsContent value="transactions">
+            <h2 className="font-['Playfair_Display'] text-2xl font-medium text-[#2C2C2C] mb-6">Payment Transactions</h2>
+            {transactions.length === 0 ? <p className="text-sm font-light text-[#6B7280]">No transactions yet.</p> : (
+              <div className="space-y-3">
+                {transactions.map((tx) => (
+                  <div key={tx.id} className="bg-white border border-[#E5E0D6] rounded-xl p-4" data-testid={`admin-tx-${tx.id}`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-mono text-[#6B7280]">#{tx.session_id?.slice(-8)}</span>
+                        <span className={`text-[9px] uppercase tracking-widest font-semibold px-2 py-0.5 rounded-full ${
+                          tx.payment_status === "paid" ? "bg-[#8DA399]/10 text-[#8DA399]" : "bg-[#E8E4D9] text-[#6B7280]"
+                        }`}>{tx.payment_status}</span>
+                        {tx.metadata?.type && (
+                          <span className={`text-[9px] uppercase tracking-widest font-semibold px-2 py-0.5 rounded-full ${
+                            tx.metadata.type === "subscription" ? "bg-blue-50 text-blue-500" : "bg-purple-50 text-purple-500"
+                          }`}>{tx.metadata.type}</span>
+                        )}
+                      </div>
+                      <span className="text-sm font-medium text-[#2C2C2C]">£{tx.amount?.toFixed(2)}</span>
+                    </div>
+                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-[#6B7280]">
+                      {tx.metadata?.plan_name && <span>Plan: <strong className="text-[#2C2C2C]">{tx.metadata.plan_name}</strong></span>}
+                      {tx.metadata?.pet_type && <span>Pet: <strong className="text-[#2C2C2C]">{tx.metadata.pet_type}</strong></span>}
+                      <span>Pet Toy: <strong className={tx.metadata?.add_pet_toy === "True" ? "text-[#8DA399]" : "text-[#6B7280]"}>{tx.metadata?.add_pet_toy === "True" ? "Yes" : "No"}</strong></span>
+                      {tx.metadata?.personalized_message && <span>Gift Note: <strong className="text-[#2C2C2C]">{tx.metadata.personalized_message.slice(0, 50)}{tx.metadata.personalized_message.length > 50 ? "..." : ""}</strong></span>}
+                      {tx.customer_email && <span>Email: {tx.customer_email}</span>}
+                    </div>
+                    <p className="text-[10px] text-[#9CA3AF] mt-1">{tx.created_at ? new Date(tx.created_at).toLocaleString() : ""}</p>
+                  </div>
+                ))}
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       </div>

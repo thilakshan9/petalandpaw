@@ -736,6 +736,11 @@ async def get_subscription_orders(user=Depends(get_current_user)):
     orders = await db.orders.find({"order_type": "subscription"}, {"_id": 0}).sort("created_at", -1).to_list(100)
     return orders
 
+@api_router.get("/admin/transactions")
+async def get_transactions(user=Depends(get_current_user)):
+    txs = await db.payment_transactions.find({}, {"_id": 0}).sort("created_at", -1).to_list(200)
+    return txs
+
 # ============================================================
 # CUSTOMER ACCOUNT ROUTES
 # ============================================================
