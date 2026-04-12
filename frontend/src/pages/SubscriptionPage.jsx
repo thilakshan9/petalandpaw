@@ -118,7 +118,8 @@ export default function SubscriptionPage() {
             {plans.map((plan, i) => {
               const isPop = i === 1;
               const toyOn = !!petToy[plan.id];
-              const displayPrice = toyOn ? plan.price + 8.99 : plan.price;
+              const toyPrice = plan.pet_toy_price || 8.99;
+              const displayPrice = toyOn ? plan.price + toyPrice : plan.price;
               const selectedPet = petType[plan.id] || "";
               return (
                 <div
@@ -142,7 +143,7 @@ export default function SubscriptionPage() {
                     <span className="text-3xl font-light text-[#2C2C2C]">£{displayPrice.toFixed(2)}</span>
                     <span className="text-sm font-light text-[#6B7280]">/month</span>
                   </div>
-                  {toyOn && <span className="text-xs text-[#8DA399] font-light mb-3">includes pet toy (+£8.99)</span>}
+                  {toyOn && <span className="text-xs text-[#8DA399] font-light mb-3">includes pet toy (+£{toyPrice.toFixed(2)})</span>}
                   <p className="text-sm font-light text-[#6B7280] mb-6">{plan.description}</p>
 
                   {/* Classic Bloom: Limited stock bar */}
@@ -203,7 +204,7 @@ export default function SubscriptionPage() {
                     <div className="flex items-center gap-2">
                       <PawPrint size={14} className="text-[#8DA399]" />
                       <span className="text-sm text-[#2C2C2C]">Add pet toy</span>
-                      <span className="text-xs text-[#6B7280]">+£8.99</span>
+                      <span className="text-xs text-[#6B7280]">+£{toyPrice.toFixed(2)}</span>
                     </div>
                     <Switch
                       checked={toyOn}

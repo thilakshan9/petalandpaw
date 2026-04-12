@@ -401,7 +401,7 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
     if not plan:
         raise HTTPException(status_code=404, detail="Plan not found")
     total = float(plan["price"])
-    pet_toy_price = 8.99
+    pet_toy_price = float(plan.get("pet_toy_price", 8.99))
     if req.add_pet_toy:
         total += pet_toy_price
     host_url = str(request.base_url).rstrip("/")
@@ -837,17 +837,17 @@ async def seed_data():
              "description": "A compact, letterbox-friendly arrangement of pet-safe blooms delivered monthly.",
              "price": 34.99, "frequency": "monthly",
              "image_url": "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=800",
-             "features": ["Letterbox friendly", "Free delivery", "Biodegradable packaging", "Care guide included"]},
+             "features": ["Letterbox friendly", "Free delivery", "Biodegradable packaging", "Care guide included"], "pet_toy_price": 8.99},
             {"id": str(uuid.uuid4()), "name": "Classic Bloom", "slug": "classic-bloom",
              "description": "A hand-tied premium bouquet of curated pet-safe flowers, delivered monthly.",
-             "price": 59.99, "frequency": "monthly", "stock_limit": 60,
+             "price": 59.99, "frequency": "monthly", "stock_limit": 60, "pet_toy_price": 8.99,
              "image_url": "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=800",
              "features": ["Hand-tied bouquet", "Free delivery", "Seasonal variety", "Care guide included"]},
             {"id": str(uuid.uuid4()), "name": "Grand Garden", "slug": "grand-garden",
              "description": "Our most luxurious monthly arrangement with premium pet-safe flowers.",
              "price": 79.99, "frequency": "monthly",
              "image_url": "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=800",
-             "features": ["Free delivery", "Seasonal variety"]},
+             "features": ["Free delivery", "Seasonal variety"], "pet_toy_price": 8.99},
         ]
         await db.subscription_plans.insert_many(plans)
         logger.info("Seeded subscription plans")
@@ -855,15 +855,15 @@ async def seed_data():
     # Migrate existing subscription plan features
     await db.subscription_plans.update_one(
         {"slug": "petite-paws"},
-        {"$set": {"features": ["Letterbox friendly", "Free delivery", "Biodegradable packaging", "Care guide included"]}}
+        {"$set": {"features": ["Letterbox friendly", "Free delivery", "Biodegradable packaging", "Care guide included"], "pet_toy_price": 8.99}}
     )
     await db.subscription_plans.update_one(
         {"slug": "classic-bloom"},
-        {"$set": {"features": ["Hand-tied bouquet", "Free delivery", "Seasonal variety", "Care guide included"], "stock_limit": 60}}
+        {"$set": {"features": ["Hand-tied bouquet", "Free delivery", "Seasonal variety", "Care guide included"], "stock_limit": 60, "pet_toy_price": 8.99}}
     )
     await db.subscription_plans.update_one(
         {"slug": "grand-garden"},
-        {"$set": {"features": ["Free delivery", "Seasonal variety"]}}
+        {"$set": {"features": ["Free delivery", "Seasonal variety"], "pet_toy_price": 8.99}}
     )
 
     if await db.blog_posts.count_documents({}) == 0:
