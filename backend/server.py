@@ -426,6 +426,13 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
         if is_recurring:
             price_data["recurring"] = {"interval": "month"}
 
+        order_metadata = {
+            "type": req.checkout_mode, "plan_id": plan["id"], "plan_name": plan["name"],
+            "add_pet_toy": str(req.add_pet_toy),
+            "personalized_message": req.personalized_message[:500] if req.personalized_message else "",
+            "pet_type": req.pet_type_other if req.pet_type == "other" else req.pet_type,
+        }
+
         checkout_params = {
             "payment_method_types": ["card"],
             "line_items": [{"price_data": price_data, "quantity": 1}],
@@ -433,15 +440,17 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
             "success_url": success_url,
             "cancel_url": cancel_url,
             "shipping_address_collection": {"allowed_countries": ["GB"]},
-            "metadata": {"type": req.checkout_mode, "plan_id": plan["id"], "plan_name": plan["name"],
-                          "add_pet_toy": str(req.add_pet_toy),
-                          "personalized_message": req.personalized_message[:500] if req.personalized_message else "",
-                          "pet_type": req.pet_type_other if req.pet_type == "other" else req.pet_type},
+            "metadata": order_metadata,
         }
+        if is_recurring:
+            checkout_params["subscription_data"] = {"metadata": order_metadata}
+        else:
+            pid = {"metadata": order_metadata}
+            if req.customer_email:
+                pid["receipt_email"] = req.customer_email
+            checkout_params["payment_intent_data"] = pid
         if req.customer_email:
             checkout_params["customer_email"] = req.customer_email
-            if not is_recurring:
-                checkout_params["payment_intent_data"] = {"receipt_email": req.customer_email}
         session = stripe.checkout.Session.create(**checkout_params)
     except stripe._error.AuthenticationError:
         raise HTTPException(status_code=503, detail="Payment service is not configured. Please contact support.")
@@ -545,6 +554,12 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
     cancel_url = f"{req.origin_url}/cart"
     order_id = str(uuid.uuid4())
     try:
+        cart_metadata = {"order_id": order_id, "order_type": req.order_type,
+                          "item_count": str(len(validated_items)),
+                          "personalized_message": req.personalized_message[:500] if req.personalized_message else ""}
+        pid = {"metadata": cart_metadata}
+        if req.customer_email:
+            pid["receipt_email"] = req.customer_email
         checkout_params = {
             "payment_method_types": ["card"],
             "line_items": [{"price_data": {"currency": "gbp", "unit_amount": int(total * 100),
@@ -553,13 +568,11 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
             "success_url": success_url,
             "cancel_url": cancel_url,
             "shipping_address_collection": {"allowed_countries": ["GB"]},
-            "metadata": {"order_id": order_id, "order_type": req.order_type,
-                          "item_count": str(len(validated_items)),
-                          "personalized_message": req.personalized_message[:500] if req.personalized_message else ""},
+            "metadata": cart_metadata,
+            "payment_intent_data": pid,
         }
         if req.customer_email:
             checkout_params["customer_email"] = req.customer_email
-            checkout_params["payment_intent_data"] = {"receipt_email": req.customer_email}
         session = stripe.checkout.Session.create(**checkout_params)
     except stripe._error.AuthenticationError:
         raise HTTPException(status_code=503, detail="Payment service is not configured. Please contact support.")
