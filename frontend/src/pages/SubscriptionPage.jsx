@@ -243,6 +243,7 @@ export default function SubscriptionPage() {
                       >
                         Pre-Order <ArrowRight size={14} className="ml-2" />
                       </Button>
+                      <p className="text-xs font-light text-[#6B7280] text-center mt-2" data-testid="order-deadline">Order by the 19th for this month's delivery</p>
                     )
                   ) : (
                     /* Petite Paws & Grand Garden: Coming Soon */

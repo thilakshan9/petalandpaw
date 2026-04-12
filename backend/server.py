@@ -858,7 +858,7 @@ async def seed_data():
              "description": "Our most luxurious monthly arrangement with premium pet-safe flowers.",
              "price": 79.99, "frequency": "monthly",
              "image_url": "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=800",
-             "features": ["Free delivery", "Seasonal variety"], "pet_toy_price": 8.99},
+             "features": ["Free delivery", "Premium seasonal variety", "More variety and volume", "Signature wrapping upgrade"], "pet_toy_price": 8.99},
         ]
         await db.subscription_plans.insert_many(plans)
         logger.info("Seeded subscription plans")
@@ -874,7 +874,7 @@ async def seed_data():
     )
     await db.subscription_plans.update_one(
         {"slug": "grand-garden"},
-        {"$set": {"features": ["Free delivery", "Seasonal variety"], "pet_toy_price": 8.99}}
+        {"$set": {"features": ["Free delivery", "Premium seasonal variety", "More variety and volume", "Signature wrapping upgrade"], "pet_toy_price": 8.99}}
     )
 
     if await db.blog_posts.count_documents({}) == 0:

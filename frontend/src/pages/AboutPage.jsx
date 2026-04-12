@@ -36,19 +36,19 @@ export default function AboutPage() {
             It felt calm, creative, and honestly... like bringing a little bit of summer into a dark, cold day. And I couldn't stop thinking about it.
           </p>
           <p className="text-sm sm:text-base md:text-lg font-light leading-[1.9] text-[#4B5563]">
-            At the same time, I was living with my cat and dog — my whole world. Not long after, I found out that a lot of common flowers are actually toxic to pets. Even if not always serious, they can cause irritation, upset stomachs, or breathing issues.
+            At the same time, I was living with my cat and dog - my whole world. Not long after, I found out that a lot of common flowers are actually toxic to pets. Even if not always serious, they can cause irritation, upset stomachs, or breathing issues.
           </p>
           <p className="text-sm sm:text-base md:text-lg font-light leading-[1.9] text-[#4B5563] italic">
             I felt awful knowing I'd had them around my pets without realising.
           </p>
           <p className="text-sm sm:text-base md:text-lg font-light leading-[1.9] text-[#4B5563]">
-            What surprised me most was how little this is talked about. I had no idea — and neither did most people I spoke to.
+            What surprised me most was how little this is talked about. I had no idea - and neither did most people I spoke to.
           </p>
           <p className="text-sm sm:text-base md:text-lg font-medium leading-[1.9] text-[#2C2C2C]">
             And that didn't sit right with me.
           </p>
           <p className="text-sm sm:text-base md:text-lg font-light leading-[1.9] text-[#4B5563]">
-            So Petal & Paw was born — a way to have beautiful flowers in your home, without the worry.
+            So Petal & Paw was born - a way to have beautiful flowers in your home, without the worry.
           </p>
           <p className="text-sm sm:text-base md:text-lg font-light leading-[1.9] text-[#4B5563]">
             Now, I personally select every stem and handcraft each bouquet, choosing flowers that are thoughtfully considered for homes with pets.

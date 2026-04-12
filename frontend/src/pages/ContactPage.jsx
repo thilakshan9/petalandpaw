@@ -55,7 +55,7 @@ export default function ContactPage() {
           <div className="lg:col-span-2 animate-fade-in-up delay-100">
             <div className="space-y-6">
               {[
-                { icon: Mail, label: "Email", value: "hello@petalandpaw.co.uk", href: "mailto:hello@petalandpaw.co.uk" },
+                { icon: Mail, label: "Email", value: "info@petalandpaw.co.uk", href: "mailto:info@petalandpaw.co.uk" },
                 { icon: Instagram, label: "Instagram", value: "@petalandpawflorist", href: "https://instagram.com/petalandpawflorist" },
                 { icon: MapPin, label: "Location", value: "United Kingdom" },
                 { icon: Clock, label: "Response Time", value: "Within 24 hours" },

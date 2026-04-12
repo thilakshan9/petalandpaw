@@ -25,7 +25,7 @@ export default function HomePage() {
               Flowers Your Pets Will Love Too
             </h1>
             <p className="text-sm sm:text-base md:text-lg font-light leading-relaxed text-[#4B5563] mb-6 sm:mb-10 max-w-md">
-              Hand-crafted arrangements using only verified pet-safe blooms.
+              Hand-crafted arrangements using only pet-safe blooms.
             </p>
             <Link to="/gallery">
               <Button className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-7 py-5 sm:px-10 sm:py-7 text-xs sm:text-sm uppercase tracking-[0.2em] transition-all hover:scale-105" data-testid="hero-shop-btn">
@@ -62,7 +62,7 @@ export default function HomePage() {
               <img src="https://lh3.googleusercontent.com/d/16IURvclMQzZnIucglfEbfgsZFeegijRb=w800" alt="Cat with safe flowers" className="w-full h-full object-cover" />
             </div>
             <div className="animate-fade-in-up delay-200">
-              <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 sm:mb-4 block">Every Stem Verified</span>
+              <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 sm:mb-4 block">Every Stem Pet-Safe</span>
               <h2 className="font-['Playfair_Display'] text-2xl sm:text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C] mb-4 sm:mb-6">
                 Safe for Every Member of Your Family
               </h2>
@@ -86,10 +86,10 @@ export default function HomePage() {
             <div className="order-2 lg:order-1 animate-fade-in-up delay-200">
               <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 sm:mb-4 block">Monthly Delivery</span>
               <h2 className="font-['Playfair_Display'] text-2xl sm:text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C] mb-4 sm:mb-6">
-                Pet-Safe Letterbox Subscriptions
+                Pet-Safe Subscriptions
               </h2>
               <p className="text-sm sm:text-base font-light leading-relaxed text-[#6B7280] mb-6 sm:mb-8 max-w-md">
-                Fresh, seasonal flowers delivered through your letterbox every month. Three plans to choose from, each one guaranteed pet-safe. Surprise your pet with a toy by adding to any subscription.
+                Fresh, seasonal flowers delivered to your door every month. Three plans to choose from, each one guaranteed non-toxic. Surprise your pet with a toy by adding to any subscription.
               </p>
               <Link to="/subscriptions">
                 <Button className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-6 py-5 sm:px-8 sm:py-6 text-xs sm:text-sm uppercase tracking-[0.15em] transition-all hover:scale-105" data-testid="feature-sub-btn">
