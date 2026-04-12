@@ -1,22 +1,9 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, ShieldCheck, Leaf, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ProductCard from "@/components/ProductCard";
 import SEOHead from "@/components/SEOHead";
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
-
 export default function HomePage() {
-  const [featured, setFeatured] = useState([]);
-
-  useEffect(() => {
-    fetch(`${API}/products?featured=true`)
-      .then((r) => r.json())
-      .then(setFeatured)
-      .catch(console.error);
-  }, []);
-
   return (
     <div>
       <SEOHead title="Home" description="Pet-safe floral arrangements for the modern, conscious home." image="https://lh3.googleusercontent.com/d/17eTVpte-bc4RkhtYq0-WlCXYnI6DTILz=w1200" />
@@ -142,30 +129,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Products */}
-      <section className="py-14 sm:py-24 md:py-32 bg-white" data-testid="featured-products">
-        <div className="container mx-auto px-5 md:px-8 max-w-7xl">
-          <div className="flex items-end justify-between mb-8 sm:mb-12">
-            <div>
-              <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-2 sm:mb-3 block">Curated</span>
-              <h2 className="font-['Playfair_Display'] text-2xl sm:text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C]">Featured Blooms</h2>
-            </div>
-            <Link to="/shop" className="hidden md:flex items-center gap-2 text-sm font-light text-[#6B7280] hover:text-[#2C2C2C] transition-colors" data-testid="view-all-products">
-              View All <ArrowRight size={14} />
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
-            {featured.slice(0, 4).map((product, i) => (
-              <ProductCard key={product.id} product={product} index={i} />
-            ))}
-          </div>
-          <div className="mt-8 text-center md:hidden">
-            <Link to="/shop" className="inline-flex items-center gap-2 text-sm font-light text-[#6B7280] hover:text-[#2C2C2C] transition-colors" data-testid="view-all-products-mobile">
-              View All <ArrowRight size={14} />
-            </Link>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
