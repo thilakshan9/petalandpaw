@@ -591,14 +591,16 @@ async def get_order_status(session_id: str, request: Request, background_tasks: 
                    "updated_at": datetime.now(timezone.utc).isoformat()}
     # Extract shipping address if collected
     shipping = None
-    if session.shipping_details:
+    shipping_details = getattr(session, 'shipping_details', None)
+    if shipping_details:
         shipping = {
-            "name": session.shipping_details.get("name", ""),
-            "address": dict(session.shipping_details.get("address", {}))
+            "name": getattr(shipping_details, 'name', ''),
+            "address": dict(getattr(shipping_details, 'address', {}) or {})
         }
         update_data["shipping"] = shipping
     # Extract customer email
-    customer_email = session.customer_details.email if session.customer_details else session.customer_email
+    customer_details = getattr(session, 'customer_details', None)
+    customer_email = getattr(customer_details, 'email', None) if customer_details else getattr(session, 'customer_email', None)
     if payment_status == "paid":
         tx = await db.payment_transactions.find_one({"session_id": session_id}, {"_id": 0})
         if tx and tx.get("payment_status") != "paid":
