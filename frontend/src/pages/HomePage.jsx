@@ -19,12 +19,12 @@ export default function HomePage() {
 
   return (
     <div>
-      <SEOHead title="Home" description="Pet-safe floral arrangements for the modern, conscious home." image="https://images.unsplash.com/photo-1510771463146-e89e6e86560e?w=1200" />
+      <SEOHead title="Home" description="Pet-safe floral arrangements for the modern, conscious home." image="https://lh3.googleusercontent.com/d/17eTVpte-bc4RkhtYq0-WlCXYnI6DTILz=w1200" />
 
       {/* Full-Width Hero */}
       <section className="relative h-[60vh] sm:h-[70vh] md:h-[85vh] min-h-[420px] md:min-h-[600px] overflow-hidden" data-testid="hero-section">
         <img
-          src="https://images.unsplash.com/photo-1510771463146-e89e6e86560e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHwyfHxkb2clMjBzbmlmZmluZyUyMGZsb3dlcnMlMjBnZW50bGUlMjBhZXN0aGV0aWN8ZW58MHx8fHwxNzczMDg1MDgyfDA&ixlib=rb-4.1.0&q=85&w=1920"
+          src="https://lh3.googleusercontent.com/d/17eTVpte-bc4RkhtYq0-WlCXYnI6DTILz=w1920"
           alt="Dog with beautiful pet-safe flowers"
           className="absolute inset-0 w-full h-full object-cover"
         />
@@ -72,7 +72,7 @@ export default function HomePage() {
         <div className="container mx-auto px-5 md:px-8 max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-20 items-center">
             <div className="aspect-[4/5] max-h-[60vh] lg:max-h-none rounded-2xl overflow-hidden animate-fade-in-up">
-              <img src="https://images.unsplash.com/photo-1548724582-1216ec5351ce?w=800" alt="Cat with safe flowers" className="w-full h-full object-cover" />
+              <img src="https://lh3.googleusercontent.com/d/16IURvclMQzZnIucglfEbfgsZFeegijRb=w800" alt="Cat with safe flowers" className="w-full h-full object-cover" />
             </div>
             <div className="animate-fade-in-up delay-200">
               <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 sm:mb-4 block">Every Stem Verified</span>
@@ -111,7 +111,7 @@ export default function HomePage() {
               </Link>
             </div>
             <div className="order-1 lg:order-2 aspect-[4/5] max-h-[60vh] lg:max-h-none rounded-2xl overflow-hidden animate-fade-in-up">
-              <img src="https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=800" alt="Letterbox flower subscription" className="w-full h-full object-cover" />
+              <img src="https://lh3.googleusercontent.com/d/1FbsOPmzRFettYsD-rg3YYr_MwWY2polq=w800" alt="Letterbox flower subscription" className="w-full h-full object-cover" />
             </div>
           </div>
         </div>
@@ -122,7 +122,7 @@ export default function HomePage() {
         <div className="container mx-auto px-5 md:px-8 max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-20 items-center">
             <div className="aspect-[4/5] max-h-[60vh] lg:max-h-none rounded-2xl overflow-hidden animate-fade-in-up">
-              <img src="https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=800" alt="Create your own bouquet" className="w-full h-full object-cover" />
+              <img src="https://lh3.googleusercontent.com/d/1R4hu2qLqJH4VJwmpEoS30cxi7e1i2B4J=w800" alt="Create your own bouquet" className="w-full h-full object-cover" />
             </div>
             <div className="animate-fade-in-up delay-200">
               <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 sm:mb-4 block">Personalise</span>
