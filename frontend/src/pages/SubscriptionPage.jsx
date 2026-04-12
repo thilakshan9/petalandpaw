@@ -172,7 +172,7 @@ export default function SubscriptionPage() {
 
                   {/* Pet Type Selector */}
                   <div className="mb-4" data-testid={`pet-type-section-${plan.slug}`}>
-                    <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Your Pet Type</label>
+                    <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Your Pet</label>
                     <div className="relative">
                       <select
                         value={selectedPet}
