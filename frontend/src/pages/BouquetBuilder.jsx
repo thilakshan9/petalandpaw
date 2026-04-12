@@ -24,7 +24,33 @@ const PET_TYPES = [
   { value: "other", label: "Other" },
 ];
 
+const COMING_SOON = true;
+
 export default function BouquetBuilder() {
+  if (COMING_SOON) {
+    return (
+      <div className="py-20 sm:py-32 md:py-44" data-testid="bouquet-builder-page">
+        <SEOHead title="Build Your Bouquet" description="Create a custom pet-safe bouquet. Coming soon." />
+        <div className="container mx-auto px-5 md:px-8 max-w-xl text-center animate-fade-in-up">
+          <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 block">Coming Soon</span>
+          <h1 className="font-['Playfair_Display'] text-3xl sm:text-5xl md:text-6xl font-medium tracking-tight text-[#2C2C2C] mb-4">
+            Build Your Bouquet
+          </h1>
+          <p className="text-sm sm:text-base font-light leading-relaxed text-[#6B7280] mb-8 max-w-md mx-auto">
+            We're putting the finishing touches on our custom bouquet builder. Soon you'll be able to choose your size, pick your flowers, and tell us about your pet.
+          </p>
+          <div className="inline-flex items-center gap-2 bg-[#F2F0EB] rounded-full px-6 py-3 text-xs uppercase tracking-widest font-semibold text-[#6B7280]">
+            <AlertTriangle size={14} className="text-[#8DA399]" /> Launching Soon
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return <BouquetBuilderFull />;
+}
+
+function BouquetBuilderFull() {
   const [step, setStep] = useState(1);
   const [flowers, setFlowers] = useState([]);
   const [loading, setLoading] = useState(true);

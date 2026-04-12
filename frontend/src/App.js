@@ -5,14 +5,11 @@ import { Toaster } from "@/components/ui/sonner";
 import { CartProvider } from "@/components/CartProvider";
 import Layout from "@/components/Layout";
 import HomePage from "@/pages/HomePage";
-import ShopPage from "@/pages/ShopPage";
-import ProductPage from "@/pages/ProductPage";
+import GalleryPage from "@/pages/GalleryPage";
 import SubscriptionPage from "@/pages/SubscriptionPage";
 import BouquetBuilder from "@/pages/BouquetBuilder";
 import CartPage from "@/pages/CartPage";
 import CheckoutSuccess from "@/pages/CheckoutSuccess";
-import BlogPage from "@/pages/BlogPage";
-import BlogPostPage from "@/pages/BlogPostPage";
 import AdminLogin from "@/pages/AdminLogin";
 import AuthCallback from "@/pages/AuthCallback";
 import AdminDashboard from "@/pages/AdminDashboard";
@@ -113,14 +110,11 @@ function AppRouter() {
   return (
     <Routes>
       <Route path="/" element={<Layout><HomePage /></Layout>} />
-      <Route path="/shop" element={<Layout><ShopPage /></Layout>} />
-      <Route path="/shop/:slug" element={<Layout><ProductPage /></Layout>} />
+      <Route path="/gallery" element={<Layout><GalleryPage /></Layout>} />
       <Route path="/subscriptions" element={<Layout><SubscriptionPage /></Layout>} />
       <Route path="/bouquet-builder" element={<Layout><BouquetBuilder /></Layout>} />
       <Route path="/cart" element={<Layout><CartPage /></Layout>} />
       <Route path="/checkout/success" element={<Layout><CheckoutSuccess /></Layout>} />
-      <Route path="/blog" element={<Layout><BlogPage /></Layout>} />
-      <Route path="/blog/:slug" element={<Layout><BlogPostPage /></Layout>} />
       <Route path="/about" element={<Layout><AboutPage /></Layout>} />
       <Route path="/contact" element={<Layout><ContactPage /></Layout>} />
       <Route path="/login" element={<Layout><CustomerLogin /></Layout>} />

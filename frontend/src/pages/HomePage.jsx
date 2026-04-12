@@ -40,9 +40,9 @@ export default function HomePage() {
             <p className="text-sm sm:text-base md:text-lg font-light leading-relaxed text-[#4B5563] mb-6 sm:mb-10 max-w-md">
               Hand-crafted arrangements using only verified pet-safe blooms.
             </p>
-            <Link to="/shop">
+            <Link to="/gallery">
               <Button className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-7 py-5 sm:px-10 sm:py-7 text-xs sm:text-sm uppercase tracking-[0.2em] transition-all hover:scale-105" data-testid="hero-shop-btn">
-                Shop All Flowers <ArrowRight size={16} className="ml-2 sm:ml-3" />
+                View Gallery <ArrowRight size={16} className="ml-2 sm:ml-3" />
               </Button>
             </Link>
           </div>
@@ -82,9 +82,9 @@ export default function HomePage() {
               <p className="text-sm sm:text-base font-light leading-relaxed text-[#6B7280] mb-6 sm:mb-8 max-w-md">
                 Every flower we sell is carefully checked against scientific data. Just beautiful, worry-free blooms for homes with curious cats, playful dogs, and everything in between.
               </p>
-              <Link to="/shop">
+              <Link to="/gallery">
                 <Button variant="outline" className="rounded-full border-[#2C2C2C] text-[#2C2C2C] hover:bg-[#2C2C2C] hover:text-[#FAF9F6] px-6 py-5 sm:px-8 sm:py-6 text-xs sm:text-sm uppercase tracking-[0.15em] transition-all" data-testid="feature-shop-btn">
-                  Browse All Flowers
+                  Browse Gallery
                 </Button>
               </Link>
             </div>

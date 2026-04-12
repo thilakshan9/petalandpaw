@@ -6,10 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const navLinks = [
-  { href: "/shop", label: "Shop" },
+  { href: "/gallery", label: "Gallery" },
   { href: "/subscriptions", label: "Subscriptions" },
   { href: "/bouquet-builder", label: "Build a Bouquet" },
-  { href: "/blog", label: "Journal" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];

@@ -36,8 +36,8 @@ export default function Footer() {
           <div>
             <h4 className="text-xs uppercase tracking-widest font-semibold mb-6 text-[#FAF9F6]/40">Shop</h4>
             <nav className="flex flex-col gap-3">
-              <ScrollLink to="/shop" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-shop">All Products</ScrollLink>
-              <ScrollLink to="/shop?category=bouquet" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-bouquets">Bouquets</ScrollLink>
+              <ScrollLink to="/gallery" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-shop">Gallery</ScrollLink>
+              <ScrollLink to="/gallery" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-bouquets">Bouquets</ScrollLink>
               <ScrollLink to="/subscriptions" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-subscriptions">Subscriptions</ScrollLink>
               <ScrollLink to="/bouquet-builder" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-builder">Build a Bouquet</ScrollLink>
             </nav>
@@ -46,7 +46,6 @@ export default function Footer() {
           <div>
             <h4 className="text-xs uppercase tracking-widest font-semibold mb-6 text-[#FAF9F6]/40">Company</h4>
             <nav className="flex flex-col gap-3">
-              <ScrollLink to="/blog" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-blog">Journal</ScrollLink>
               <ScrollLink to="/about" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-about">About Us</ScrollLink>
               <span className="text-sm font-light text-[#FAF9F6]/70">Sustainability</span>
               <span className="text-sm font-light text-[#FAF9F6]/70">Pet Safety Promise</span>
