@@ -14,11 +14,11 @@ export default function AboutPage() {
           </h1>
         </div>
 
-        <div className="aspect-[16/7] rounded-2xl overflow-hidden mb-12 sm:mb-16 animate-fade-in-up delay-100">
+        <div className="rounded-2xl overflow-hidden mb-12 sm:mb-16 animate-fade-in-up delay-100">
           <img
-            src="https://lh3.googleusercontent.com/d/1Bb6vOtqJUPBQElYkHNqj8cAa4jnTIOIH=w1200"
+            src="https://lh3.googleusercontent.com/d/1-YHvycEZtLBPkdcbwx2BmaDZJb1P6s_P=w1200"
             alt="Beautiful flowers in a bright, minimal home"
-            className="w-full h-full object-cover object-[center_70%]"
+            className="w-full h-auto"
           />
         </div>
 
