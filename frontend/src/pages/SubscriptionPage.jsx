@@ -85,7 +85,7 @@ export default function SubscriptionPage() {
         toast.error(data.detail || "Something went wrong.");
         setSubscribing(null);
       }
-    } catch {
+    } catch (err) {
       toast.error("Something went wrong. Please try again.");
       setSubscribing(null);
     }

@@ -431,14 +431,14 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
         }
         if req.customer_email:
             checkout_params["customer_email"] = req.customer_email
-        if not is_recurring and req.customer_email:
-            checkout_params["payment_intent_data"] = {"receipt_email": req.customer_email}
+            if not is_recurring:
+                checkout_params["payment_intent_data"] = {"receipt_email": req.customer_email}
         session = stripe.checkout.Session.create(**checkout_params)
     except stripe._error.AuthenticationError:
         raise HTTPException(status_code=503, detail="Payment service is not configured. Please contact support.")
     except Exception as e:
-        logger.error(f"Stripe error: {e}")
-        raise HTTPException(status_code=500, detail="Payment processing failed. Please try again.")
+        logger.error(f"Stripe checkout error (mode={req.checkout_mode}): {type(e).__name__}: {e}")
+        raise HTTPException(status_code=500, detail=f"Payment error: {str(e)}")
     await db.payment_transactions.insert_one({
         "id": str(uuid.uuid4()), "session_id": session.id,
         "amount": float(total), "currency": "gbp",
@@ -547,16 +547,16 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
             "metadata": {"order_id": order_id, "order_type": req.order_type,
                           "item_count": str(len(validated_items)),
                           "personalized_message": req.personalized_message[:500] if req.personalized_message else ""},
-            "payment_intent_data": {"receipt_email": req.customer_email} if req.customer_email else {},
         }
         if req.customer_email:
             checkout_params["customer_email"] = req.customer_email
+            checkout_params["payment_intent_data"] = {"receipt_email": req.customer_email}
         session = stripe.checkout.Session.create(**checkout_params)
     except stripe._error.AuthenticationError:
         raise HTTPException(status_code=503, detail="Payment service is not configured. Please contact support.")
     except Exception as e:
-        logger.error(f"Stripe error: {e}")
-        raise HTTPException(status_code=500, detail="Payment processing failed. Please try again.")
+        logger.error(f"Stripe order checkout error: {type(e).__name__}: {e}")
+        raise HTTPException(status_code=500, detail=f"Payment error: {str(e)}")
     order_doc = {
         "id": order_id, "items": validated_items, "total": float(total),
         "status": "todo", "stripe_session_id": session.id,
