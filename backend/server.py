@@ -108,30 +108,27 @@ class ContactFormRequest(BaseModel):
     message: str
 
 # ============================================================
-# EMAIL HELPER (Gmail SMTP)
+# EMAIL HELPER (Resend)
 # ============================================================
 
-gmail_user = os.environ.get('GMAIL_USER', '')
-gmail_app_password = os.environ.get('GMAIL_APP_PASSWORD', '')
+resend_api_key = os.environ.get('RESEND_API_KEY', '')
 
-def _send_email_smtp(to_email: str, subject: str, html_content: str, reply_to: str = ""):
-    if not gmail_user or not gmail_app_password:
+def _send_email(to_email: str, subject: str, html_content: str, reply_to: str = ""):
+    if not resend_api_key:
         logger.info(f"[EMAIL NOT CONFIGURED] Would send to {to_email}: {subject}")
         return False
     try:
-        import smtplib
-        from email.mime.text import MIMEText
-        from email.mime.multipart import MIMEMultipart
-        msg = MIMEMultipart("alternative")
-        msg["From"] = gmail_user
-        msg["To"] = to_email
-        msg["Subject"] = subject
+        import resend
+        resend.api_key = resend_api_key
+        params = {
+            "from": "Petal & Paw <onboarding@resend.dev>",
+            "to": [to_email],
+            "subject": subject,
+            "html": html_content,
+        }
         if reply_to:
-            msg["Reply-To"] = reply_to
-        msg.attach(MIMEText(html_content, "html"))
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-            server.login(gmail_user, gmail_app_password)
-            server.sendmail(gmail_user, to_email, msg.as_string())
+            params["reply_to"] = reply_to
+        resend.Emails.send(params)
         logger.info(f"Email sent to {to_email}: {subject}")
         return True
     except Exception as e:
@@ -157,10 +154,10 @@ async def send_order_confirmation_email(to_email: str, order_data: dict):
         <p style="color: #8DA399; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;">Petal & Paw - Pet-Safe Florals</p>
     </div>
     """
-    return _send_email_smtp(to_email, "Your Petal & Paw Order Confirmation", html_content)
+    return _send_email(to_email, "Your Petal & Paw Order Confirmation", html_content)
 
 async def send_contact_form_email(name: str, email: str, subject: str, message: str):
-    contact_email = os.environ.get('CONTACT_EMAIL', 'petalandpawflorist@gmail.com')
+    contact_email = os.environ.get('CONTACT_EMAIL', 'nandineekattan@gmail.com')
     html_content = f"""
     <div style="font-family: 'Helvetica', sans-serif; max-width: 600px; margin: 0 auto; background: #FAF9F6; padding: 40px;">
         <h1 style="font-family: serif; color: #2C2C2C; font-weight: 400;">New Contact Form Message</h1>
@@ -174,7 +171,7 @@ async def send_contact_form_email(name: str, email: str, subject: str, message: 
         <p style="color: #8DA399; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;">Petal & Paw - Contact Form</p>
     </div>
     """
-    return _send_email_smtp(contact_email, f"[Petal & Paw] {subject or 'Contact Form Message'}", html_content, reply_to=email)
+    return _send_email(contact_email, f"[Petal & Paw] {subject or 'Contact Form Message'}", html_content, reply_to=email)
 
 # ============================================================
 # AUTH HELPERS
