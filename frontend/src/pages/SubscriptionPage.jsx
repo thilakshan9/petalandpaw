@@ -278,7 +278,7 @@ export default function SubscriptionPage() {
                 autoFocus
               />
               <div>
-                <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Personalized Message (optional)</label>
+                <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Add a gift note (optional)</label>
                 <textarea
                   placeholder="Add a personal note to your bouquet..."
                   value={personalizedMessage}
