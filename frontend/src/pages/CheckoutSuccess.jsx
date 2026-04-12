@@ -17,12 +17,18 @@ export default function CheckoutSuccess() {
     if (!sessionId) { setStatus("error"); return; }
 
     let attempts = 0;
-    const maxAttempts = 5;
+    const maxAttempts = 8;
     const pollInterval = 2000;
 
     const poll = async () => {
       try {
         const res = await fetch(`${API}/orders/status/${sessionId}`);
+        if (!res.ok) {
+          attempts++;
+          if (attempts < maxAttempts) { setTimeout(poll, pollInterval); return; }
+          setStatus("error");
+          return;
+        }
         const data = await res.json();
         setPaymentData(data);
 
@@ -35,45 +41,83 @@ export default function CheckoutSuccess() {
           setStatus("expired");
           return;
         }
+        // For subscriptions, "complete" status means success
+        if (data.status === "complete" && data.mode === "subscription") {
+          setStatus("success");
+          clearCart();
+          return;
+        }
 
         attempts++;
         if (attempts < maxAttempts) {
           setTimeout(poll, pollInterval);
         } else {
-          setStatus("timeout");
+          // If we've polled enough and it's still not paid, show success anyway
+          // (Stripe may take a moment to process)
+          if (data.status === "complete") {
+            setStatus("success");
+            clearCart();
+          } else {
+            setStatus("timeout");
+          }
         }
       } catch {
-        setStatus("error");
+        attempts++;
+        if (attempts < maxAttempts) {
+          setTimeout(poll, pollInterval);
+        } else {
+          setStatus("error");
+        }
       }
     };
 
     poll();
   }, [sessionId, clearCart]);
 
+  const isSubscription = paymentData?.mode === "subscription";
+
   return (
-    <div className="py-20 md:py-32" data-testid="checkout-success-page">
-      <div className="container mx-auto px-4 md:px-8 max-w-lg text-center">
+    <div className="py-16 sm:py-20 md:py-32" data-testid="checkout-success-page">
+      <div className="container mx-auto px-5 md:px-8 max-w-lg text-center">
         {status === "loading" && (
           <div className="animate-fade-in-up">
             <Loader2 size={48} strokeWidth={1} className="mx-auto text-[#8DA399] animate-spin mb-6" />
-            <h1 className="font-['Playfair_Display'] text-3xl font-medium text-[#2C2C2C] mb-4">Processing Payment</h1>
-            <p className="text-base font-light text-[#6B7280]">Please wait while we confirm your payment...</p>
+            <h1 className="font-['Playfair_Display'] text-2xl sm:text-3xl font-medium text-[#2C2C2C] mb-4">Processing Payment</h1>
+            <p className="text-sm sm:text-base font-light text-[#6B7280]">Please wait while we confirm your payment...</p>
           </div>
         )}
 
         {status === "success" && (
           <div className="animate-fade-in-up">
             <CheckCircle2 size={48} strokeWidth={1} className="mx-auto text-[#8DA399] mb-6" />
-            <h1 className="font-['Playfair_Display'] text-3xl font-medium text-[#2C2C2C] mb-4" data-testid="payment-success-title">Thank You!</h1>
-            <p className="text-base font-light text-[#6B7280] mb-2">Your order has been confirmed.</p>
-            {paymentData && (
-              <p className="text-sm font-light text-[#6B7280] mb-8">
+            <h1 className="font-['Playfair_Display'] text-2xl sm:text-3xl font-medium text-[#2C2C2C] mb-4" data-testid="payment-success-title">
+              Thank You!
+            </h1>
+            <p className="text-sm sm:text-base font-light text-[#6B7280] mb-2">
+              {isSubscription
+                ? "Your subscription has been set up. You'll be charged monthly."
+                : "Your order has been confirmed and is being prepared with care."
+              }
+            </p>
+            {paymentData?.amount_total && (
+              <p className="text-sm font-light text-[#6B7280] mb-2">
                 Amount: £{(paymentData.amount_total / 100).toFixed(2)}
+                {isSubscription && " / month"}
               </p>
             )}
-            <Link to="/shop">
-              <Button className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-8 py-6 text-sm uppercase tracking-widest" data-testid="back-to-shop-btn">
-                Continue Shopping
+            {paymentData?.shipping && (
+              <div className="bg-[#F2F0EB] rounded-xl p-4 mt-4 mb-2 text-left">
+                <p className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-2">Shipping to</p>
+                <p className="text-sm font-light text-[#2C2C2C]">{paymentData.shipping.name}</p>
+                <p className="text-sm font-light text-[#6B7280]">
+                  {[paymentData.shipping.address?.line1, paymentData.shipping.address?.line2, paymentData.shipping.address?.city, paymentData.shipping.address?.postal_code].filter(Boolean).join(", ")}
+                </p>
+              </div>
+            )}
+            <p className="text-xs font-light text-[#8DA399] mb-8">A confirmation has been sent to your email.</p>
+            <Link to="/">
+              <Button className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-8 py-6 text-xs sm:text-sm uppercase tracking-widest" data-testid="back-to-home-btn">
+                Back to Home
               </Button>
             </Link>
           </div>
@@ -82,17 +126,17 @@ export default function CheckoutSuccess() {
         {(status === "error" || status === "expired" || status === "timeout") && (
           <div className="animate-fade-in-up">
             <XCircle size={48} strokeWidth={1} className="mx-auto text-red-400 mb-6" />
-            <h1 className="font-['Playfair_Display'] text-3xl font-medium text-[#2C2C2C] mb-4">
+            <h1 className="font-['Playfair_Display'] text-2xl sm:text-3xl font-medium text-[#2C2C2C] mb-4">
               {status === "timeout" ? "Payment Pending" : "Payment Issue"}
             </h1>
-            <p className="text-base font-light text-[#6B7280] mb-8">
+            <p className="text-sm sm:text-base font-light text-[#6B7280] mb-8">
               {status === "timeout"
                 ? "Your payment is still being processed. Check your email for confirmation."
-                : "Something went wrong. Please contact support if you were charged."}
+                : "Something went wrong. Please contact us if you were charged."}
             </p>
-            <Link to="/shop">
-              <Button variant="outline" className="rounded-full border-[#2C2C2C] text-[#2C2C2C] px-8 py-6 text-sm uppercase tracking-widest">
-                Back to Shop
+            <Link to="/contact">
+              <Button variant="outline" className="rounded-full border-[#2C2C2C] text-[#2C2C2C] px-8 py-6 text-xs sm:text-sm uppercase tracking-widest">
+                Contact Us
               </Button>
             </Link>
           </div>

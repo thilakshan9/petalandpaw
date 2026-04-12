@@ -407,6 +407,7 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
             "mode": "subscription" if is_recurring else "payment",
             "success_url": success_url,
             "cancel_url": cancel_url,
+            "shipping_address_collection": {"allowed_countries": ["GB"]},
             "metadata": {"type": req.checkout_mode, "plan_id": plan["id"], "plan_name": plan["name"],
                           "add_pet_toy": str(req.add_pet_toy)},
         }
@@ -522,6 +523,7 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
             "mode": "payment",
             "success_url": success_url,
             "cancel_url": cancel_url,
+            "shipping_address_collection": {"allowed_countries": ["GB"]},
             "metadata": {"order_id": order_id, "order_type": req.order_type,
                           "item_count": str(len(validated_items))},
             "payment_intent_data": {"receipt_email": req.customer_email} if req.customer_email else {},
@@ -554,32 +556,64 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
 
 @api_router.get("/orders/status/{session_id}")
 async def get_order_status(session_id: str, request: Request, background_tasks: BackgroundTasks):
-    host_url = str(request.base_url).rstrip("/")
-    session = stripe.checkout.Session.retrieve(session_id)
+    try:
+        session = stripe.checkout.Session.retrieve(session_id)
+    except Exception as e:
+        logger.error(f"Stripe session retrieve error: {e}")
+        raise HTTPException(status_code=404, detail="Payment session not found")
     payment_status = session.payment_status or "unpaid"
     status = session.status or "open"
+    # For subscriptions, payment_status is "paid" once the first invoice is paid
+    # For one-time, it's "paid" after charge succeeds
     update_data = {"status": status, "payment_status": payment_status,
                    "updated_at": datetime.now(timezone.utc).isoformat()}
+    # Extract shipping address if collected
+    shipping = None
+    if session.shipping_details:
+        shipping = {
+            "name": session.shipping_details.get("name", ""),
+            "address": dict(session.shipping_details.get("address", {}))
+        }
+        update_data["shipping"] = shipping
+    # Extract customer email
+    customer_email = session.customer_details.email if session.customer_details else session.customer_email
     if payment_status == "paid":
         tx = await db.payment_transactions.find_one({"session_id": session_id}, {"_id": 0})
         if tx and tx.get("payment_status") != "paid":
+            # Update transaction
+            if shipping:
+                update_data["shipping"] = shipping
+            if customer_email:
+                update_data["customer_email"] = customer_email
+            # Check for order (cart checkout) or subscription checkout
             order = await db.orders.find_one({"stripe_session_id": session_id}, {"_id": 0})
-            await db.orders.update_one(
-                {"stripe_session_id": session_id},
-                {"$set": {"status": "todo", "updated_at": datetime.now(timezone.utc).isoformat()}}
-            )
-            # Apply referral credits
-            if order and order.get("referral_code"):
-                referrer = await db.users.find_one({"referral_code": order["referral_code"]}, {"_id": 0})
-                if referrer:
-                    await db.users.update_one({"referral_code": order["referral_code"]},
-                        {"$inc": {"credits": 10.0}})
-            # Send confirmation email
-            if order and order.get("customer_email"):
-                background_tasks.add_task(send_order_confirmation_email, order["customer_email"], order)
-    await db.payment_transactions.update_one({"session_id": session_id}, {"$set": update_data})
-    return {"status": status, "payment_status": payment_status,
+            if order:
+                order_update = {"status": "todo", "updated_at": datetime.now(timezone.utc).isoformat()}
+                if shipping:
+                    order_update["shipping"] = shipping
+                await db.orders.update_one(
+                    {"stripe_session_id": session_id}, {"$set": order_update}
+                )
+                if order.get("referral_code"):
+                    referrer = await db.users.find_one({"referral_code": order["referral_code"]}, {"_id": 0})
+                    if referrer:
+                        await db.users.update_one({"referral_code": order["referral_code"]},
+                            {"$inc": {"credits": 10.0}})
+                if order.get("customer_email"):
+                    background_tasks.add_task(send_order_confirmation_email, order["customer_email"], order)
+            elif customer_email:
+                background_tasks.add_task(send_order_confirmation_email, customer_email, {
+                    "items": [{"name": tx.get("metadata", {}).get("plan_name", "Subscription"), "quantity": 1, "price": tx.get("amount", 0)}],
+                    "total": tx.get("amount", 0),
+                })
+    await db.payment_transactions.update_one({"session_id": session_id}, {"$set": update_data}, upsert=True)
+    result = {"status": status, "payment_status": payment_status,
             "amount_total": session.amount_total, "currency": session.currency}
+    if shipping:
+        result["shipping"] = shipping
+    if session.mode:
+        result["mode"] = session.mode
+    return result
 
 @api_router.get("/orders")
 async def get_orders(user=Depends(get_current_user)):
