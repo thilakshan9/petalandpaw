@@ -383,6 +383,12 @@ async def get_subscription_plans():
     plans = await db.subscription_plans.find({}, {"_id": 0}).to_list(10)
     return plans
 
+@api_router.get("/subscriptions/debug")
+async def debug_subscription_plans():
+    """Debug endpoint to check plan data in the database"""
+    plans = await db.subscription_plans.find({}, {"_id": 0}).to_list(10)
+    return {"plan_count": len(plans), "plans": [{"name": p.get("name"), "slug": p.get("slug"), "price": p.get("price"), "pet_toy_price": p.get("pet_toy_price"), "features": p.get("features")} for p in plans]}
+
 @api_router.get("/subscriptions/order-count/{plan_slug}")
 async def get_subscription_order_count(plan_slug: str):
     plan = await db.subscription_plans.find_one({"slug": plan_slug}, {"_id": 0})
@@ -400,7 +406,10 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
     plan = await db.subscription_plans.find_one({"id": req.plan_id}, {"_id": 0})
     if not plan:
         raise HTTPException(status_code=404, detail="Plan not found")
-    total = float(plan["price"])
+    total = float(plan.get("price", 0))
+    if total < 0.30:
+        logger.error(f"Plan price too low: {plan.get('name')} = £{total}. Plan data: {plan}")
+        raise HTTPException(status_code=400, detail=f"Plan price (£{total:.2f}) is below Stripe minimum (£0.30). Please check plan configuration.")
     pet_toy_price = float(plan.get("pet_toy_price", 8.99))
     if req.add_pet_toy:
         total += pet_toy_price
