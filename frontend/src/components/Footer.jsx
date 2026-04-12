@@ -56,7 +56,7 @@ export default function Footer() {
             <h4 className="text-xs uppercase tracking-widest font-semibold mb-6 text-[#FAF9F6]/40">Support</h4>
             <nav className="flex flex-col gap-3">
               <ScrollLink to="/contact" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-contact">Contact</ScrollLink>
-              <span className="text-sm font-light text-[#FAF9F6]/70">FAQ</span>
+              <ScrollLink to="/faq" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-faq">FAQ</ScrollLink>
               <span className="text-sm font-light text-[#FAF9F6]/70">Delivery Info</span>
               <span className="text-sm font-light text-[#FAF9F6]/70">Returns</span>
             </nav>
