@@ -16,6 +16,8 @@ export default function SubscriptionPage() {
   const [petToy, setPetToy] = useState({});
   const [emailDialog, setEmailDialog] = useState(null);
   const [customerEmail, setCustomerEmail] = useState("");
+  const [preOrderExpanded, setPreOrderExpanded] = useState(null);
+  const [orderType, setOrderType] = useState(null);
 
   useEffect(() => {
     fetch(`${API}/subscriptions/plans`)
@@ -24,7 +26,8 @@ export default function SubscriptionPage() {
       .catch(() => setLoading(false));
   }, []);
 
-  const handleSubscribeClick = (planId) => {
+  const handleSubscribeClick = (planId, type = "subscription") => {
+    setOrderType(type);
     setEmailDialog(planId);
     setCustomerEmail("");
   };
@@ -125,16 +128,48 @@ export default function SubscriptionPage() {
                     />
                   </div>
 
-                  <Button
-                    onClick={() => handleSubscribeClick(plan.id)}
-                    disabled={subscribing === plan.id}
-                    className={`rounded-full px-8 py-6 text-sm uppercase tracking-widest transition-all hover:scale-105 w-full ${
-                      isPop ? "bg-[#8DA399] text-white hover:bg-[#8DA399]/90" : "bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90"
-                    }`}
-                    data-testid={`subscribe-${plan.slug}`}
-                  >
-                    {subscribing === plan.id ? "Processing..." : "Subscribe"} <ArrowRight size={14} className="ml-2" />
-                  </Button>
+                  {/* Buttons per plan type */}
+                  {i === 1 ? (
+                    /* Classic Bloom: Pre-order -> expand to Subscribe / One-time */
+                    preOrderExpanded === plan.id ? (
+                      <div className="flex flex-col gap-2 w-full">
+                        <Button
+                          onClick={() => handleSubscribeClick(plan.id, "subscription")}
+                          disabled={subscribing === plan.id}
+                          className="rounded-full px-8 py-6 text-sm uppercase tracking-widest transition-all hover:scale-105 w-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90"
+                          data-testid={`subscribe-${plan.slug}`}
+                        >
+                          {subscribing === plan.id ? "Processing..." : "Subscribe"} <ArrowRight size={14} className="ml-2" />
+                        </Button>
+                        <Button
+                          onClick={() => handleSubscribeClick(plan.id, "one-time")}
+                          disabled={subscribing === plan.id}
+                          variant="outline"
+                          className="rounded-full px-8 py-6 text-sm uppercase tracking-widest transition-all hover:scale-105 w-full border-[#8DA399] text-[#8DA399] hover:bg-[#8DA399] hover:text-white"
+                          data-testid={`one-time-${plan.slug}`}
+                        >
+                          {subscribing === plan.id ? "Processing..." : "One-Time Purchase"} <ArrowRight size={14} className="ml-2" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button
+                        onClick={() => setPreOrderExpanded(plan.id)}
+                        className="rounded-full px-8 py-6 text-sm uppercase tracking-widest transition-all hover:scale-105 w-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90"
+                        data-testid={`preorder-${plan.slug}`}
+                      >
+                        Pre-Order <ArrowRight size={14} className="ml-2" />
+                      </Button>
+                    )
+                  ) : (
+                    /* Petite Paws & Grand Garden: Coming Soon */
+                    <Button
+                      disabled
+                      className="rounded-full px-8 py-6 text-sm uppercase tracking-widest w-full bg-[#E8E4D9] text-[#6B7280] cursor-not-allowed opacity-70"
+                      data-testid={`coming-soon-${plan.slug}`}
+                    >
+                      Coming Soon
+                    </Button>
+                  )}
                 </div>
               );
             })}
@@ -146,7 +181,7 @@ export default function SubscriptionPage() {
           <DialogContent className="max-w-sm border-[#E5E0D6] bg-[#FAF9F6] rounded-2xl" data-testid="email-dialog">
             <DialogTitle className="font-['Playfair_Display'] text-xl font-medium text-[#2C2C2C]">Your Email</DialogTitle>
             <DialogDescription className="text-sm font-light text-[#6B7280]">
-              Enter your email to receive order confirmation and receipt.
+              Enter your email to receive your {orderType === "one-time" ? "order" : "subscription"} confirmation and receipt.
             </DialogDescription>
             <div className="mt-4 space-y-4">
               <Input
