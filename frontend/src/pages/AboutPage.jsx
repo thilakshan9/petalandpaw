@@ -16,7 +16,7 @@ export default function AboutPage() {
 
         <div className="aspect-[16/7] rounded-2xl overflow-hidden mb-12 sm:mb-16 animate-fade-in-up delay-100">
           <img
-            src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=1200"
+            src="https://lh3.googleusercontent.com/d/1xeNcEl_KU6Q2K04jmorTsktc-J-wDyJW=w1200"
             alt="Beautiful flowers in a bright, minimal home"
             className="w-full h-full object-cover"
           />
