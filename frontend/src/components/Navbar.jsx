@@ -37,9 +37,6 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Link to="/account" className="p-2 hover:bg-[#E8E4D9]/50 rounded-full transition-colors hidden md:flex" data-testid="nav-account">
-            <User size={20} strokeWidth={1.5} />
-          </Link>
           <Link to="/cart" className="relative p-2 hover:bg-[#E8E4D9]/50 rounded-full transition-colors" data-testid="nav-cart">
             <ShoppingBag size={20} strokeWidth={1.5} />
             {itemCount > 0 && (
