@@ -63,6 +63,8 @@ Modern, minimal ecommerce website for pet-safe flowers. Neutral colour palette, 
   - Monthly Delivery: Hand-held bouquet (#32/DSC_6607)
   - Personalise: Pastel rose bouquet (#4/DSC_6505)
 - Gallery page converted from API-driven to static Google Drive images (10 curated photos)
+- Gallery lightbox/zoom feature: click any image to view full-size with navigation (prev/next arrows, keyboard support, click-outside-to-close)
+- Homepage hero image repositioned (object-position: center 70%) to show flowers and CTA more prominently
 - Subscription plan images blurred for all three tiers
 - SendGrid integration removed from roadmap (no longer needed)
 

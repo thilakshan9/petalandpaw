@@ -26,7 +26,7 @@ export default function HomePage() {
         <img
           src="https://lh3.googleusercontent.com/d/17eTVpte-bc4RkhtYq0-WlCXYnI6DTILz=w1920"
           alt="Dog with beautiful pet-safe flowers"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover object-[center_70%]"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#FAF9F6]/90 via-[#FAF9F6]/60 to-[#FAF9F6]/20 md:from-[#FAF9F6]/80 md:via-[#FAF9F6]/40 md:to-transparent" />
         <div className="relative h-full container mx-auto px-5 md:px-8 max-w-7xl flex items-end pb-12 sm:items-center sm:pb-0">

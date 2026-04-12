@@ -1,27 +1,56 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
 
 const GALLERY_IMAGES = [
-  { id: 1, src: "https://lh3.googleusercontent.com/d/1KjSTYJSklo6eM5lUBGDYo5x0czN6TnZk=w800", name: "Red Rose Close-Up" },
-  { id: 2, src: "https://lh3.googleusercontent.com/d/1p7NRwL2MISSKI8lmndAg2yHJ_Q1nv09Y=w800", name: "Pastel Garden Mix" },
-  { id: 3, src: "https://lh3.googleusercontent.com/d/1hKJr7ft65mLEFxNtMLEBrXfrUusZ83qQ=w800", name: "Blush & Gold Bouquet" },
-  { id: 4, src: "https://lh3.googleusercontent.com/d/1T5-AGmpGJ3OHJ0to7l5KHKaXDFt_A6k4=w800", name: "Vibrant Wildflower Mix" },
-  { id: 5, src: "https://lh3.googleusercontent.com/d/1Pwy6ZZbUwDnNeoDlcLbOGwVBPfcjwk39=w800", name: "Gerbera Daisy Delight" },
-  { id: 6, src: "https://lh3.googleusercontent.com/d/1tytAeDhgCklRmh1DQcID82_k1QNDqENY=w800", name: "Soft Pink Elegance" },
-  { id: 7, src: "https://lh3.googleusercontent.com/d/1FoeVcqPJ5-6036Y0JwV4_UhBrEM0EWjL=w800", name: "Single Stem Gerbera" },
-  { id: 8, src: "https://lh3.googleusercontent.com/d/1fM8ju9g1vllQAi2THcAEAaXaHQuH4tbH=w800", name: "Sunset Rose Arrangement" },
-  { id: 9, src: "https://lh3.googleusercontent.com/d/1T3Q2Fkl1fssyXjlnNj3-85xdys11AGWb=w800", name: "Orange Gerbera Bouquet" },
-  { id: 10, src: "https://lh3.googleusercontent.com/d/10ZfxvDRc93OzzvXVJrNqnoShsVEDOMB-=w800", name: "Cat with Flowers" },
+  { id: 1, src: "https://lh3.googleusercontent.com/d/1KjSTYJSklo6eM5lUBGDYo5x0czN6TnZk", name: "Red Rose Close-Up" },
+  { id: 2, src: "https://lh3.googleusercontent.com/d/1p7NRwL2MISSKI8lmndAg2yHJ_Q1nv09Y", name: "Pastel Garden Mix" },
+  { id: 3, src: "https://lh3.googleusercontent.com/d/1hKJr7ft65mLEFxNtMLEBrXfrUusZ83qQ", name: "Blush & Gold Bouquet" },
+  { id: 4, src: "https://lh3.googleusercontent.com/d/1T5-AGmpGJ3OHJ0to7l5KHKaXDFt_A6k4", name: "Vibrant Wildflower Mix" },
+  { id: 5, src: "https://lh3.googleusercontent.com/d/1Pwy6ZZbUwDnNeoDlcLbOGwVBPfcjwk39", name: "Gerbera Daisy Delight" },
+  { id: 6, src: "https://lh3.googleusercontent.com/d/1tytAeDhgCklRmh1DQcID82_k1QNDqENY", name: "Soft Pink Elegance" },
+  { id: 7, src: "https://lh3.googleusercontent.com/d/1FoeVcqPJ5-6036Y0JwV4_UhBrEM0EWjL", name: "Single Stem Gerbera" },
+  { id: 8, src: "https://lh3.googleusercontent.com/d/1fM8ju9g1vllQAi2THcAEAaXaHQuH4tbH", name: "Sunset Rose Arrangement" },
+  { id: 9, src: "https://lh3.googleusercontent.com/d/1T3Q2Fkl1fssyXjlnNj3-85xdys11AGWb", name: "Orange Gerbera Bouquet" },
+  { id: 10, src: "https://lh3.googleusercontent.com/d/10ZfxvDRc93OzzvXVJrNqnoShsVEDOMB-", name: "Cat with Flowers" },
 ];
 
 export default function GalleryPage() {
   const [loading, setLoading] = useState(true);
+  const [lightbox, setLightbox] = useState(null);
 
   useEffect(() => {
-    // Small delay for fade-in effect
     const timer = setTimeout(() => setLoading(false), 300);
     return () => clearTimeout(timer);
   }, []);
+
+  const openLightbox = (index) => setLightbox(index);
+  const closeLightbox = () => setLightbox(null);
+
+  const goNext = useCallback(() => {
+    if (lightbox === null) return;
+    setLightbox((lightbox + 1) % GALLERY_IMAGES.length);
+  }, [lightbox]);
+
+  const goPrev = useCallback(() => {
+    if (lightbox === null) return;
+    setLightbox((lightbox - 1 + GALLERY_IMAGES.length) % GALLERY_IMAGES.length);
+  }, [lightbox]);
+
+  useEffect(() => {
+    if (lightbox === null) return;
+    const handleKey = (e) => {
+      if (e.key === "Escape") closeLightbox();
+      if (e.key === "ArrowRight") goNext();
+      if (e.key === "ArrowLeft") goPrev();
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleKey);
+    };
+  }, [lightbox, goNext, goPrev]);
 
   return (
     <div className="py-8 sm:py-12 md:py-20" data-testid="gallery-page">
@@ -48,13 +77,14 @@ export default function GalleryPage() {
             {GALLERY_IMAGES.map((image, i) => (
               <div
                 key={image.id}
-                className={`group relative overflow-hidden rounded-xl animate-fade-in-up`}
+                className="group relative overflow-hidden rounded-xl animate-fade-in-up cursor-pointer"
                 style={{ animationDelay: `${(i % 6) * 0.1 + 0.1}s` }}
                 data-testid={`gallery-item-${image.id}`}
+                onClick={() => openLightbox(i)}
               >
                 <div className="aspect-square overflow-hidden">
                   <img
-                    src={image.src}
+                    src={`${image.src}=w800`}
                     alt={image.name}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     loading="lazy"
@@ -71,6 +101,65 @@ export default function GalleryPage() {
           </div>
         )}
       </div>
+
+      {/* Lightbox */}
+      {lightbox !== null && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          data-testid="gallery-lightbox"
+          onClick={closeLightbox}
+        >
+          <div className="absolute inset-0 bg-[#1a1a1a]/95 backdrop-blur-sm" />
+
+          {/* Close button */}
+          <button
+            onClick={closeLightbox}
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+            data-testid="lightbox-close"
+          >
+            <X size={20} className="text-white" />
+          </button>
+
+          {/* Prev button */}
+          <button
+            onClick={(e) => { e.stopPropagation(); goPrev(); }}
+            className="absolute left-2 sm:left-6 z-10 p-2 sm:p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+            data-testid="lightbox-prev"
+          >
+            <ChevronLeft size={24} className="text-white" />
+          </button>
+
+          {/* Next button */}
+          <button
+            onClick={(e) => { e.stopPropagation(); goNext(); }}
+            className="absolute right-2 sm:right-6 z-10 p-2 sm:p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+            data-testid="lightbox-next"
+          >
+            <ChevronRight size={24} className="text-white" />
+          </button>
+
+          {/* Image */}
+          <div
+            className="relative max-w-[90vw] max-h-[85vh] animate-fade-in-up"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={`${GALLERY_IMAGES[lightbox].src}=w1600`}
+              alt={GALLERY_IMAGES[lightbox].name}
+              className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl"
+              data-testid="lightbox-image"
+            />
+            <div className="text-center mt-4">
+              <h3 className="font-['Playfair_Display'] text-lg sm:text-xl font-medium text-white">
+                {GALLERY_IMAGES[lightbox].name}
+              </h3>
+              <p className="text-xs text-white/50 mt-1">
+                {lightbox + 1} / {GALLERY_IMAGES.length}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
