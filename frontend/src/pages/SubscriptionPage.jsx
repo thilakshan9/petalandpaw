@@ -18,6 +18,7 @@ export default function SubscriptionPage() {
   const [customerEmail, setCustomerEmail] = useState("");
   const [preOrderExpanded, setPreOrderExpanded] = useState(null);
   const [orderType, setOrderType] = useState(null);
+  const [personalizedMessage, setPersonalizedMessage] = useState("");
 
   useEffect(() => {
     fetch(`${API}/subscriptions/plans`)
@@ -30,6 +31,7 @@ export default function SubscriptionPage() {
     setOrderType(type);
     setEmailDialog(planId);
     setCustomerEmail("");
+    setPersonalizedMessage("");
   };
 
   const handleSubscribe = async () => {
@@ -44,7 +46,7 @@ export default function SubscriptionPage() {
       const res = await fetch(`${API}/subscriptions/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan_id: planId, origin_url: window.location.origin, add_pet_toy: !!petToy[planId], customer_email: customerEmail, checkout_mode: orderType }),
+        body: JSON.stringify({ plan_id: planId, origin_url: window.location.origin, add_pet_toy: !!petToy[planId], customer_email: customerEmail, checkout_mode: orderType, personalized_message: personalizedMessage }),
       });
       const data = await res.json();
       if (data.url) {
@@ -194,6 +196,19 @@ export default function SubscriptionPage() {
                 data-testid="checkout-email-input"
                 autoFocus
               />
+              <div>
+                <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Personalized Message (optional)</label>
+                <textarea
+                  placeholder="Add a personal note to your bouquet..."
+                  value={personalizedMessage}
+                  onChange={(e) => setPersonalizedMessage(e.target.value)}
+                  maxLength={500}
+                  rows={3}
+                  className="w-full border border-[#E5E0D6] rounded-md px-3 py-2 text-sm font-light text-[#2C2C2C] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-1 focus:ring-[#8DA399] resize-none"
+                  data-testid="personalized-message-input"
+                />
+                <p className="text-[10px] text-[#9CA3AF] mt-1 text-right">{personalizedMessage.length}/500</p>
+              </div>
               <Button
                 onClick={handleSubscribe}
                 className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-8 py-6 text-xs uppercase tracking-widest w-full"

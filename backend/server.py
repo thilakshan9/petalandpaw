@@ -79,6 +79,7 @@ class CheckoutRequest(BaseModel):
     delivery_date: str = ""
     referral_code: str = ""
     pet_notes: str = ""
+    personalized_message: str = ""
 
 class SubscriptionCheckoutRequest(BaseModel):
     plan_id: str
@@ -86,6 +87,7 @@ class SubscriptionCheckoutRequest(BaseModel):
     customer_email: str = ""
     add_pet_toy: bool = False
     checkout_mode: str = "subscription"
+    personalized_message: str = ""
 
 class StepBouquetRequest(BaseModel):
     size: str  # small, medium, large
@@ -409,7 +411,8 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
             "cancel_url": cancel_url,
             "shipping_address_collection": {"allowed_countries": ["GB"]},
             "metadata": {"type": req.checkout_mode, "plan_id": plan["id"], "plan_name": plan["name"],
-                          "add_pet_toy": str(req.add_pet_toy)},
+                          "add_pet_toy": str(req.add_pet_toy),
+                          "personalized_message": req.personalized_message[:500] if req.personalized_message else ""},
         }
         if req.customer_email:
             checkout_params["customer_email"] = req.customer_email
@@ -426,7 +429,8 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
         "amount": float(total), "currency": "gbp",
         "status": "initiated", "payment_status": "pending",
         "metadata": {"type": req.checkout_mode, "plan_id": plan["id"],
-                     "plan_name": plan["name"], "add_pet_toy": str(req.add_pet_toy)},
+                     "plan_name": plan["name"], "add_pet_toy": str(req.add_pet_toy),
+                     "personalized_message": req.personalized_message[:500] if req.personalized_message else ""},
         "created_at": datetime.now(timezone.utc).isoformat()
     })
     return {"url": session.url, "session_id": session.id}
@@ -525,7 +529,8 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
             "cancel_url": cancel_url,
             "shipping_address_collection": {"allowed_countries": ["GB"]},
             "metadata": {"order_id": order_id, "order_type": req.order_type,
-                          "item_count": str(len(validated_items))},
+                          "item_count": str(len(validated_items)),
+                          "personalized_message": req.personalized_message[:500] if req.personalized_message else ""},
             "payment_intent_data": {"receipt_email": req.customer_email} if req.customer_email else {},
         }
         if req.customer_email:
@@ -541,6 +546,7 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
         "status": "todo", "stripe_session_id": session.id,
         "customer_email": req.customer_email, "order_type": req.order_type,
         "delivery_date": req.delivery_date, "pet_notes": req.pet_notes,
+        "personalized_message": req.personalized_message,
         "referral_code": req.referral_code, "credit_applied": credit_applied,
         "created_at": datetime.now(timezone.utc).isoformat()
     }

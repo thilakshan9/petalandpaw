@@ -17,6 +17,7 @@ export default function CartPage() {
   const [referralCode, setReferralCode] = useState(() => localStorage.getItem("petal-paw-referral") || "");
   const [referralValid, setReferralValid] = useState(null);
   const [checking, setChecking] = useState(false);
+  const [personalizedMessage, setPersonalizedMessage] = useState("");
 
   const validateReferral = async () => {
     if (!referralCode.trim()) { setReferralValid(null); return; }
@@ -57,6 +58,7 @@ export default function CartPage() {
           origin_url: window.location.origin, order_type: "regular",
           delivery_date: deliveryDate ? deliveryDate.toISOString().split("T")[0] : "",
           referral_code: referralValid?.valid ? referralCode : "",
+          personalized_message: personalizedMessage,
         }),
       });
       const data = await res.json();
@@ -149,6 +151,21 @@ export default function CartPage() {
                 </div>
                 {referralValid === false && <p className="text-xs text-red-400 mt-1">Invalid code</p>}
                 {referralValid?.valid && <p className="text-xs text-[#8DA399] mt-1">-£{referralValid.discount.toFixed(2)} discount applied</p>}
+              </div>
+
+              {/* Personalized Message */}
+              <div data-testid="personalized-message-section">
+                <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-2 block">Personalized Message</label>
+                <textarea
+                  placeholder="Add a personal note to your bouquet..."
+                  value={personalizedMessage}
+                  onChange={(e) => setPersonalizedMessage(e.target.value)}
+                  maxLength={500}
+                  rows={3}
+                  className="w-full border border-[#E5E0D6] rounded-lg px-3 py-2 text-sm font-light text-[#2C2C2C] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-1 focus:ring-[#8DA399] resize-none"
+                  data-testid="cart-personalized-message-input"
+                />
+                <p className="text-[10px] text-[#9CA3AF] mt-1 text-right">{personalizedMessage.length}/500</p>
               </div>
 
               {/* Totals */}
