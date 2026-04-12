@@ -236,6 +236,7 @@ export default function SubscriptionPage() {
                         </Button>
                       </div>
                     ) : (
+                      <>
                       <Button
                         onClick={() => setPreOrderExpanded(plan.id)}
                         className="rounded-full px-8 py-6 text-sm uppercase tracking-widest transition-all hover:scale-105 w-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90"
@@ -244,6 +245,7 @@ export default function SubscriptionPage() {
                         Pre-Order <ArrowRight size={14} className="ml-2" />
                       </Button>
                       <p className="text-xs font-light text-[#6B7280] text-center mt-2" data-testid="order-deadline">Order by the 19th for this month's delivery</p>
+                      </>
                     )
                   ) : (
                     /* Petite Paws & Grand Garden: Coming Soon */
