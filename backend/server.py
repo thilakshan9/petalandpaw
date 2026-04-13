@@ -861,18 +861,18 @@ async def seed_data():
             {"id": str(uuid.uuid4()), "name": "Petite Paws", "slug": "petite-paws",
              "description": "A compact, letterbox-friendly arrangement of pet-safe blooms delivered monthly.",
              "price": 34.99, "frequency": "monthly",
-             "image_url": "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=800",
+             "image_url": "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=800",
              "features": ["Letterbox friendly", "Free delivery", "Biodegradable packaging", "Care guide included"], "pet_toy_price": 8.99},
             {"id": str(uuid.uuid4()), "name": "Classic Bloom", "slug": "classic-bloom",
              "description": "A hand-tied premium bouquet of curated pet-safe flowers, delivered monthly.",
              "price": 59.99, "frequency": "monthly", "stock_limit": 60, "pet_toy_price": 8.99,
              "image_url": "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=800",
-             "features": ["Hand-tied bouquet", "Free delivery", "Seasonal variety", "Care guide included"]},
+             "features": ["10-15 stems plus foliage and smaller flowers", "Hand-tied bouquet", "Free delivery", "Seasonal variety", "Care guide included"]},
             {"id": str(uuid.uuid4()), "name": "Grand Garden", "slug": "grand-garden",
              "description": "Our most luxurious monthly arrangement with premium pet-safe flowers.",
              "price": 79.99, "frequency": "monthly",
-             "image_url": "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=800",
-             "features": ["Free delivery", "Premium seasonal variety", "More variety and volume", "Signature wrapping upgrade"], "pet_toy_price": 8.99},
+             "image_url": "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=800",
+             "features": ["20+ stems", "Free delivery", "Premium seasonal stems", "More variety and volume", "Signature wrapping upgrade"], "pet_toy_price": 8.99},
         ]
         await db.subscription_plans.insert_many(plans)
         logger.info("Seeded subscription plans")
@@ -880,15 +880,17 @@ async def seed_data():
     # Migrate existing subscription plan features
     await db.subscription_plans.update_one(
         {"slug": "petite-paws"},
-        {"$set": {"features": ["Letterbox friendly", "Free delivery", "Biodegradable packaging", "Care guide included"], "pet_toy_price": 8.99}}
+        {"$set": {"features": ["Letterbox friendly", "Free delivery", "Biodegradable packaging", "Care guide included"], "pet_toy_price": 8.99,
+                  "image_url": "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=800"}}
     )
     await db.subscription_plans.update_one(
         {"slug": "classic-bloom"},
-        {"$set": {"features": ["Hand-tied bouquet", "Free delivery", "Seasonal variety", "Care guide included"], "stock_limit": 60, "pet_toy_price": 8.99}}
+        {"$set": {"features": ["10-15 stems plus foliage and smaller flowers", "Hand-tied bouquet", "Free delivery", "Seasonal variety", "Care guide included"], "stock_limit": 60, "pet_toy_price": 8.99}}
     )
     await db.subscription_plans.update_one(
         {"slug": "grand-garden"},
-        {"$set": {"features": ["Free delivery", "Premium seasonal variety", "More variety and volume", "Signature wrapping upgrade"], "pet_toy_price": 8.99}}
+        {"$set": {"features": ["20+ stems", "Free delivery", "Premium seasonal stems", "More variety and volume", "Signature wrapping upgrade"], "pet_toy_price": 8.99,
+                  "image_url": "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=800"}}
     )
 
     if await db.blog_posts.count_documents({}) == 0:
