@@ -872,7 +872,7 @@ async def seed_data():
              "description": "Our extra large monthly arrangement with premium pet-safe flowers.",
              "price": 79.99, "frequency": "monthly",
              "image_url": "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=800",
-             "features": ["20+ premium seasonal stems", "Free delivery", "More variety and volume", "Signature wrapping upgrade"], "pet_toy_price": 8.99},
+             "features": ["20+ premium seasonal stems", "Free delivery", "More variety and volume", "Signature wrapping upgrade", "Care guide included"], "pet_toy_price": 8.99},
         ]
         await db.subscription_plans.insert_many(plans)
         logger.info("Seeded subscription plans")
@@ -890,7 +890,7 @@ async def seed_data():
     )
     await db.subscription_plans.update_one(
         {"slug": "grand-garden"},
-        {"$set": {"features": ["20+ premium seasonal stems", "Free delivery", "More variety and volume", "Signature wrapping upgrade"], "pet_toy_price": 8.99,
+        {"$set": {"features": ["20+ premium seasonal stems", "Free delivery", "More variety and volume", "Signature wrapping upgrade", "Care guide included"], "pet_toy_price": 8.99,
                   "description": "Our extra large monthly arrangement with premium pet-safe flowers.",
                   "image_url": "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=800"}}
     )
