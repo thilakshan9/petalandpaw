@@ -867,12 +867,12 @@ async def seed_data():
              "description": "A hand-tied premium bouquet of curated pet-safe flowers, delivered monthly.",
              "price": 59.99, "frequency": "monthly", "stock_limit": 60, "pet_toy_price": 8.99,
              "image_url": "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=800",
-             "features": ["10-15 stems plus foliage and smaller flowers", "Hand-tied bouquet", "Free delivery", "Seasonal variety", "Care guide included"]},
+             "features": ["10-15 stems plus foliage and smaller flowers", "Large monthly arrangement", "Free delivery", "Seasonal variety", "Care guide included"]},
             {"id": str(uuid.uuid4()), "name": "Grand Garden", "slug": "grand-garden",
              "description": "Our most luxurious monthly arrangement with premium pet-safe flowers.",
              "price": 79.99, "frequency": "monthly",
              "image_url": "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=800",
-             "features": ["20+ stems", "Free delivery", "Premium seasonal stems", "More variety and volume", "Signature wrapping upgrade"], "pet_toy_price": 8.99},
+             "features": ["20+ premium seasonal stems", "Extra large monthly arrangement", "Free delivery", "More variety and volume", "Signature wrapping upgrade"], "pet_toy_price": 8.99},
         ]
         await db.subscription_plans.insert_many(plans)
         logger.info("Seeded subscription plans")
@@ -885,11 +885,11 @@ async def seed_data():
     )
     await db.subscription_plans.update_one(
         {"slug": "classic-bloom"},
-        {"$set": {"features": ["10-15 stems plus foliage and smaller flowers", "Hand-tied bouquet", "Free delivery", "Seasonal variety", "Care guide included"], "stock_limit": 60, "pet_toy_price": 8.99}}
+        {"$set": {"features": ["10-15 stems plus foliage and smaller flowers", "Large monthly arrangement", "Free delivery", "Seasonal variety", "Care guide included"], "stock_limit": 60, "pet_toy_price": 8.99}}
     )
     await db.subscription_plans.update_one(
         {"slug": "grand-garden"},
-        {"$set": {"features": ["20+ stems", "Free delivery", "Premium seasonal stems", "More variety and volume", "Signature wrapping upgrade"], "pet_toy_price": 8.99,
+        {"$set": {"features": ["20+ premium seasonal stems", "Extra large monthly arrangement", "Free delivery", "More variety and volume", "Signature wrapping upgrade"], "pet_toy_price": 8.99,
                   "image_url": "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=800"}}
     )
 
