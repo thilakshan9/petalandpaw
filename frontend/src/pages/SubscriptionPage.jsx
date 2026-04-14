@@ -105,7 +105,7 @@ export default function SubscriptionPage() {
             Shop
           </h1>
           <p className="text-sm md:text-lg font-light text-[#6B7280] max-w-xl mx-auto">
-            Fresh, pet-safe flowers delivered monthly. Cancel anytime.
+            Fresh, pet-safe flowers delivered monthly. Every bouquet is a surprise and changes with the seasons. Cancel anytime.
           </p>
         </div>
 
