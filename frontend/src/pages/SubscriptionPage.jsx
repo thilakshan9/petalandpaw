@@ -213,39 +213,27 @@ export default function SubscriptionPage() {
                   </div>
 
                   {/* Buttons per plan type */}
-                  {/* All plans: Pre-order -> expand to Subscribe / One-time */}
-                  {preOrderExpanded === plan.id ? (
-                    <div className="flex flex-col gap-2 w-full">
-                      <Button
-                        onClick={() => handleSubscribeClick(plan.id, "subscription")}
-                        disabled={subscribing === plan.id}
-                        className="rounded-full px-8 py-6 text-sm uppercase tracking-widest transition-all hover:scale-105 w-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90"
-                        data-testid={`subscribe-${plan.slug}`}
-                      >
-                        {subscribing === plan.id ? "Processing..." : "Subscribe"} <ArrowRight size={14} className="ml-2" />
-                      </Button>
-                      <Button
-                        onClick={() => handleSubscribeClick(plan.id, "one-time")}
-                        disabled={subscribing === plan.id}
-                        variant="outline"
-                        className="rounded-full px-8 py-6 text-sm uppercase tracking-widest transition-all hover:scale-105 w-full border-[#8DA399] text-[#8DA399] hover:bg-[#8DA399] hover:text-white"
-                        data-testid={`one-time-${plan.slug}`}
-                      >
-                        {subscribing === plan.id ? "Processing..." : "One-Time Purchase"} <ArrowRight size={14} className="ml-2" />
-                      </Button>
-                    </div>
-                  ) : (
-                    <>
+                  {/* Subscribe / One-time buttons */}
+                  <div className="flex flex-col gap-2 w-full">
                     <Button
-                      onClick={() => setPreOrderExpanded(plan.id)}
+                      onClick={() => handleSubscribeClick(plan.id, "subscription")}
+                      disabled={subscribing === plan.id}
                       className="rounded-full px-8 py-6 text-sm uppercase tracking-widest transition-all hover:scale-105 w-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90"
-                      data-testid={`preorder-${plan.slug}`}
+                      data-testid={`subscribe-${plan.slug}`}
                     >
-                      Pre-Order <ArrowRight size={14} className="ml-2" />
+                      {subscribing === plan.id ? "Processing..." : "Subscribe"} <ArrowRight size={14} className="ml-2" />
                     </Button>
-                    <p className="text-xs font-light text-[#6B7280] text-center mt-2" data-testid="order-deadline">Order by the 19th for this month's delivery</p>
-                    </>
-                  )}
+                    <Button
+                      onClick={() => handleSubscribeClick(plan.id, "one-time")}
+                      disabled={subscribing === plan.id}
+                      variant="outline"
+                      className="rounded-full px-8 py-6 text-sm uppercase tracking-widest transition-all hover:scale-105 w-full border-[#8DA399] text-[#8DA399] hover:bg-[#8DA399] hover:text-white"
+                      data-testid={`one-time-${plan.slug}`}
+                    >
+                      {subscribing === plan.id ? "Processing..." : "One-Time Purchase"} <ArrowRight size={14} className="ml-2" />
+                    </Button>
+                  </div>
+                  <p className="text-xs font-light text-[#6B7280] text-center mt-2" data-testid="order-deadline">Order by the 19th for this month's delivery</p>
                 </div>
               );
             })}
