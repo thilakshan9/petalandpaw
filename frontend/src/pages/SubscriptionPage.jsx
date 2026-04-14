@@ -30,7 +30,7 @@ export default function SubscriptionPage() {
       .then((data) => { setPlans(data); setLoading(false); })
       .catch(() => setLoading(false));
 
-    fetch(`${API}/subscriptions/order-count/classic-bloom`)
+    fetch(`${API}/subscriptions/order-count/all`)
       .then((r) => r.json())
       .then((data) => {
         setOrderCount(data.count || 0);
@@ -109,6 +109,21 @@ export default function SubscriptionPage() {
           </p>
         </div>
 
+        {!loading && (
+          <div className="max-w-md mx-auto mb-8 sm:mb-10 animate-fade-in-up" data-testid="stock-indicator">
+            <div className="flex items-center justify-center mb-1.5">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#2C2C2C]">Limited to {stockLimit} this month</span>
+            </div>
+            <div className="w-full h-2 bg-[#F2F0EB] rounded-full overflow-hidden">
+              <div
+                className="h-full bg-[#8DA399] rounded-full transition-all duration-700"
+                style={{ width: `${progressPercent}%` }}
+                data-testid="stock-progress-bar"
+              />
+            </div>
+          </div>
+        )}
+
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[...Array(3)].map((_, i) => <div key={i} className="animate-pulse bg-white rounded-2xl p-8 h-[520px]" />)}
@@ -145,22 +160,6 @@ export default function SubscriptionPage() {
                   </div>
                   {toyOn && <span className="text-xs text-[#8DA399] font-light mb-3">includes pet toy (+£{toyPrice.toFixed(2)})</span>}
                   <p className="text-sm font-light text-[#6B7280] mb-6">{plan.description}</p>
-
-                  {/* Classic Bloom: Limited stock bar */}
-                  {isPop && (
-                    <div className="mb-5" data-testid="stock-indicator">
-                      <div className="flex items-center mb-1.5">
-                        <span className="text-xs font-semibold uppercase tracking-wider text-[#2C2C2C]">Limited to {stockLimit}</span>
-                      </div>
-                      <div className="w-full h-2 bg-[#F2F0EB] rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-[#8DA399] rounded-full transition-all duration-700"
-                          style={{ width: `${progressPercent}%` }}
-                          data-testid="stock-progress-bar"
-                        />
-                      </div>
-                    </div>
-                  )}
 
                   <ul className="space-y-3 mb-6 flex-1">
                     {plan.features?.map((f) => (

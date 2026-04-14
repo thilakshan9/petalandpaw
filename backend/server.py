@@ -387,6 +387,9 @@ async def debug_subscription_plans():
 
 @api_router.get("/subscriptions/order-count/{plan_slug}")
 async def get_subscription_order_count(plan_slug: str):
+    if plan_slug == "all":
+        count = await db.payment_transactions.count_documents({"payment_status": "paid"})
+        return {"count": count, "limit": 60}
     plan = await db.subscription_plans.find_one({"slug": plan_slug}, {"_id": 0})
     if not plan:
         raise HTTPException(status_code=404, detail="Plan not found")
