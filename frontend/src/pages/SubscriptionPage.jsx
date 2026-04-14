@@ -92,7 +92,7 @@ export default function SubscriptionPage() {
   };
 
   // Progress bar: starts at 20% minimum, scales to 100% at stockLimit orders
-  const progressPercent = Math.min(100, Math.max(20, (orderCount / stockLimit) * 100));
+  const progressPercent = Math.min(100, Math.max(55, (orderCount / stockLimit) * 100));
   const spotsLeft = Math.max(0, stockLimit - orderCount);
 
   return (
