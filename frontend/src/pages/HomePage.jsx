@@ -27,9 +27,9 @@ export default function HomePage() {
             <p className="text-sm sm:text-base md:text-lg font-light leading-relaxed text-[#4B5563] mb-6 sm:mb-10 max-w-md">
               Hand-crafted arrangements using only pet-safe blooms.
             </p>
-            <Link to="/gallery">
+            <Link to="/subscriptions">
               <Button className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-7 py-5 sm:px-10 sm:py-7 text-xs sm:text-sm uppercase tracking-[0.2em] transition-all hover:scale-105" data-testid="hero-shop-btn">
-                View Gallery <ArrowRight size={16} className="ml-2 sm:ml-3" />
+                View Shop <ArrowRight size={16} className="ml-2 sm:ml-3" />
               </Button>
             </Link>
           </div>
@@ -43,7 +43,7 @@ export default function HomePage() {
             {[
               { icon: ShieldCheck, text: "100% Pet Safe" },
               { icon: Leaf, text: "Sustainably Sourced" },
-              { icon: Truck, text: "Free Delivery Over £50" },
+              { icon: Truck, text: "Free UK Delivery" },
             ].map(({ icon: Icon, text }) => (
               <div key={text} className="flex items-center justify-center gap-2 text-[#6B7280]">
                 <Icon size={15} strokeWidth={1.5} className="text-[#8DA399]" />
