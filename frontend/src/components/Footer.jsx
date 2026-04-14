@@ -42,7 +42,7 @@ export default function Footer() {
             <nav className="flex flex-col gap-3">
               <ScrollLink to="/gallery" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-shop">Gallery</ScrollLink>
               <ScrollLink to="/gallery" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-bouquets">Bouquets</ScrollLink>
-              <ScrollLink to="/subscriptions" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-subscriptions">Subscriptions</ScrollLink>
+              <ScrollLink to="/subscriptions" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-subscriptions">Shop</ScrollLink>
               <ScrollLink to="/bouquet-builder" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-builder">Build a Bouquet</ScrollLink>
             </nav>
           </div>
