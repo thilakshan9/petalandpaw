@@ -8,7 +8,7 @@ import SEOHead from "@/components/SEOHead";
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function EventsPage() {
-  const [form, setForm] = useState({ name: "", email: "", phone: "", event_type: "", date: "", guests: "", message: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", event_type: "", date: "", guests: "", floral_style: "", budget: "", message: "" });
   const [sending, setSending] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -26,12 +26,12 @@ export default function EventsPage() {
           name: form.name,
           email: form.email,
           subject: `Event Enquiry - ${form.event_type || "General"}${form.date ? ` (${form.date})` : ""}`,
-          message: `Phone: ${form.phone || "Not provided"}\nEvent Type: ${form.event_type || "Not specified"}\nDate: ${form.date || "Flexible"}\nEstimated Guests: ${form.guests || "Not specified"}\n\n${form.message}`,
+          message: `Phone: ${form.phone || "Not provided"}\nEvent Type: ${form.event_type || "Not specified"}\nDate & Time: ${form.date || "TBC"}\nEstimated Guests: ${form.guests || "Not specified"}\nFloral Style/Theme: ${form.floral_style || "Not specified"}\nBudget: ${form.budget || "Not specified"}\n\n${form.message}`,
         }),
       });
       if (res.ok) {
         toast.success("Enquiry sent! We'll be in touch soon.");
-        setForm({ name: "", email: "", phone: "", event_type: "", date: "", guests: "", message: "" });
+        setForm({ name: "", email: "", phone: "", event_type: "", date: "", guests: "", floral_style: "", budget: "", message: "" });
       } else {
         toast.error("Something went wrong. Please try again.");
       }
@@ -112,58 +112,78 @@ export default function EventsPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Phone</label>
-                    <Input
-                      value={form.phone}
-                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                      placeholder="Your phone number"
-                      className="border-[#E5E0D6] text-sm"
-                      data-testid="events-phone"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Event Type</label>
-                    <Input
-                      value={form.event_type}
-                      onChange={(e) => setForm({ ...form, event_type: e.target.value })}
-                      placeholder="e.g. Wedding, Birthday"
-                      className="border-[#E5E0D6] text-sm"
-                      data-testid="events-type"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Preferred Date</label>
-                    <Input
-                      type="date"
-                      value={form.date}
-                      onChange={(e) => setForm({ ...form, date: e.target.value })}
-                      className="border-[#E5E0D6] text-sm"
-                      data-testid="events-date"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Estimated Guests</label>
-                    <Input
-                      value={form.guests}
-                      onChange={(e) => setForm({ ...form, guests: e.target.value })}
-                      placeholder="e.g. 50"
-                      className="border-[#E5E0D6] text-sm"
-                      data-testid="events-guests"
-                    />
-                  </div>
+                <div>
+                  <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Phone</label>
+                  <Input
+                    value={form.phone}
+                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                    placeholder="Your phone number"
+                    className="border-[#E5E0D6] text-sm"
+                    data-testid="events-phone"
+                  />
                 </div>
 
                 <div>
-                  <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Tell us about your event *</label>
+                  <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">What type of event are you planning?</label>
+                  <Input
+                    value={form.event_type}
+                    onChange={(e) => setForm({ ...form, event_type: e.target.value })}
+                    placeholder="e.g. Wedding, Birthday, Corporate"
+                    className="border-[#E5E0D6] text-sm"
+                    data-testid="events-type"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">What is the date and time of your event?</label>
+                  <Input
+                    value={form.date}
+                    onChange={(e) => setForm({ ...form, date: e.target.value })}
+                    placeholder="e.g. 15th June 2026, 2pm"
+                    className="border-[#E5E0D6] text-sm"
+                    data-testid="events-date"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Approximately how many guests will be attending?</label>
+                  <Input
+                    value={form.guests}
+                    onChange={(e) => setForm({ ...form, guests: e.target.value })}
+                    placeholder="e.g. 50"
+                    className="border-[#E5E0D6] text-sm"
+                    data-testid="events-guests"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">What is your preferred floral style or theme?</label>
+                  <Input
+                    value={form.floral_style}
+                    onChange={(e) => setForm({ ...form, floral_style: e.target.value })}
+                    placeholder="e.g. Rustic, Romantic, Modern, Wildflower"
+                    className="border-[#E5E0D6] text-sm"
+                    data-testid="events-style"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">What is your estimated budget for flowers and decor?</label>
+                  <Input
+                    value={form.budget}
+                    onChange={(e) => setForm({ ...form, budget: e.target.value })}
+                    placeholder="e.g. £200 - £500"
+                    className="border-[#E5E0D6] text-sm"
+                    data-testid="events-budget"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Anything else you'd like us to know?</label>
                   <textarea
                     value={form.message}
                     onChange={(e) => setForm({ ...form, message: e.target.value })}
-                    placeholder="Describe your vision, any colour preferences, pet-safe requirements..."
+                    placeholder="Any additional details, colour preferences, pet-safe requirements..."
                     rows={4}
                     className="w-full border border-[#E5E0D6] rounded-md px-3 py-2 text-sm font-light text-[#2C2C2C] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-1 focus:ring-[#8DA399] resize-none"
                     data-testid="events-message"
