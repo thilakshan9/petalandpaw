@@ -884,19 +884,19 @@ async def seed_data():
     await db.subscription_plans.update_one(
         {"slug": "petite-paws"},
         {"$set": {"features": ["Letterbox friendly", "Free delivery", "Biodegradable packaging", "Care guide included"], "pet_toy_price": 8.99,
-                  "image_url": "https://lh3.googleusercontent.com/d/1RPF-VP8WfIwV8HGI_dqYZCLjw9vo3wpK=w800"}}
+                  "image_url": "https://lh3.googleusercontent.com/d/1KcnRLpwwH3mIHBHaOCgz4gPYRCFXjpgY=w800"}}
     )
     await db.subscription_plans.update_one(
         {"slug": "classic-bloom"},
         {"$set": {"features": ["10-15 stems plus foliage and smaller flowers", "Free delivery", "Seasonal variety", "Care guide included"], "stock_limit": 60, "pet_toy_price": 8.99,
                   "description": "A large, hand-tied monthly bouquet of curated pet-safe flowers, delivered to your door.",
-                  "image_url": "https://lh3.googleusercontent.com/d/1axhsznjGVKBop-M8XPr06HKDaRoC5JJp=w800"}}
+                  "image_url": "https://lh3.googleusercontent.com/d/1duC5_xHqlEu1a-q_B84Hs1tvFOnH4KcF=w800"}}
     )
     await db.subscription_plans.update_one(
         {"slug": "grand-garden"},
         {"$set": {"features": ["20+ premium seasonal stems", "Free delivery", "More variety and volume", "Signature wrapping upgrade", "Care guide included"], "pet_toy_price": 8.99,
                   "description": "Our extra large monthly arrangement with premium pet-safe flowers.",
-                  "image_url": "https://lh3.googleusercontent.com/d/1xHzmP0017rCugQvuYkdRPVmR7IQVTPKJ=w800"}}
+                  "image_url": "https://lh3.googleusercontent.com/d/1g8jlbTn25IryebH-HgP_dcqVVedy1h8B=w800"}}
     )
 
     if await db.blog_posts.count_documents({}) == 0:
