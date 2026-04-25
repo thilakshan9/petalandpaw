@@ -135,7 +135,7 @@ export default function SubscriptionPage() {
                       Most Popular
                     </span>
                   )}
-                  <div className="aspect-[16/10] rounded-xl overflow-hidden mb-6 bg-[#F2F0EB] relative">
+                  <div className="aspect-[4/5] rounded-xl overflow-hidden mb-6 bg-[#F2F0EB] relative">
                     <img src={plan.image_url} alt={plan.name} className="w-full h-full object-cover" />
                     <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-[10px] uppercase tracking-widest font-semibold text-[#2C2C2C] px-3 py-1 rounded-full">Last Month</span>
                   </div>
