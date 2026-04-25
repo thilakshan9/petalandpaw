@@ -377,6 +377,8 @@ async def delete_blog_post(post_id: str, user=Depends(get_current_user)):
 @api_router.get("/subscriptions/plans")
 async def get_subscription_plans():
     plans = await db.subscription_plans.find({}, {"_id": 0}).to_list(10)
+    order = {"petite-paws": 0, "classic-bloom": 1, "grand-garden": 2}
+    plans.sort(key=lambda p: order.get(p.get("slug", ""), 99))
     return plans
 
 @api_router.get("/subscriptions/debug")

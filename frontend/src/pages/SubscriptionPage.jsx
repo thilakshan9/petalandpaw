@@ -116,7 +116,7 @@ export default function SubscriptionPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 md:gap-8">
             {plans.map((plan, i) => {
-              const isPop = i === 1;
+              const isPop = plan.slug === "classic-bloom";
               const toyOn = !!petToy[plan.id];
               const toyPrice = plan.pet_toy_price || 8.99;
               const displayPrice = toyOn ? plan.price + toyPrice : plan.price;
