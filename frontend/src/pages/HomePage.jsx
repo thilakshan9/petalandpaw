@@ -98,7 +98,7 @@ export default function HomePage() {
               </Link>
             </div>
             <div className="order-1 lg:order-2 aspect-[4/5] max-h-[60vh] lg:max-h-none rounded-2xl overflow-hidden animate-fade-in-up">
-              <img src="https://lh3.googleusercontent.com/d/1FbsOPmzRFettYsD-rg3YYr_MwWY2polq=w800" alt="Letterbox flower subscription" className="w-full h-full object-cover" />
+              <img src="https://lh3.googleusercontent.com/d/1370ARPVzWwmFKtFgU16SPBLPplTtGn9l=w800" alt="Letterbox flower subscription" className="w-full h-full object-cover" />
             </div>
           </div>
         </div>
@@ -109,7 +109,7 @@ export default function HomePage() {
         <div className="container mx-auto px-5 md:px-8 max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-20 items-center">
             <div className="aspect-[4/5] max-h-[60vh] lg:max-h-none rounded-2xl overflow-hidden animate-fade-in-up">
-              <img src="https://lh3.googleusercontent.com/d/1R4hu2qLqJH4VJwmpEoS30cxi7e1i2B4J=w800" alt="Create your own bouquet" className="w-full h-full object-cover" />
+              <img src="https://lh3.googleusercontent.com/d/10eVZW0mATKtuTyfynNGdbw7e1j_oGM79=w800" alt="Create your own bouquet" className="w-full h-full object-cover" />
             </div>
             <div className="animate-fade-in-up delay-200">
               <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 sm:mb-4 block">Personalise</span>

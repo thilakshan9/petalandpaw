@@ -218,7 +218,7 @@ export default function SubscriptionPage() {
                       {subscribing === plan.id ? "Processing..." : "One-Time Purchase"} <ArrowRight size={14} className="ml-2" />
                     </Button>
                   </div>
-                  <p className="text-xs font-light text-[#6B7280] text-center mt-2" data-testid="order-deadline">Order by the 26th of April for this month's delivery</p>
+                  <p className="text-xs font-light text-[#6B7280] text-center mt-2" data-testid="order-deadline">Order by the 26th for this month's delivery</p>
                 </div>
               );
             })}

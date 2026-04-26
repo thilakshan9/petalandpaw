@@ -3,7 +3,10 @@ import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
 
 const GALLERY_IMAGES = [
-  { id: 1, src: "https://lh3.googleusercontent.com/d/1rn5Vk3psbpdD8IckBL4mkb9gWAT-jVMu", name: "Gallery 9" },
+  { id: 1, src: "https://lh3.googleusercontent.com/d/1E8vfkUVfUfBPJrxtY6SjswnMfrzxY9Tp", name: "Gallery" },
+  { id: 2, src: "https://lh3.googleusercontent.com/d/1pvRya4Mf7MNYn2bZZWXf78Zsl-l31n4y", name: "Gallery" },
+  { id: 3, src: "https://lh3.googleusercontent.com/d/1jzWZxoX2cXNG-qq5WW20u38kCKh3UltK", name: "Gallery" },
+  { id: 4, src: "https://lh3.googleusercontent.com/d/1rn5Vk3psbpdD8IckBL4mkb9gWAT-jVMu", name: "Gallery" },
   { id: 2, src: "https://lh3.googleusercontent.com/d/1KjSTYJSklo6eM5lUBGDYo5x0czN6TnZk", name: "Red Rose Close-Up" },
   { id: 3, src: "https://lh3.googleusercontent.com/d/1p7NRwL2MISSKI8lmndAg2yHJ_Q1nv09Y", name: "Pastel Garden Mix" },
   { id: 4, src: "https://lh3.googleusercontent.com/d/1hKJr7ft65mLEFxNtMLEBrXfrUusZ83qQ", name: "Blush & Gold Bouquet" },
