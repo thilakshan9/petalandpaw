@@ -27,7 +27,7 @@ export default function SafeFlowersPage() {
             Pet-Safe Flower Guide
           </h1>
           <p className="text-sm md:text-lg font-light text-[#6B7280] max-w-xl mx-auto">
-            Every stem we use is carefully selected to be safe for your furry family members. Here's the full list.
+            Every stem we use is carefully selected to be safe for your furry family members. Below is the full list of pet-friendly flowers we offer.
           </p>
         </div>
 
@@ -80,8 +80,8 @@ export default function SafeFlowersPage() {
 
         {/* Source note */}
         <div className="text-center mt-12 sm:mt-16 animate-fade-in-up delay-200">
-          <p className="text-xs font-light text-[#9CA3AF] mb-8">
-            This list was sourced via <a href="https://www.bluecross.org.uk" target="_blank" rel="noopener noreferrer" className="text-[#8DA399] hover:underline">Blue Cross</a>
+          <p className="text-sm font-light text-[#6B7280]">
+            This list was sourced via the <a href="https://www.aspca.org/pet-care/animal-poison-control/toxic-and-non-toxic-plants" target="_blank" rel="noopener noreferrer" className="text-[#8DA399] hover:underline">ASPCA</a>
           </p>
           <Link to="/subscriptions">
             <Button className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-8 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105" data-testid="safe-flowers-shop-btn">
