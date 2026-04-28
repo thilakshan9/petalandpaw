@@ -69,9 +69,9 @@ export default function HomePage() {
               <p className="text-sm sm:text-base font-light leading-relaxed text-[#6B7280] mb-6 sm:mb-8 max-w-md">
                 Every flower we sell is carefully checked against scientific data. Just beautiful, worry-free blooms for homes with curious cats, playful dogs, and everything in between.
               </p>
-              <Link to="/gallery">
+              <Link to="/safe-flowers">
                 <Button className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-6 py-5 sm:px-8 sm:py-6 text-xs sm:text-sm uppercase tracking-[0.15em] transition-all hover:scale-105" data-testid="feature-shop-btn">
-                View Plans <ArrowRight size={14} className="ml-2" />
+                More Info <ArrowRight size={14} className="ml-2" />
                 </Button>
               </Link>
             </div>

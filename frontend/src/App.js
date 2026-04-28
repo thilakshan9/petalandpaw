@@ -20,6 +20,7 @@ import ContactPage from "@/pages/ContactPage";
 import FaqPage from "@/pages/FaqPage";
 import ReturnsPage from "@/pages/ReturnsPage";
 import EventsPage from "@/pages/EventsPage";
+import SafeFlowersPage from "@/pages/SafeFlowersPage";
 import "@/App.css";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -123,6 +124,7 @@ function AppRouter() {
       <Route path="/faq" element={<Layout><FaqPage /></Layout>} />
       <Route path="/returns" element={<Layout><ReturnsPage /></Layout>} />
       <Route path="/events" element={<Layout><EventsPage /></Layout>} />
+      <Route path="/safe-flowers" element={<Layout><SafeFlowersPage /></Layout>} />
       <Route path="/login" element={<Layout><CustomerLogin /></Layout>} />
       <Route path="/account" element={<ProtectedRoute><Layout><AccountPage /></Layout></ProtectedRoute>} />
       <Route path="/referral/:code" element={<Layout><ReferralPage /></Layout>} />
