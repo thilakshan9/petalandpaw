@@ -10,6 +10,8 @@ import SEOHead from "@/components/SEOHead";
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function SubscriptionPage() {
+  const { customer, loading: authLoading } = useCustomerAuth();
+  const navigate = useNavigate();
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [subscribing, setSubscribing] = useState(null);
@@ -40,6 +42,11 @@ export default function SubscriptionPage() {
   }, []);
 
   const handleSubscribeClick = (planId, type = "subscription") => {
+    if (!customer) {
+      toast.error("Please sign in to continue");
+      navigate("/login");
+      return;
+    }
     const selectedPet = petType[planId] || "";
     if (!selectedPet) {
       toast.error("Please select your pet type first");
@@ -51,7 +58,7 @@ export default function SubscriptionPage() {
     }
     setOrderType(type);
     setEmailDialog(planId);
-    setCustomerEmail("");
+    setCustomerEmail(customer?.email || "");
     setPersonalizedMessage("");
   };
 
