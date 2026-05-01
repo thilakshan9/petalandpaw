@@ -605,7 +605,16 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
                 pid["receipt_email"] = req.customer_email
             checkout_params["payment_intent_data"] = pid
         if req.customer_email:
-            checkout_params["customer_email"] = req.customer_email
+            try:
+                existing = stripe.Customer.list(email=req.customer_email, limit=1)
+                if existing.data:
+                    checkout_params["customer"] = existing.data[0].id
+                else:
+                    db_cust = await db.customers.find_one({"email": req.customer_email.strip().lower()}, {"_id": 0})
+                    sc = stripe.Customer.create(email=req.customer_email, name=db_cust["name"] if db_cust else "")
+                    checkout_params["customer"] = sc.id
+            except Exception:
+                checkout_params["customer_email"] = req.customer_email
         session = stripe.checkout.Session.create(**checkout_params)
     except stripe._error.AuthenticationError:
         raise HTTPException(status_code=503, detail="Payment service is not configured. Please contact support.")
@@ -728,7 +737,16 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
             "payment_intent_data": pid,
         }
         if req.customer_email:
-            checkout_params["customer_email"] = req.customer_email
+            try:
+                existing = stripe.Customer.list(email=req.customer_email, limit=1)
+                if existing.data:
+                    checkout_params["customer"] = existing.data[0].id
+                else:
+                    db_cust = await db.customers.find_one({"email": req.customer_email.strip().lower()}, {"_id": 0})
+                    sc = stripe.Customer.create(email=req.customer_email, name=db_cust["name"] if db_cust else "")
+                    checkout_params["customer"] = sc.id
+            except Exception:
+                checkout_params["customer_email"] = req.customer_email
         session = stripe.checkout.Session.create(**checkout_params)
     except stripe._error.AuthenticationError:
         raise HTTPException(status_code=503, detail="Payment service is not configured. Please contact support.")
