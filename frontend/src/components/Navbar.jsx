@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { ShoppingBag, Menu, User } from "lucide-react";
 import { useCart } from "@/components/CartProvider";
+import { useCustomerAuth } from "@/context/CustomerAuthContext";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
@@ -16,6 +17,7 @@ const navLinks = [
 
 export default function Navbar() {
   const { itemCount } = useCart();
+  const { customer } = useCustomerAuth();
   const location = useLocation();
   const [open, setOpen] = useState(false);
 
@@ -38,6 +40,9 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-2">
+          <Link to={customer ? "/account" : "/login"} className="p-2 hover:bg-[#E8E4D9]/50 rounded-full transition-colors hidden md:flex" data-testid="nav-account">
+            <User size={20} strokeWidth={1.5} />
+          </Link>
           <Link to="/cart" className="relative p-2 hover:bg-[#E8E4D9]/50 rounded-full transition-colors" data-testid="nav-cart">
             <ShoppingBag size={20} strokeWidth={1.5} />
             {itemCount > 0 && (

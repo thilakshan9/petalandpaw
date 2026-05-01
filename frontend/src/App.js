@@ -21,6 +21,9 @@ import FaqPage from "@/pages/FaqPage";
 import ReturnsPage from "@/pages/ReturnsPage";
 import EventsPage from "@/pages/EventsPage";
 import SafeFlowersPage from "@/pages/SafeFlowersPage";
+import CustomerAuthPage from "@/pages/CustomerAuthPage";
+import CustomerDashboard from "@/pages/CustomerDashboard";
+import { CustomerAuthProvider } from "@/context/CustomerAuthContext";
 import "@/App.css";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -125,8 +128,8 @@ function AppRouter() {
       <Route path="/returns" element={<Layout><ReturnsPage /></Layout>} />
       <Route path="/events" element={<Layout><EventsPage /></Layout>} />
       <Route path="/safe-flowers" element={<Layout><SafeFlowersPage /></Layout>} />
-      <Route path="/login" element={<Layout><CustomerLogin /></Layout>} />
-      <Route path="/account" element={<ProtectedRoute><Layout><AccountPage /></Layout></ProtectedRoute>} />
+      <Route path="/login" element={<Layout><CustomerAuthPage /></Layout>} />
+      <Route path="/account" element={<Layout><CustomerDashboard /></Layout>} />
       <Route path="/referral/:code" element={<Layout><ReferralPage /></Layout>} />
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin/dashboard" element={<ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>} />
@@ -138,10 +141,12 @@ function App() {
   return (
     <HelmetProvider>
       <BrowserRouter>
-        <CartProvider>
-          <Toaster position="bottom-right" />
-          <AppRouter />
-        </CartProvider>
+        <CustomerAuthProvider>
+          <CartProvider>
+            <Toaster position="bottom-right" />
+            <AppRouter />
+          </CartProvider>
+        </CustomerAuthProvider>
       </BrowserRouter>
     </HelmetProvider>
   );

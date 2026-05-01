@@ -8,6 +8,8 @@ import uuid
 import httpx
 import random
 import string
+import bcrypt
+import jwt as pyjwt
 from pathlib import Path
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict
@@ -177,6 +179,21 @@ async def send_contact_form_email(name: str, email: str, subject: str, message: 
 # AUTH HELPERS
 # ============================================================
 
+JWT_SECRET = os.environ.get('JWT_SECRET', uuid.uuid4().hex + uuid.uuid4().hex)
+JWT_ALGORITHM = "HS256"
+
+def hash_password(password: str) -> str:
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+
+def verify_password(plain: str, hashed: str) -> bool:
+    return bcrypt.checkpw(plain.encode("utf-8"), hashed.encode("utf-8"))
+
+def create_access_token(user_id: str, email: str) -> str:
+    return pyjwt.encode({"sub": user_id, "email": email, "exp": datetime.now(timezone.utc) + timedelta(minutes=60), "type": "access"}, JWT_SECRET, algorithm=JWT_ALGORITHM)
+
+def create_refresh_token(user_id: str) -> str:
+    return pyjwt.encode({"sub": user_id, "exp": datetime.now(timezone.utc) + timedelta(days=7), "type": "refresh"}, JWT_SECRET, algorithm=JWT_ALGORITHM)
+
 def generate_referral_code():
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
 
@@ -208,6 +225,29 @@ async def get_optional_user(request: Request):
         return await get_current_user(request)
     except HTTPException:
         return None
+
+async def get_customer(request: Request):
+    """Get customer from JWT token (customer auth)"""
+    token = request.cookies.get("customer_token")
+    if not token:
+        auth_header = request.headers.get("Authorization", "")
+        if auth_header.startswith("Bearer "):
+            token = auth_header[7:]
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    try:
+        payload = pyjwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        if payload.get("type") != "access":
+            raise HTTPException(status_code=401, detail="Invalid token type")
+        customer = await db.customers.find_one({"id": payload["sub"]}, {"_id": 0})
+        if not customer:
+            raise HTTPException(status_code=401, detail="Customer not found")
+        customer.pop("password_hash", None)
+        return customer
+    except pyjwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expired")
+    except pyjwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")
 
 # ============================================================
 # AUTH ROUTES
@@ -269,6 +309,120 @@ async def logout(request: Request, response: Response):
         await db.user_sessions.delete_one({"session_token": session_token})
     response.delete_cookie(key="session_token", path="/", secure=True, samesite="none")
     return {"message": "Logged out"}
+
+# ============================================================
+# CUSTOMER AUTH ROUTES
+# ============================================================
+
+class CustomerRegister(BaseModel):
+    name: str
+    email: str
+    password: str
+
+class CustomerLogin(BaseModel):
+    email: str
+    password: str
+
+@api_router.post("/customer/register")
+async def customer_register(req: CustomerRegister, response: Response):
+    email = req.email.strip().lower()
+    if not email or "@" not in email:
+        raise HTTPException(status_code=400, detail="Invalid email address")
+    if len(req.password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+    existing = await db.customers.find_one({"email": email})
+    if existing:
+        raise HTTPException(status_code=400, detail="An account with this email already exists")
+    customer_id = str(uuid.uuid4())
+    await db.customers.insert_one({
+        "id": customer_id, "name": req.name.strip(), "email": email,
+        "password_hash": hash_password(req.password),
+        "created_at": datetime.now(timezone.utc).isoformat()
+    })
+    access = create_access_token(customer_id, email)
+    refresh = create_refresh_token(customer_id)
+    response.set_cookie(key="customer_token", value=access, httponly=True, secure=True, samesite="none", max_age=3600, path="/")
+    response.set_cookie(key="customer_refresh", value=refresh, httponly=True, secure=True, samesite="none", max_age=604800, path="/")
+    return {"id": customer_id, "name": req.name.strip(), "email": email}
+
+@api_router.post("/customer/login")
+async def customer_login(req: CustomerLogin, response: Response):
+    email = req.email.strip().lower()
+    customer = await db.customers.find_one({"email": email}, {"_id": 0})
+    if not customer or not verify_password(req.password, customer["password_hash"]):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    access = create_access_token(customer["id"], email)
+    refresh = create_refresh_token(customer["id"])
+    response.set_cookie(key="customer_token", value=access, httponly=True, secure=True, samesite="none", max_age=3600, path="/")
+    response.set_cookie(key="customer_refresh", value=refresh, httponly=True, secure=True, samesite="none", max_age=604800, path="/")
+    return {"id": customer["id"], "name": customer["name"], "email": customer["email"]}
+
+@api_router.get("/customer/me")
+async def customer_me(customer=Depends(get_customer)):
+    return customer
+
+@api_router.post("/customer/logout")
+async def customer_logout(response: Response):
+    response.delete_cookie(key="customer_token", path="/", secure=True, samesite="none")
+    response.delete_cookie(key="customer_refresh", path="/", secure=True, samesite="none")
+    return {"message": "Logged out"}
+
+@api_router.post("/customer/refresh")
+async def customer_refresh(request: Request, response: Response):
+    token = request.cookies.get("customer_refresh")
+    if not token:
+        raise HTTPException(status_code=401, detail="No refresh token")
+    try:
+        payload = pyjwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        if payload.get("type") != "refresh":
+            raise HTTPException(status_code=401, detail="Invalid token")
+        customer = await db.customers.find_one({"id": payload["sub"]}, {"_id": 0})
+        if not customer:
+            raise HTTPException(status_code=401, detail="Customer not found")
+        access = create_access_token(customer["id"], customer["email"])
+        response.set_cookie(key="customer_token", value=access, httponly=True, secure=True, samesite="none", max_age=3600, path="/")
+        return {"id": customer["id"], "name": customer["name"], "email": customer["email"]}
+    except pyjwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+@api_router.get("/customer/orders")
+async def customer_orders(customer=Depends(get_customer)):
+    """Get customer's past purchases and subscriptions from Stripe"""
+    email = customer["email"]
+    # Get payment transactions for this customer
+    txs = await db.payment_transactions.find(
+        {"customer_email": email}, {"_id": 0}
+    ).sort("created_at", -1).to_list(50)
+    # Also check Stripe for subscriptions
+    subscriptions = []
+    try:
+        customers_list = stripe.Customer.list(email=email, limit=1)
+        if customers_list.data:
+            stripe_customer = customers_list.data[0]
+            subs = stripe.Subscription.list(customer=stripe_customer.id, limit=10)
+            for sub in subs.data:
+                subscriptions.append({
+                    "id": sub.id,
+                    "status": sub.status,
+                    "current_period_end": sub.current_period_end,
+                    "cancel_at_period_end": sub.cancel_at_period_end,
+                    "plan_name": sub.metadata.get("plan_name", "Subscription"),
+                    "amount": sub.items.data[0].price.unit_amount / 100 if sub.items.data else 0,
+                    "currency": sub.items.data[0].price.currency if sub.items.data else "gbp",
+                })
+    except Exception as e:
+        logger.error(f"Stripe subscription fetch error: {e}")
+    return {"transactions": txs, "subscriptions": subscriptions}
+
+@api_router.post("/customer/cancel-subscription/{sub_id}")
+async def cancel_subscription(sub_id: str, customer=Depends(get_customer)):
+    """Cancel a Stripe subscription at period end"""
+    try:
+        sub = stripe.Subscription.modify(sub_id, cancel_at_period_end=True)
+        return {"status": "cancelled", "cancel_at_period_end": True, "current_period_end": sub.current_period_end}
+    except Exception as e:
+        logger.error(f"Subscription cancel error: {e}")
+        raise HTTPException(status_code=500, detail="Could not cancel subscription")
 
 # ============================================================
 # PRODUCT ROUTES
@@ -462,6 +616,7 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
         "id": str(uuid.uuid4()), "session_id": session.id,
         "amount": float(total), "currency": "gbp",
         "status": "initiated", "payment_status": "pending",
+        "customer_email": req.customer_email,
         "metadata": {"type": req.checkout_mode, "plan_id": plan["id"],
                      "plan_name": plan["name"], "add_pet_toy": str(req.add_pet_toy),
                      "personalized_message": req.personalized_message[:500] if req.personalized_message else "",
