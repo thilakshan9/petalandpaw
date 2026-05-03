@@ -63,7 +63,6 @@ export default function Navbar() {
                 ))}
                 <div className="border-t border-[#E5E0D6] pt-6 mt-2 space-y-4">
                   <Link to="/account" onClick={() => setOpen(false)} className="block text-base font-light text-[#2C2C2C] hover:text-[#8DA399]" data-testid="mobile-nav-account">My Account</Link>
-                  <Link to="/admin/login" onClick={() => setOpen(false)} className="block text-sm text-[#6B7280] hover:text-[#2C2C2C]" data-testid="mobile-nav-admin">Admin</Link>
                 </div>
               </div>
             </SheetContent>
