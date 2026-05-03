@@ -44,11 +44,6 @@ export default function SubscriptionPage() {
   }, []);
 
   const handleSubscribeClick = (planId, type = "subscription") => {
-    if (!customer) {
-      toast.error("Please sign in to continue");
-      navigate("/login");
-      return;
-    }
     const selectedPet = petType[planId] || "";
     if (!selectedPet) {
       toast.error("Please select your pet type first");
