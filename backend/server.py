@@ -415,9 +415,9 @@ async def customer_orders(customer=Depends(get_customer)):
     """Get customer's past purchases and subscriptions from Stripe"""
     email = customer["email"]
 
-    # Get payment transactions for this customer (match by customer_email or metadata email)
+    # Get payment transactions ONLY for this customer's email
     txs = await db.payment_transactions.find(
-        {"$or": [{"customer_email": email}, {"customer_email": {"$exists": False}}]}, {"_id": 0}
+        {"customer_email": email}, {"_id": 0}
     ).sort("created_at", -1).to_list(100)
 
     # Update pending transactions by checking their Stripe session status
@@ -433,22 +433,9 @@ async def customer_orders(customer=Depends(get_customer)):
                     )
                     tx["payment_status"] = "paid"
                     tx["status"] = "complete"
-                # Check if this session's email matches our customer
-                session_email = None
-                if hasattr(session, 'customer_details') and session.customer_details:
-                    session_email = getattr(session.customer_details, 'email', None)
-                if not session_email:
-                    session_email = getattr(session, 'customer_email', None)
-                if session_email and session_email.lower() == email.lower():
-                    updated_txs.append(tx)
-                elif tx.get("customer_email", "").lower() == email.lower():
-                    updated_txs.append(tx)
             except Exception:
-                if tx.get("customer_email", "").lower() == email.lower():
-                    updated_txs.append(tx)
-        else:
-            if tx.get("customer_email", "").lower() == email.lower():
-                updated_txs.append(tx)
+                pass
+        updated_txs.append(tx)
 
     # Search Stripe for subscriptions - try multiple methods
     subscriptions = []
