@@ -23,6 +23,7 @@ export default function SubscriptionPage() {
   const [preOrderExpanded, setPreOrderExpanded] = useState(null);
   const [orderType, setOrderType] = useState(null);
   const [personalizedMessage, setPersonalizedMessage] = useState("");
+  const [guestDialog, setGuestDialog] = useState(null);
   const [petType, setPetType] = useState({});
   const [petTypeOther, setPetTypeOther] = useState({});
   const [orderCount, setOrderCount] = useState(0);
@@ -54,9 +55,26 @@ export default function SubscriptionPage() {
       return;
     }
     setOrderType(type);
+    if (!customer) {
+      setGuestDialog(planId);
+      return;
+    }
     setEmailDialog(planId);
-    setCustomerEmail(customer?.email || "");
+    setCustomerEmail(customer.email);
     setPersonalizedMessage("");
+  };
+
+  const handleGuestContinue = () => {
+    const planId = guestDialog;
+    setGuestDialog(null);
+    setEmailDialog(planId);
+    setCustomerEmail("");
+    setPersonalizedMessage("");
+  };
+
+  const handleGuestLogin = () => {
+    setGuestDialog(null);
+    navigate("/login");
   };
 
   const handleSubscribe = async () => {
@@ -228,6 +246,33 @@ export default function SubscriptionPage() {
             })}
           </div>
         )}
+
+        {/* Guest or Login Dialog */}
+        <Dialog open={!!guestDialog} onOpenChange={(v) => { if (!v) setGuestDialog(null); }}>
+          <DialogContent className="max-w-sm border-[#E5E0D6] bg-[#FAF9F6] rounded-2xl" data-testid="guest-dialog">
+            <DialogTitle className="font-['Playfair_Display'] text-xl font-medium text-[#2C2C2C]">Before You Continue</DialogTitle>
+            <DialogDescription className="text-sm font-light text-[#6B7280]">
+              Sign in to track your orders and manage subscriptions, or continue as a guest.
+            </DialogDescription>
+            <div className="mt-4 space-y-3">
+              <Button
+                onClick={handleGuestLogin}
+                className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-8 py-6 text-xs uppercase tracking-widest w-full transition-all hover:scale-105"
+                data-testid="guest-login-btn"
+              >
+                Sign In / Create Account <ArrowRight size={14} className="ml-2" />
+              </Button>
+              <Button
+                onClick={handleGuestContinue}
+                variant="outline"
+                className="rounded-full border-[#E5E0D6] text-[#6B7280] hover:text-[#2C2C2C] hover:border-[#2C2C2C] px-8 py-6 text-xs uppercase tracking-widest w-full transition-all"
+                data-testid="guest-continue-btn"
+              >
+                Continue as Guest
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Email Dialog */}
         <Dialog open={!!emailDialog} onOpenChange={(v) => { if (!v) setEmailDialog(null); }}>
