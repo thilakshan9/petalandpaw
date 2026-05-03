@@ -158,8 +158,8 @@ async def send_order_confirmation_email(to_email: str, order_data: dict):
     """
     return _send_email(to_email, "Your Petal & Paw Order Confirmation", html_content)
 
-async def send_contact_form_email(name: str, email: str, subject: str, message: str):
-    contact_email = os.environ.get('CONTACT_EMAIL', 'nandineekattan@gmail.com')
+async def send_contact_form_email(name: str, email: str, subject: str, message: str, to_email: str = ""):
+    contact_email = to_email or "contact@petalandpaw.co.uk"
     html_content = f"""
     <div style="font-family: 'Helvetica', sans-serif; max-width: 600px; margin: 0 auto; background: #FAF9F6; padding: 40px;">
         <h1 style="font-family: serif; color: #2C2C2C; font-weight: 400;">New Contact Form Message</h1>
@@ -927,7 +927,8 @@ async def submit_contact_form(req: ContactFormRequest, background_tasks: Backgro
         "subject": req.subject, "message": req.message,
         "created_at": datetime.now(timezone.utc).isoformat()
     })
-    background_tasks.add_task(send_contact_form_email, req.name, req.email, req.subject, req.message)
+    to_email = "events@petalandpaw.co.uk" if "Event Enquiry" in (req.subject or "") else "contact@petalandpaw.co.uk"
+    background_tasks.add_task(send_contact_form_email, req.name, req.email, req.subject, req.message, to_email)
     return {"success": True, "message": "Message received. We'll get back to you soon."}
 
 # ============================================================
