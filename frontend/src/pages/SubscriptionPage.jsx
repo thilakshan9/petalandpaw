@@ -44,6 +44,25 @@ export default function SubscriptionPage() {
       .catch(() => {});
   }, []);
 
+  // Auto-resume checkout after login
+  useEffect(() => {
+    if (authLoading || !customer || loading || plans.length === 0) return;
+    const pending = localStorage.getItem("pp_pending_checkout");
+    if (!pending) return;
+    try {
+      const data = JSON.parse(pending);
+      localStorage.removeItem("pp_pending_checkout");
+      // Restore state and go straight to email dialog
+      if (data.petType) setPetType(prev => ({ ...prev, [data.planId]: data.petType }));
+      if (data.petTypeOther) setPetTypeOther(prev => ({ ...prev, [data.planId]: data.petTypeOther }));
+      if (data.petToy) setPetToy(prev => ({ ...prev, [data.planId]: data.petToy }));
+      setOrderType(data.orderType);
+      setEmailDialog(data.planId);
+      setCustomerEmail(customer.email);
+      setPersonalizedMessage("");
+    } catch { localStorage.removeItem("pp_pending_checkout"); }
+  }, [authLoading, customer, loading, plans]);
+
   const handleSubscribeClick = (planId, type = "subscription") => {
     const selectedPet = petType[planId] || "";
     if (!selectedPet) {
@@ -73,6 +92,15 @@ export default function SubscriptionPage() {
   };
 
   const handleGuestLogin = () => {
+    // Save pending purchase so we can resume after login
+    const planId = guestDialog;
+    localStorage.setItem("pp_pending_checkout", JSON.stringify({
+      planId,
+      orderType,
+      petType: petType[planId] || "",
+      petTypeOther: petTypeOther[planId] || "",
+      petToy: !!petToy[planId],
+    }));
     setGuestDialog(null);
     navigate("/login");
   };

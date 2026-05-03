@@ -27,11 +27,13 @@ export default function CustomerAuthPage() {
       if (mode === "login") {
         await login(email, password);
         toast.success("Welcome back!");
-        navigate("/account");
+        const pending = localStorage.getItem("pp_pending_checkout");
+        navigate(pending ? "/subscriptions" : "/account");
       } else if (mode === "register") {
         await register(name, email, password);
         toast.success("Account created!");
-        navigate("/account");
+        const pending = localStorage.getItem("pp_pending_checkout");
+        navigate(pending ? "/subscriptions" : "/account");
       } else if (mode === "forgot") {
         const res = await fetch(`${API}/customer/forgot-password`, {
           method: "POST",
