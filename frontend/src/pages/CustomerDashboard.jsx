@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { useCustomerAuth } from "@/context/CustomerAuthContext";
+import { useCustomerAuth, authHeaders } from "@/context/CustomerAuthContext";
 import SEOHead from "@/components/SEOHead";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -26,7 +26,7 @@ export default function CustomerDashboard() {
       return;
     }
     if (customer) {
-      fetch(`${API}/customer/orders`, { credentials: "include" })
+      fetch(`${API}/customer/orders`, { headers: authHeaders() })
         .then((r) => r.ok ? r.json() : { transactions: [], subscriptions: [] })
         .then((data) => {
           setOrders(data.transactions || []);
@@ -45,7 +45,7 @@ export default function CustomerDashboard() {
     setCancelling(true);
     try {
       const res = await fetch(`${API}/customer/cancel-subscription/${cancelDialog}`, {
-        method: "POST", credentials: "include"
+        method: "POST", headers: authHeaders()
       });
       if (res.ok) {
         toast.success("Subscription will cancel at end of billing period");

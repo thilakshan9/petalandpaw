@@ -227,14 +227,11 @@ async def get_optional_user(request: Request):
         return None
 
 async def get_customer(request: Request):
-    """Get customer from JWT token (customer auth)"""
-    token = request.cookies.get("customer_token")
-    if not token:
-        auth_header = request.headers.get("Authorization", "")
-        if auth_header.startswith("Bearer "):
-            token = auth_header[7:]
-    if not token:
+    """Get customer from JWT token (Authorization header)"""
+    auth_header = request.headers.get("Authorization", "")
+    if not auth_header.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Not authenticated")
+    token = auth_header[7:]
     try:
         payload = pyjwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         if payload.get("type") != "access":
@@ -339,11 +336,8 @@ async def customer_register(req: CustomerRegister, response: Response):
         "password_hash": hash_password(req.password),
         "created_at": datetime.now(timezone.utc).isoformat()
     })
-    access = create_access_token(customer_id, email)
-    refresh = create_refresh_token(customer_id)
-    response.set_cookie(key="customer_token", value=access, httponly=True, secure=True, samesite="none", max_age=3600, path="/")
-    response.set_cookie(key="customer_refresh", value=refresh, httponly=True, secure=True, samesite="none", max_age=604800, path="/")
-    return {"id": customer_id, "name": req.name.strip(), "email": email}
+    token = create_access_token(customer_id, email)
+    return {"id": customer_id, "name": req.name.strip(), "email": email, "token": token}
 
 @api_router.post("/customer/login")
 async def customer_login(req: CustomerLogin, response: Response):
@@ -351,39 +345,16 @@ async def customer_login(req: CustomerLogin, response: Response):
     customer = await db.customers.find_one({"email": email}, {"_id": 0})
     if not customer or not verify_password(req.password, customer["password_hash"]):
         raise HTTPException(status_code=401, detail="Invalid email or password")
-    access = create_access_token(customer["id"], email)
-    refresh = create_refresh_token(customer["id"])
-    response.set_cookie(key="customer_token", value=access, httponly=True, secure=True, samesite="none", max_age=3600, path="/")
-    response.set_cookie(key="customer_refresh", value=refresh, httponly=True, secure=True, samesite="none", max_age=604800, path="/")
-    return {"id": customer["id"], "name": customer["name"], "email": customer["email"]}
+    token = create_access_token(customer["id"], email)
+    return {"id": customer["id"], "name": customer["name"], "email": customer["email"], "token": token}
 
 @api_router.get("/customer/me")
 async def customer_me(customer=Depends(get_customer)):
     return customer
 
 @api_router.post("/customer/logout")
-async def customer_logout(response: Response):
-    response.delete_cookie(key="customer_token", path="/", secure=True, samesite="none")
-    response.delete_cookie(key="customer_refresh", path="/", secure=True, samesite="none")
+async def customer_logout():
     return {"message": "Logged out"}
-
-@api_router.post("/customer/refresh")
-async def customer_refresh(request: Request, response: Response):
-    token = request.cookies.get("customer_refresh")
-    if not token:
-        raise HTTPException(status_code=401, detail="No refresh token")
-    try:
-        payload = pyjwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-        if payload.get("type") != "refresh":
-            raise HTTPException(status_code=401, detail="Invalid token")
-        customer = await db.customers.find_one({"id": payload["sub"]}, {"_id": 0})
-        if not customer:
-            raise HTTPException(status_code=401, detail="Customer not found")
-        access = create_access_token(customer["id"], customer["email"])
-        response.set_cookie(key="customer_token", value=access, httponly=True, secure=True, samesite="none", max_age=3600, path="/")
-        return {"id": customer["id"], "name": customer["name"], "email": customer["email"]}
-    except pyjwt.InvalidTokenError:
-        raise HTTPException(status_code=401, detail="Invalid token")
 
 @api_router.get("/customer/orders")
 async def customer_orders(customer=Depends(get_customer)):

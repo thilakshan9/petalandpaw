@@ -131,8 +131,6 @@ function AppRouter() {
       <Route path="/login" element={<Layout><CustomerAuthPage /></Layout>} />
       <Route path="/account" element={<Layout><CustomerDashboard /></Layout>} />
       <Route path="/referral/:code" element={<Layout><ReferralPage /></Layout>} />
-      <Route path="/admin/login" element={<AdminLogin />} />
-      <Route path="/admin/dashboard" element={<ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>} />
     </Routes>
   );
 }
