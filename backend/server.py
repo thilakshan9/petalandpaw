@@ -360,30 +360,90 @@ async def customer_logout():
 async def customer_orders(customer=Depends(get_customer)):
     """Get customer's past purchases and subscriptions from Stripe"""
     email = customer["email"]
-    # Get payment transactions for this customer
+
+    # Get payment transactions for this customer (match by customer_email or metadata email)
     txs = await db.payment_transactions.find(
-        {"customer_email": email}, {"_id": 0}
-    ).sort("created_at", -1).to_list(50)
-    # Also check Stripe for subscriptions
+        {"$or": [{"customer_email": email}, {"customer_email": {"$exists": False}}]}, {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+
+    # Update pending transactions by checking their Stripe session status
+    updated_txs = []
+    for tx in txs:
+        if tx.get("payment_status") == "pending" and tx.get("session_id"):
+            try:
+                session = stripe.checkout.Session.retrieve(tx["session_id"])
+                if session.payment_status == "paid" or session.status == "complete":
+                    await db.payment_transactions.update_one(
+                        {"session_id": tx["session_id"]},
+                        {"$set": {"payment_status": "paid", "status": "complete"}}
+                    )
+                    tx["payment_status"] = "paid"
+                    tx["status"] = "complete"
+                # Check if this session's email matches our customer
+                session_email = None
+                if hasattr(session, 'customer_details') and session.customer_details:
+                    session_email = getattr(session.customer_details, 'email', None)
+                if not session_email:
+                    session_email = getattr(session, 'customer_email', None)
+                if session_email and session_email.lower() == email.lower():
+                    updated_txs.append(tx)
+                elif tx.get("customer_email", "").lower() == email.lower():
+                    updated_txs.append(tx)
+            except Exception:
+                if tx.get("customer_email", "").lower() == email.lower():
+                    updated_txs.append(tx)
+        else:
+            if tx.get("customer_email", "").lower() == email.lower():
+                updated_txs.append(tx)
+
+    # Search Stripe for subscriptions - try multiple methods
     subscriptions = []
+    found_sub_ids = set()
     try:
-        customers_list = stripe.Customer.list(email=email, limit=1)
-        if customers_list.data:
-            stripe_customer = customers_list.data[0]
-            subs = stripe.Subscription.list(customer=stripe_customer.id, limit=10)
+        # Method 1: Search by Stripe Customer object
+        customers_list = stripe.Customer.list(email=email, limit=5)
+        for stripe_cust in customers_list.data:
+            subs = stripe.Subscription.list(customer=stripe_cust.id, limit=10)
             for sub in subs.data:
-                subscriptions.append({
-                    "id": sub.id,
-                    "status": sub.status,
-                    "current_period_end": sub.current_period_end,
-                    "cancel_at_period_end": sub.cancel_at_period_end,
-                    "plan_name": sub.metadata.get("plan_name", "Subscription"),
-                    "amount": sub.items.data[0].price.unit_amount / 100 if sub.items.data else 0,
-                    "currency": sub.items.data[0].price.currency if sub.items.data else "gbp",
-                })
+                if sub.id not in found_sub_ids:
+                    found_sub_ids.add(sub.id)
+                    subscriptions.append({
+                        "id": sub.id,
+                        "status": sub.status,
+                        "current_period_end": sub.current_period_end,
+                        "cancel_at_period_end": sub.cancel_at_period_end,
+                        "plan_name": sub.metadata.get("plan_name", "Subscription"),
+                        "amount": sub.items.data[0].price.unit_amount / 100 if sub.items.data else 0,
+                        "currency": sub.items.data[0].price.currency if sub.items.data else "gbp",
+                    })
+
+        # Method 2: Check subscription-type transactions in our DB and look up their Stripe sessions
+        if not subscriptions:
+            sub_txs = await db.payment_transactions.find(
+                {"metadata.type": "subscription", "customer_email": email}, {"_id": 0}
+            ).to_list(20)
+            for stx in sub_txs:
+                try:
+                    session = stripe.checkout.Session.retrieve(stx["session_id"])
+                    if session.subscription:
+                        sub = stripe.Subscription.retrieve(session.subscription)
+                        if sub.id not in found_sub_ids:
+                            found_sub_ids.add(sub.id)
+                            subscriptions.append({
+                                "id": sub.id,
+                                "status": sub.status,
+                                "current_period_end": sub.current_period_end,
+                                "cancel_at_period_end": sub.cancel_at_period_end,
+                                "plan_name": sub.metadata.get("plan_name", stx.get("metadata", {}).get("plan_name", "Subscription")),
+                                "amount": sub.items.data[0].price.unit_amount / 100 if sub.items.data else 0,
+                                "currency": sub.items.data[0].price.currency if sub.items.data else "gbp",
+                            })
+                except Exception:
+                    pass
     except Exception as e:
         logger.error(f"Stripe subscription fetch error: {e}")
-    return {"transactions": txs, "subscriptions": subscriptions}
+
+    return {"transactions": updated_txs, "subscriptions": subscriptions}
 
 @api_router.post("/customer/cancel-subscription/{sub_id}")
 async def cancel_subscription(sub_id: str, customer=Depends(get_customer)):
