@@ -123,7 +123,7 @@ def _send_email(to_email: str, subject: str, html_content: str, reply_to: str = 
         import resend
         resend.api_key = resend_api_key
         params = {
-            "from": "Petal & Paw <onboarding@resend.dev>",
+            "from": "Petal & Paw <noreply@petalandpaw.co.uk>",
             "to": [to_email],
             "subject": subject,
             "html": html_content,
