@@ -90,9 +90,6 @@ export default function CustomerAuthPage() {
             {mode === "login" && (
               <>
                 <p className="text-sm font-light text-[#6B7280]">
-                  <button onClick={() => setMode("forgot")} className="text-[#8DA399] hover:underline font-medium" data-testid="forgot-password-link">Forgot your password?</button>
-                </p>
-                <p className="text-sm font-light text-[#6B7280]">
                   Don't have an account?{" "}
                   <button onClick={() => setMode("register")} className="text-[#8DA399] hover:underline font-medium" data-testid="switch-to-register">Create one</button>
                 </p>
