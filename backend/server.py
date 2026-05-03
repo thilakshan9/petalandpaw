@@ -356,6 +356,60 @@ async def customer_me(customer=Depends(get_customer)):
 async def customer_logout():
     return {"message": "Logged out"}
 
+class ForgotPasswordRequest(BaseModel):
+    email: str
+    origin_url: str = ""
+
+@api_router.post("/customer/forgot-password")
+async def customer_forgot_password(req: ForgotPasswordRequest):
+    """Send password reset link via email"""
+    email = req.email.strip().lower()
+    customer = await db.customers.find_one({"email": email}, {"_id": 0})
+    if not customer:
+        return {"message": "If an account exists with that email, you will receive a reset link."}
+    reset_token = str(uuid.uuid4())
+    await db.password_resets.insert_one({
+        "token": reset_token, "customer_id": customer["id"], "email": email,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "used": False
+    })
+    reset_url = f"{req.origin_url}/reset-password?token={reset_token}"
+    html_content = f"""
+    <div style="font-family: 'Helvetica', sans-serif; max-width: 600px; margin: 0 auto; background: #FAF9F6; padding: 40px;">
+        <h1 style="font-family: serif; color: #2C2C2C; font-weight: 400;">Reset Your Password</h1>
+        <p style="color: #6B7280;">Click the link below to reset your password. This link expires in 1 hour.</p>
+        <div style="margin: 24px 0;">
+            <a href="{reset_url}" style="display: inline-block; background: #8DA399; color: white; text-decoration: none; padding: 14px 28px; border-radius: 50px; font-size: 13px; text-transform: uppercase; letter-spacing: 2px;">Reset Password</a>
+        </div>
+        <p style="color: #9CA3AF; font-size: 12px;">If you didn't request this, you can safely ignore this email.</p>
+        <p style="color: #8DA399; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; margin-top: 24px;">Petal & Paw</p>
+    </div>
+    """
+    _send_email(email, "Reset Your Petal & Paw Password", html_content)
+    return {"message": "If an account exists with that email, you will receive a reset link."}
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
+@api_router.post("/customer/reset-password")
+async def customer_reset_password(req: ResetPasswordRequest):
+    if len(req.new_password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+    reset = await db.password_resets.find_one({"token": req.token, "used": False}, {"_id": 0})
+    if not reset:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset link")
+    # Check if token is less than 1 hour old
+    created = datetime.fromisoformat(reset["created_at"])
+    if datetime.now(timezone.utc) - created > timedelta(hours=1):
+        raise HTTPException(status_code=400, detail="Reset link has expired")
+    await db.customers.update_one(
+        {"id": reset["customer_id"]},
+        {"$set": {"password_hash": hash_password(req.new_password)}}
+    )
+    await db.password_resets.update_one({"token": req.token}, {"$set": {"used": True}})
+    return {"message": "Password reset successfully"}
+
 @api_router.get("/customer/orders")
 async def customer_orders(customer=Depends(get_customer)):
     """Get customer's past purchases and subscriptions from Stripe"""

@@ -23,6 +23,7 @@ import EventsPage from "@/pages/EventsPage";
 import SafeFlowersPage from "@/pages/SafeFlowersPage";
 import CustomerAuthPage from "@/pages/CustomerAuthPage";
 import CustomerDashboard from "@/pages/CustomerDashboard";
+import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import { CustomerAuthProvider } from "@/context/CustomerAuthContext";
 import "@/App.css";
 
@@ -129,6 +130,7 @@ function AppRouter() {
       <Route path="/events" element={<Layout><EventsPage /></Layout>} />
       <Route path="/safe-flowers" element={<Layout><SafeFlowersPage /></Layout>} />
       <Route path="/login" element={<Layout><CustomerAuthPage /></Layout>} />
+      <Route path="/reset-password" element={<Layout><ResetPasswordPage /></Layout>} />
       <Route path="/account" element={<Layout><CustomerDashboard /></Layout>} />
       <Route path="/referral/:code" element={<Layout><ReferralPage /></Layout>} />
     </Routes>
