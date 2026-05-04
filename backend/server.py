@@ -435,7 +435,9 @@ async def customer_orders(customer=Depends(get_customer)):
                     tx["status"] = "complete"
             except Exception:
                 pass
-        updated_txs.append(tx)
+        # Only include paid/completed transactions
+        if tx.get("payment_status") == "paid":
+            updated_txs.append(tx)
 
     # Search Stripe for subscriptions - try multiple methods
     subscriptions = []

@@ -201,9 +201,7 @@ export default function CustomerDashboard() {
                       <span className="text-sm font-medium text-[#2C2C2C]">
                         {order.metadata?.plan_name || "Order"}
                       </span>
-                      <span className={`text-[9px] uppercase tracking-widest font-semibold px-2 py-0.5 rounded-full ${
-                        order.payment_status === "paid" ? "bg-[#8DA399]/10 text-[#8DA399]" : "bg-[#E8E4D9] text-[#6B7280]"
-                      }`}>{order.payment_status}</span>
+                      <span className="text-[9px] uppercase tracking-widest font-semibold px-2 py-0.5 rounded-full bg-[#8DA399]/10 text-[#8DA399]">paid</span>
                       {order.metadata?.type && (
                         <span className={`text-[9px] uppercase tracking-widest font-semibold px-2 py-0.5 rounded-full ${
                           order.metadata.type === "subscription" ? "bg-blue-50 text-blue-500" : "bg-purple-50 text-purple-500"

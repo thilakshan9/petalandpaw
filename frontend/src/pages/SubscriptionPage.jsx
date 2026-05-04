@@ -1,18 +1,20 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check, ArrowRight, PawPrint, ChevronDown } from "lucide-react";
+import { Check, ArrowRight, PawPrint, ChevronDown, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { useCustomerAuth } from "@/context/CustomerAuthContext";
+import { useCart } from "@/components/CartProvider";
 import SEOHead from "@/components/SEOHead";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function SubscriptionPage() {
   const { customer, loading: authLoading } = useCustomerAuth();
+  const { addToCart } = useCart();
   const navigate = useNavigate();
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -268,6 +270,29 @@ export default function SubscriptionPage() {
                       {subscribing === plan.id ? "Processing..." : "One-Time Purchase"} <ArrowRight size={14} className="ml-2" />
                     </Button>
                   </div>
+                  <Button
+                    onClick={() => {
+                      const selectedPet = petType[plan.id] || "";
+                      if (!selectedPet) { toast.error("Please select your pet type first"); return; }
+                      if (selectedPet === "other" && !(petTypeOther[plan.id] || "").trim()) { toast.error("Please enter your pet type"); return; }
+                      addToCart({
+                        product_id: plan.id,
+                        name: plan.name + (toyOn ? " + Pet Toy" : ""),
+                        price: displayPrice,
+                        quantity: 1,
+                        image_url: plan.image_url,
+                        plan_slug: plan.slug,
+                        pet_type: selectedPet === "other" ? petTypeOther[plan.id] : selectedPet,
+                        add_pet_toy: toyOn,
+                      });
+                      toast.success(`${plan.name} added to basket`);
+                    }}
+                    variant="ghost"
+                    className="rounded-full px-6 py-5 text-xs uppercase tracking-widest w-full text-[#6B7280] hover:text-[#2C2C2C] hover:bg-[#F2F0EB] mt-2"
+                    data-testid={`add-to-basket-${plan.slug}`}
+                  >
+                    <ShoppingBag size={14} className="mr-2" /> Add to Basket
+                  </Button>
                   <p className="text-xs font-light text-[#6B7280] text-center mt-2" data-testid="order-deadline">Order by the 26th for this month's delivery</p>
                 </div>
               );
