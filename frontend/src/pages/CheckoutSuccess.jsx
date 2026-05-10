@@ -35,6 +35,7 @@ export default function CheckoutSuccess() {
         if (data.payment_status === "paid") {
           setStatus("success");
           clearCart();
+          localStorage.removeItem("pp_pending_stripe_item");
           return;
         }
         if (data.status === "expired") {
@@ -45,6 +46,7 @@ export default function CheckoutSuccess() {
         if (data.status === "complete" && data.mode === "subscription") {
           setStatus("success");
           clearCart();
+          localStorage.removeItem("pp_pending_stripe_item");
           return;
         }
 

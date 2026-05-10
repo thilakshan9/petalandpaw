@@ -46,6 +46,19 @@ export default function SubscriptionPage() {
       .catch(() => {});
   }, []);
 
+  // Check if user returned from Stripe without completing - add item to basket
+  useEffect(() => {
+    const pendingItem = localStorage.getItem("pp_pending_stripe_item");
+    if (!pendingItem) return;
+    try {
+      const item = JSON.parse(pendingItem);
+      localStorage.removeItem("pp_pending_stripe_item");
+      addToCart(item);
+      toast.info("Your item has been added to your basket");
+    } catch { localStorage.removeItem("pp_pending_stripe_item"); }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Auto-resume checkout after login
   useEffect(() => {
     if (authLoading || !customer || loading || plans.length === 0) return;
@@ -132,6 +145,25 @@ export default function SubscriptionPage() {
       });
       const data = await res.json();
       if (data.url) {
+        // Save to basket before redirecting - if they don't complete Stripe, it'll be in their basket
+        const plan = plans.find(p => p.id === planId);
+        if (plan) {
+          const toyOn = !!petToy[planId];
+          const toyPrice = plan.pet_toy_price || 8.99;
+          const price = toyOn ? plan.price + toyPrice : plan.price;
+          const cartItem = {
+            product_id: planId,
+            name: plan.name + (toyOn ? " + Pet Toy" : ""),
+            price,
+            quantity: 1,
+            image_url: plan.image_url,
+            plan_slug: plan.slug,
+            order_type: orderType,
+            pet_type: (petType[planId] === "other" ? petTypeOther[planId] : petType[planId]) || "",
+            add_pet_toy: toyOn,
+          };
+          localStorage.setItem("pp_pending_stripe_item", JSON.stringify(cartItem));
+        }
         window.location.href = data.url;
       } else {
         toast.error(data.detail || "Something went wrong.");
@@ -227,7 +259,7 @@ export default function SubscriptionPage() {
                     {selectedPet === "other" && (
                       <Input
                         type="text"
-                        placeholder="Enter your pet type..."
+                        placeholder="Please specify..."
                         value={petTypeOther[plan.id] || ""}
                         onChange={(e) => setPetTypeOther({ ...petTypeOther, [plan.id]: e.target.value })}
                         className="mt-2 border-[#E5E0D6] text-sm"
