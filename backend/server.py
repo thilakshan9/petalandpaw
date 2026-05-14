@@ -1135,14 +1135,14 @@ async def seed_data():
         {"slug": "petite-paws"},
         {"$set": {"features": ["Letterbox friendly", "Free delivery", "Biodegradable packaging", "Care guide included"], "pet_toy_price": 8.99,
                   "price": 29.99,
-                  "image_url": "https://lh3.googleusercontent.com/d/1KcnRLpwwH3mIHBHaOCgz4gPYRCFXjpgY=w800"}}
+                  "image_url": "https://lh3.googleusercontent.com/d/1HbO-wFPT2jwbASvDONkA_aJr_ZQXdKXc=w800"}}
     )
     await db.subscription_plans.update_one(
         {"slug": "classic-bloom"},
         {"$set": {"features": ["Free delivery", "Seasonal variety", "Care guide included"], "stock_limit": 60, "pet_toy_price": 8.99,
                   "price": 54.99,
                   "description": "A large, hand-tied monthly bouquet of curated pet-safe flowers, delivered to your door.",
-                  "image_url": "https://lh3.googleusercontent.com/d/1duC5_xHqlEu1a-q_B84Hs1tvFOnH4KcF=w800"}}
+                  "image_url": "https://lh3.googleusercontent.com/d/10eVZW0mATKtuTyfynNGdbw7e1j_oGM79=w800"}}
     )
     await db.subscription_plans.update_one(
         {"slug": "grand-garden"},
