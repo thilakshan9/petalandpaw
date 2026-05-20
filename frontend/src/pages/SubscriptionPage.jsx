@@ -28,6 +28,7 @@ export default function SubscriptionPage() {
   const [guestDialog, setGuestDialog] = useState(null);
   const [petType, setPetType] = useState({});
   const [petTypeOther, setPetTypeOther] = useState({});
+  const [deliveryDate, setDeliveryDate] = useState({});
   const [orderCount, setOrderCount] = useState(0);
   const [stockLimit, setStockLimit] = useState(60);
 
@@ -252,7 +253,7 @@ export default function SubscriptionPage() {
                         <option value="">Select pet...</option>
                         <option value="cat">Cat</option>
                         <option value="dog">Dog</option>
-                        <option value="n/a">N/A</option>
+                        <option value="n/a">Petless</option>
                         <option value="other">Other</option>
                       </select>
                       <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280] pointer-events-none" />
@@ -267,6 +268,20 @@ export default function SubscriptionPage() {
                         data-testid={`pet-type-other-input-${plan.slug}`}
                       />
                     )}
+                  </div>
+
+                  {/* Delivery Date */}
+                  <div className="mb-4" data-testid={`delivery-date-${plan.slug}`}>
+                    <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Preferred Delivery Date</label>
+                    <input
+                      type="date"
+                      value={deliveryDate[plan.id] || ""}
+                      min={new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]}
+                      onChange={(e) => setDeliveryDate({ ...deliveryDate, [plan.id]: e.target.value })}
+                      className="w-full border border-[#E5E0D6] rounded-lg px-3 py-2.5 text-sm font-light text-[#2C2C2C] bg-white focus:outline-none focus:ring-1 focus:ring-[#8DA399]"
+                      data-testid={`delivery-date-input-${plan.slug}`}
+                    />
+                    <p className="text-[10px] text-[#9CA3AF] mt-1">Minimum 3 days notice required</p>
                   </div>
 
                   {/* Pet Toy Add-on */}

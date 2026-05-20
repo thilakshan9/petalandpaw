@@ -20,10 +20,13 @@ import ContactPage from "@/pages/ContactPage";
 import FaqPage from "@/pages/FaqPage";
 import ReturnsPage from "@/pages/ReturnsPage";
 import EventsPage from "@/pages/EventsPage";
+import WorkshopsPage from "@/pages/WorkshopsPage";
 import SafeFlowersPage from "@/pages/SafeFlowersPage";
 import CustomerAuthPage from "@/pages/CustomerAuthPage";
 import CustomerDashboard from "@/pages/CustomerDashboard";
 import ResetPasswordPage from "@/pages/ResetPasswordPage";
+import PrivacyPage from "@/pages/PrivacyPage";
+import TermsPage from "@/pages/TermsPage";
 import { CustomerAuthProvider } from "@/context/CustomerAuthContext";
 import "@/App.css";
 
@@ -127,8 +130,12 @@ function AppRouter() {
       <Route path="/contact" element={<Layout><ContactPage /></Layout>} />
       <Route path="/faq" element={<Layout><FaqPage /></Layout>} />
       <Route path="/returns" element={<Layout><ReturnsPage /></Layout>} />
+      <Route path="/hire-us" element={<Layout><EventsPage /></Layout>} />
       <Route path="/events" element={<Layout><EventsPage /></Layout>} />
+      <Route path="/workshops" element={<Layout><WorkshopsPage /></Layout>} />
       <Route path="/safe-flowers" element={<Layout><SafeFlowersPage /></Layout>} />
+      <Route path="/privacy" element={<Layout><PrivacyPage /></Layout>} />
+      <Route path="/terms" element={<Layout><TermsPage /></Layout>} />
       <Route path="/login" element={<Layout><CustomerAuthPage /></Layout>} />
       <Route path="/reset-password" element={<Layout><ResetPasswordPage /></Layout>} />
       <Route path="/account" element={<Layout><CustomerDashboard /></Layout>} />

@@ -8,9 +8,9 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const navLinks = [
   { href: "/gallery", label: "Gallery" },
-  { href: "/events", label: "Events" },
+  { href: "/hire-us", label: "Hire Us" },
   { href: "/subscriptions", label: "Shop" },
-  { href: "/bouquet-builder", label: "Build a Bouquet" },
+  { href: "/workshops", label: "Workshops" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];

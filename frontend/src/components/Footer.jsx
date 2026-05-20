@@ -41,9 +41,9 @@ export default function Footer() {
             <h4 className="text-xs uppercase tracking-widest font-semibold mb-6 text-[#FAF9F6]/40">Shop</h4>
             <nav className="flex flex-col gap-3">
               <ScrollLink to="/gallery" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-shop">Gallery</ScrollLink>
-              <ScrollLink to="/gallery" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-bouquets">Bouquets</ScrollLink>
               <ScrollLink to="/subscriptions" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-subscriptions">Shop</ScrollLink>
-              <ScrollLink to="/bouquet-builder" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-builder">Build a Bouquet</ScrollLink>
+              <ScrollLink to="/workshops" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-workshops">Workshops</ScrollLink>
+              <ScrollLink to="/hire-us" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-hire">Hire Us</ScrollLink>
             </nav>
           </div>
 
@@ -58,9 +58,10 @@ export default function Footer() {
             <h4 className="text-xs uppercase tracking-widest font-semibold mb-6 text-[#FAF9F6]/40">Support</h4>
             <nav className="flex flex-col gap-3">
               <ScrollLink to="/contact" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-contact">Contact</ScrollLink>
-              <ScrollLink to="/events" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-events">Events</ScrollLink>
               <ScrollLink to="/faq" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-faq">FAQ</ScrollLink>
               <ScrollLink to="/returns" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-returns">Returns</ScrollLink>
+              <ScrollLink to="/privacy" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-privacy">Privacy Policy</ScrollLink>
+              <ScrollLink to="/terms" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-terms">Terms & Conditions</ScrollLink>
             </nav>
           </div>
         </div>
