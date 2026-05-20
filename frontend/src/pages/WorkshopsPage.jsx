@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { Calendar, Clock, MapPin, Gift, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SEOHead from "@/components/SEOHead";
@@ -14,6 +13,8 @@ const WORKSHOPS = [
     description: "Relax with dogs and enjoy a creative afternoon of flower arranging. Whether you're a complete beginner or just looking for something different, this laid-back workshop is for you. Bring your furry friend along and make something beautiful together. All levels welcome - come meet like-minded people and leave with a gorgeous bouquet.",
     included: ["Your bouquet to take home", "x1 drink included", "Doggy treat cup if you bring a furry friend"],
     accent: "#B8926A",
+    bookingUrl: "https://kingsdogdaycare.replit.app/events/1",
+    status: "live",
   },
   {
     id: 2,
@@ -25,6 +26,8 @@ const WORKSHOPS = [
     description: "Enjoy a creative evening surrounded by cats at the cosiest cafe in town. Unwind after work, learn to arrange a beautiful pet-safe bouquet, and soak up the calm vibes. All levels welcome - no experience needed, just come ready to relax and meet like-minded people.",
     included: ["Your bouquet to take home", "Prosecco (+£10 add-on)"],
     accent: "#C4A2B0",
+    bookingUrl: null,
+    status: "pending",
   },
 ];
 
@@ -91,11 +94,17 @@ export default function WorkshopsPage() {
                 </div>
 
                 {/* CTA */}
-                <Link to="/contact">
-                  <Button className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-8 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105" data-testid={`book-workshop-${w.id}`}>
-                    Enquire to Book <ArrowRight size={14} className="ml-2" />
+                {w.status === "live" && w.bookingUrl ? (
+                  <a href={w.bookingUrl} target="_blank" rel="noopener noreferrer">
+                    <Button className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-8 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105" data-testid={`book-workshop-${w.id}`}>
+                      Book Now <ArrowRight size={14} className="ml-2" />
+                    </Button>
+                  </a>
+                ) : (
+                  <Button disabled className="rounded-full bg-[#E8E4D9] text-[#6B7280] px-8 py-6 text-xs uppercase tracking-widest cursor-not-allowed opacity-70" data-testid={`book-workshop-${w.id}`}>
+                    Booking Coming Soon
                   </Button>
-                </Link>
+                )}
               </div>
             </div>
           ))}
