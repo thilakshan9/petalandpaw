@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Calendar, Clock, MapPin, Gift, ArrowRight, Loader2, Minus, Plus, Sparkles, CheckCircle2 } from "lucide-react";
+import { Calendar, Clock, MapPin, Gift, ArrowRight, Loader as Loader2, Minus, Plus, Sparkles, CircleCheck as CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,7 @@ const WORKSHOPS = [
     id: "kings-dog-daycare-2026-05-30",
     name: "Flower Arranging Workshop",
     place: "King's Dog Daycare",
+    address: "117 Fulham Road, London, SW3 6JW",
     date: "30 May 2026",
     time: "1pm",
     duration: "60-90 mins",
@@ -32,6 +33,7 @@ const WORKSHOPS = [
     id: "cat-titude-2026-06-19",
     name: "Flower Arranging Workshop",
     place: "Cat-titude Cat Cafe",
+    address: "134 St John's Hill, London, SW11 1SL",
     date: "19 June 2026",
     time: "6pm",
     duration: "60-90 mins",
@@ -48,6 +50,7 @@ const WORKSHOPS = [
     id: "paws-cat-cafe-2026-06-26",
     name: "Flower Arranging Workshop",
     place: "Paws Cat Café",
+    address: "Angel Walk, 5 Angel Lane, Tonbridge, TN9 1TJ",
     date: "26 June 2026",
     time: "6pm",
     duration: "60-90 mins",
@@ -228,6 +231,7 @@ export default function WorkshopsPage() {
           workshop_id: selectedWorkshop.id,
           workshop_name: selectedWorkshop.name,
           workshop_location: selectedWorkshop.place,
+          workshop_address: selectedWorkshop.address || "",
           workshop_date: selectedWorkshop.date,
           workshop_time: selectedWorkshop.time,
           price: selectedWorkshop.price,
@@ -332,6 +336,9 @@ export default function WorkshopsPage() {
                         <MapPin size={14} />
                         <span>{w.place}</span>
                       </div>
+                      {w.address && (
+                        <p className="text-xs font-light text-[#9CA3AF] mt-0.5 ml-[22px]">{w.address}</p>
+                      )}
                     </div>
                     <div className="flex-shrink-0 text-right">
                       <span className="text-2xl font-light text-[#2C2C2C]">£{w.price}</span>

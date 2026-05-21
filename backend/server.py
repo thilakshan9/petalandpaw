@@ -114,6 +114,7 @@ class WorkshopCheckoutRequest(BaseModel):
     workshop_id: str
     workshop_name: str
     workshop_location: str
+    workshop_address: str = ""
     workshop_date: str
     workshop_time: str
     price: float
@@ -196,6 +197,7 @@ async def send_workshop_booking_emails(booking: dict):
     full_name = booking.get("full_name", "")
     workshop_name = booking.get("workshop_name", "")
     workshop_location = booking.get("workshop_location", "")
+    workshop_address = booking.get("workshop_address", "")
     workshop_date = booking.get("workshop_date", "")
     workshop_time = booking.get("workshop_time", "")
     price = booking.get("price", 0)
@@ -209,6 +211,7 @@ async def send_workshop_booking_emails(booking: dict):
         <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="color: #2C2C2C; font-weight: 500; margin-top: 0;">{workshop_name}</h3>
             <p style="color: #4B5563; margin: 4px 0;"><strong>Location:</strong> {workshop_location}</p>
+            {f'<p style="color: #4B5563; margin: 4px 0;">{workshop_address}</p>' if workshop_address else ''}
             <p style="color: #4B5563; margin: 4px 0;"><strong>Date:</strong> {workshop_date}</p>
             <p style="color: #4B5563; margin: 4px 0;"><strong>Time:</strong> {workshop_time}</p>
             <p style="color: #4B5563; margin: 4px 0;"><strong>Amount Paid:</strong> £{price:.2f}</p>
@@ -228,6 +231,7 @@ async def send_workshop_booking_emails(booking: dict):
         <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <p style="color: #6B7280; margin: 0 0 8px;"><strong>Workshop:</strong> {workshop_name}</p>
             <p style="color: #6B7280; margin: 0 0 8px;"><strong>Location:</strong> {workshop_location}</p>
+            {f'<p style="color: #6B7280; margin: 0 0 8px;">{workshop_address}</p>' if workshop_address else ''}
             <p style="color: #6B7280; margin: 0 0 8px;"><strong>Date / Time:</strong> {workshop_date} at {workshop_time}</p>
             <p style="color: #6B7280; margin: 0 0 8px;"><strong>Amount Paid:</strong> £{price:.2f}</p>
             <hr style="border: none; border-top: 1px solid #E5E0D6; margin: 16px 0;" />
@@ -1011,6 +1015,7 @@ async def create_workshop_checkout(req: WorkshopCheckoutRequest, request: Reques
         "workshop_id": req.workshop_id,
         "workshop_name": req.workshop_name,
         "workshop_location": req.workshop_location,
+        "workshop_address": req.workshop_address,
         "workshop_date": req.workshop_date,
         "workshop_time": req.workshop_time,
         "price": float(req.price),
