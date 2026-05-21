@@ -1143,7 +1143,13 @@ async def submit_contact_form(req: ContactFormRequest, background_tasks: Backgro
         "subject": req.subject, "message": req.message,
         "created_at": datetime.now(timezone.utc).isoformat()
     })
-    to_email = "events@petalandpaw.co.uk" if "Event Enquiry" in (req.subject or "") else "contact@petalandpaw.co.uk"
+    subject_lower = (req.subject or "").lower()
+    if "workshop request" in subject_lower:
+        to_email = "info@petalandpaw.co.uk"
+    elif "event enquiry" in subject_lower:
+        to_email = "events@petalandpaw.co.uk"
+    else:
+        to_email = "contact@petalandpaw.co.uk"
     background_tasks.add_task(send_contact_form_email, req.name, req.email, req.subject, req.message, to_email)
     return {"success": True, "message": "Message received. We'll get back to you soon."}
 

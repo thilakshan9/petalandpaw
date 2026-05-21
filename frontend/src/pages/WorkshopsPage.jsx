@@ -195,7 +195,7 @@ export default function WorkshopsPage() {
         body: JSON.stringify({
           name: f.full_name.trim(),
           email: f.email.trim(),
-          subject: `Event Enquiry - Custom Workshop Request (${eventLabel})`,
+          subject: `Workshop Request - ${eventLabel}`,
           message,
         }),
       });
@@ -260,7 +260,7 @@ export default function WorkshopsPage() {
       <SEOHead title="Workshops" description="Join our flower arranging workshops. Create your own pet-safe bouquet in a fun, relaxed setting." />
       <div className="container mx-auto px-5 md:px-8 max-w-6xl">
 
-        <div className="text-center mb-12 sm:mb-16 animate-fade-in-up">
+        <div className="text-center mb-10 sm:mb-12 animate-fade-in-up">
           <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-2 sm:mb-3 block">Workshops</span>
           <h1 className="font-['Playfair_Display'] text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-medium tracking-tight text-[#2C2C2C] mb-3 sm:mb-4">
             Upcoming Workshops
@@ -268,6 +268,38 @@ export default function WorkshopsPage() {
           <p className="text-sm md:text-lg font-light text-[#6B7280] max-w-xl mx-auto">
             Learn to arrange beautiful, pet-safe flowers in a fun and relaxed setting. No experience needed - just come ready to create.
           </p>
+        </div>
+
+        {/* Request Your Own Workshop CTA (hero) */}
+        <div className="mb-12 sm:mb-16 animate-fade-in-up delay-50" data-testid="request-workshop-hero">
+          <div className="relative bg-white border border-[#E5E0D6] rounded-2xl px-6 py-7 sm:px-10 sm:py-9 overflow-hidden">
+            <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-[#C4A2B0]/15 blur-2xl pointer-events-none" />
+            <div className="absolute -bottom-16 -left-12 w-44 h-44 rounded-full bg-[#8DA399]/10 blur-2xl pointer-events-none" />
+            <div className="relative flex flex-col md:flex-row md:items-center gap-5 md:gap-8">
+              <div className="flex items-center gap-3 md:gap-4">
+                <div className="w-11 h-11 flex-shrink-0 rounded-full bg-[#C4A2B0]/15 flex items-center justify-center">
+                  <Sparkles size={18} strokeWidth={1.5} className="text-[#C4A2B0]" />
+                </div>
+                <span className="md:hidden text-[10px] uppercase tracking-[0.3em] font-semibold text-[#C4A2B0]">Bespoke Workshops</span>
+              </div>
+              <div className="flex-1">
+                <span className="hidden md:block text-[10px] uppercase tracking-[0.3em] font-semibold text-[#C4A2B0] mb-1.5">Bespoke Workshops</span>
+                <h2 className="font-['Playfair_Display'] text-xl sm:text-2xl font-medium text-[#2C2C2C] mb-2 leading-tight">
+                  Hosting something special? We'll build a workshop around you.
+                </h2>
+                <p className="text-sm font-light text-[#6B7280] leading-relaxed">
+                  From hen dos and birthdays to corporate away days and team socials, share a few details and we'll design a private, pet-safe flower arranging experience tailored to your group.
+                </p>
+              </div>
+              <Button
+                onClick={openRequestDialog}
+                className="rounded-full bg-[#C4A2B0] text-white hover:bg-[#C4A2B0]/90 px-7 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105 flex-shrink-0 self-stretch md:self-auto"
+                data-testid="request-workshop-hero-btn"
+              >
+                Request a workshop <ArrowRight size={14} className="ml-2" />
+              </Button>
+            </div>
+          </div>
         </div>
 
         <div className="space-y-10 animate-fade-in-up delay-100">
@@ -369,35 +401,26 @@ export default function WorkshopsPage() {
                   )}
 
                   {/* CTA */}
-                  <div className="mt-auto flex flex-col sm:flex-row gap-3 sm:items-center">
+                  <div className="mt-auto">
                     {w.bookingType === "external" && w.bookingUrl ? (
                       <a href={w.bookingUrl} target="_blank" rel="noopener noreferrer">
-                        <Button className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-8 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105 w-full sm:w-auto" data-testid={`book-workshop-${w.id}`}>
+                        <Button className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-8 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105" data-testid={`book-workshop-${w.id}`}>
                           Book Now <ArrowRight size={14} className="ml-2" />
                         </Button>
                       </a>
                     ) : w.bookingType === "stripe" ? (
                       <Button
                         onClick={() => handleBookClick(w)}
-                        className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-8 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105 w-full sm:w-auto"
+                        className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-8 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105"
                         data-testid={`book-workshop-${w.id}`}
                       >
                         Book Now <ArrowRight size={14} className="ml-2" />
                       </Button>
                     ) : (
-                      <Button disabled className="rounded-full bg-[#E8E4D9] text-[#6B7280] px-8 py-6 text-xs uppercase tracking-widest cursor-not-allowed opacity-70 w-full sm:w-auto" data-testid={`book-workshop-${w.id}`}>
+                      <Button disabled className="rounded-full bg-[#E8E4D9] text-[#6B7280] px-8 py-6 text-xs uppercase tracking-widest cursor-not-allowed opacity-70" data-testid={`book-workshop-${w.id}`}>
                         Booking Coming Soon
                       </Button>
                     )}
-                    <Button
-                      type="button"
-                      onClick={openRequestDialog}
-                      variant="outline"
-                      className="rounded-full border-[#C4A2B0] text-[#C4A2B0] hover:bg-[#C4A2B0] hover:text-white px-6 py-6 text-xs uppercase tracking-widest transition-all w-full sm:w-auto"
-                      data-testid={`request-workshop-btn-${w.id}`}
-                    >
-                      <Sparkles size={14} className="mr-2" /> Request your own
-                    </Button>
                   </div>
                 </div>
               </div>
@@ -678,7 +701,7 @@ export default function WorkshopsPage() {
                 )}
               </Button>
               <p className="text-[10px] text-[#9CA3AF] text-center font-light">
-                We'll reply within 2 working days from events@petalandpaw.co.uk.
+                We'll reply within 2 working days from info@petalandpaw.co.uk.
               </p>
             </form>
           )}
