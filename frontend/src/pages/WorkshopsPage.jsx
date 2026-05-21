@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Calendar, Clock, MapPin, Gift, ArrowRight, Loader2, Minus, Plus } from "lucide-react";
+import { Calendar, Clock, MapPin, Gift, ArrowRight, Loader2, Minus, Plus, Sparkles, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -37,7 +37,7 @@ const WORKSHOPS = [
     duration: "60-90 mins",
     price: 35,
     description: "Enjoy a creative evening surrounded by cats at the cosiest cafe in town. Unwind after work, learn to arrange a beautiful pet-safe bouquet, and soak up the calm vibes. All levels welcome - no experience needed, just come ready to relax and meet like-minded people.",
-    included: ["Your bouquet to take home", "Prosecco (+£10 add-on)", "Cat Play time"],
+    included: ["Your bouquet to take home", "Prosecco (+£10 add-on)", "Cat play time"],
     accent: "#C4A2B0",
     image: "https://lh3.googleusercontent.com/d/1YxXERg81kUe5wSQdxoncSSYFMKaBSaE9=w800",
     bookingType: "pending",
@@ -53,7 +53,7 @@ const WORKSHOPS = [
     duration: "60-90 mins",
     price: 45,
     description: "Spend a relaxed evening at Paws Cat Café arranging your own pet-safe bouquet while playing with the resident cats. Sip on a complimentary drink and let your creativity flow in this charming, calming setting. All levels welcome.",
-    included: ["Your bouquet to take home", "Free drink included", "Cat Play time"],
+    included: ["Your bouquet to take home", "Free drink included", "Cat play time"],
     accent: "#8DA399",
     image: "https://lh3.googleusercontent.com/d/1vyvkDLBp9j2-dxnL7AyAfBXbYlKKuk4a=w800",
     bookingType: "stripe",
@@ -73,6 +73,22 @@ export default function WorkshopsPage() {
   const [form, setForm] = useState({ full_name: "", customer_email: "", notes: "" });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+
+  // Request-your-own-workshop dialog state
+  const [requestOpen, setRequestOpen] = useState(false);
+  const [requestForm, setRequestForm] = useState({
+    event_type: "",
+    event_type_other: "",
+    city: "",
+    headcount: "",
+    preferred_date: "",
+    full_name: "",
+    email: "",
+    notes: "",
+  });
+  const [requestSubmitting, setRequestSubmitting] = useState(false);
+  const [requestError, setRequestError] = useState("");
+  const [requestSuccess, setRequestSuccess] = useState(false);
 
   const getQty = (id) => Math.max(1, Math.min(10, qty[id] || 1));
   const updateQty = (id, delta) => {
@@ -132,6 +148,66 @@ export default function WorkshopsPage() {
     }
     setGuestDialog(null);
     navigate("/login");
+  };
+
+  const openRequestDialog = () => {
+    setRequestForm({
+      event_type: "",
+      event_type_other: "",
+      city: "",
+      headcount: "",
+      preferred_date: "",
+      full_name: customer?.name || "",
+      email: customer?.email || "",
+      notes: "",
+    });
+    setRequestError("");
+    setRequestSuccess(false);
+    setRequestOpen(true);
+  };
+
+  const submitRequest = async (e) => {
+    e.preventDefault();
+    const f = requestForm;
+    if (!f.event_type || !f.city.trim() || !f.headcount || !f.full_name.trim() || !f.email.trim()) {
+      setRequestError("Please fill in the required fields.");
+      return;
+    }
+    if (f.event_type === "other" && !f.event_type_other.trim()) {
+      setRequestError("Please tell us what kind of event you're planning.");
+      return;
+    }
+    setRequestSubmitting(true);
+    setRequestError("");
+    const eventLabel = f.event_type === "other" ? f.event_type_other.trim() : f.event_type;
+    const message = [
+      `Event type: ${eventLabel}`,
+      `City / Location: ${f.city.trim()}`,
+      `Approximate guests: ${f.headcount}`,
+      f.preferred_date ? `Preferred date: ${f.preferred_date}` : null,
+      "",
+      f.notes ? `Additional notes:\n${f.notes.trim()}` : null,
+    ].filter(Boolean).join("\n");
+    try {
+      const res = await fetch(`${API}/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: f.full_name.trim(),
+          email: f.email.trim(),
+          subject: `Event Enquiry - Custom Workshop Request (${eventLabel})`,
+          message,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || "Unable to send your request. Please try again.");
+      }
+      setRequestSuccess(true);
+    } catch (err) {
+      setRequestError(err.message || "Something went wrong. Please try again.");
+    }
+    setRequestSubmitting(false);
   };
 
   const submitBooking = async (e) => {
@@ -293,26 +369,35 @@ export default function WorkshopsPage() {
                   )}
 
                   {/* CTA */}
-                  <div className="mt-auto">
+                  <div className="mt-auto flex flex-col sm:flex-row gap-3 sm:items-center">
                     {w.bookingType === "external" && w.bookingUrl ? (
                       <a href={w.bookingUrl} target="_blank" rel="noopener noreferrer">
-                        <Button className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-8 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105" data-testid={`book-workshop-${w.id}`}>
+                        <Button className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-8 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105 w-full sm:w-auto" data-testid={`book-workshop-${w.id}`}>
                           Book Now <ArrowRight size={14} className="ml-2" />
                         </Button>
                       </a>
                     ) : w.bookingType === "stripe" ? (
                       <Button
                         onClick={() => handleBookClick(w)}
-                        className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-8 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105"
+                        className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-8 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105 w-full sm:w-auto"
                         data-testid={`book-workshop-${w.id}`}
                       >
                         Book Now <ArrowRight size={14} className="ml-2" />
                       </Button>
                     ) : (
-                      <Button disabled className="rounded-full bg-[#E8E4D9] text-[#6B7280] px-8 py-6 text-xs uppercase tracking-widest cursor-not-allowed opacity-70" data-testid={`book-workshop-${w.id}`}>
+                      <Button disabled className="rounded-full bg-[#E8E4D9] text-[#6B7280] px-8 py-6 text-xs uppercase tracking-widest cursor-not-allowed opacity-70 w-full sm:w-auto" data-testid={`book-workshop-${w.id}`}>
                         Booking Coming Soon
                       </Button>
                     )}
+                    <Button
+                      type="button"
+                      onClick={openRequestDialog}
+                      variant="outline"
+                      className="rounded-full border-[#C4A2B0] text-[#C4A2B0] hover:bg-[#C4A2B0] hover:text-white px-6 py-6 text-xs uppercase tracking-widest transition-all w-full sm:w-auto"
+                      data-testid={`request-workshop-btn-${w.id}`}
+                    >
+                      <Sparkles size={14} className="mr-2" /> Request your own
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -424,6 +509,179 @@ export default function WorkshopsPage() {
               You'll be redirected to Stripe to complete your secure payment.
             </p>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Request Your Own Workshop Dialog */}
+      <Dialog open={requestOpen} onOpenChange={(open) => !requestSubmitting && setRequestOpen(open)}>
+        <DialogContent className="bg-[#FAF9F6] max-w-md max-h-[90vh] overflow-y-auto" data-testid="request-workshop-dialog">
+          <DialogHeader>
+            <DialogTitle className="font-['Playfair_Display'] text-2xl text-[#2C2C2C] font-medium">
+              Request your own workshop
+            </DialogTitle>
+            <DialogDescription className="text-sm font-light text-[#6B7280] pt-1">
+              Hen do, baby shower, corporate away day, birthday... tell us about your event and we'll put a bespoke workshop together for you.
+            </DialogDescription>
+          </DialogHeader>
+
+          {requestSuccess ? (
+            <div className="text-center py-6 animate-fade-in-up" data-testid="request-workshop-success">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#8DA399]/15 mb-4">
+                <CheckCircle2 size={28} strokeWidth={1.5} className="text-[#8DA399]" />
+              </div>
+              <h3 className="font-['Playfair_Display'] text-xl font-medium text-[#2C2C2C] mb-2">Request received</h3>
+              <p className="text-sm font-light text-[#6B7280] mb-6">
+                Thanks {requestForm.full_name.split(" ")[0] || "lovely"}, we'll be in touch within 2 working days to design something just right.
+              </p>
+              <Button
+                onClick={() => setRequestOpen(false)}
+                className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-8 py-5 text-xs uppercase tracking-widest"
+                data-testid="request-workshop-close-btn"
+              >
+                Close
+              </Button>
+            </div>
+          ) : (
+            <form onSubmit={submitRequest} className="space-y-4 mt-2">
+              <div>
+                <Label htmlFor="rw-event-type" className="text-xs uppercase tracking-widest text-[#6B7280]">Type of event</Label>
+                <select
+                  id="rw-event-type"
+                  value={requestForm.event_type}
+                  onChange={(e) => setRequestForm({ ...requestForm, event_type: e.target.value })}
+                  className="mt-1.5 w-full appearance-none border border-[#E5E0D6] rounded-md px-3 py-2.5 text-sm font-light text-[#2C2C2C] bg-white focus:outline-none focus:ring-1 focus:ring-[#8DA399]"
+                  required
+                  data-testid="request-workshop-event-type"
+                >
+                  <option value="">Select event type...</option>
+                  <option value="Bridal Party / Hen Do">Bridal Party / Hen Do</option>
+                  <option value="Baby Shower">Baby Shower</option>
+                  <option value="Birthday">Birthday</option>
+                  <option value="Corporate Event / Away Day">Corporate Event / Away Day</option>
+                  <option value="Team Social">Team Social</option>
+                  <option value="Anniversary">Anniversary</option>
+                  <option value="Private Group">Private Group</option>
+                  <option value="other">Something else</option>
+                </select>
+                {requestForm.event_type === "other" && (
+                  <Input
+                    type="text"
+                    placeholder="Please specify..."
+                    value={requestForm.event_type_other}
+                    onChange={(e) => setRequestForm({ ...requestForm, event_type_other: e.target.value })}
+                    className="mt-2 bg-white border-[#E5E0D6]"
+                    data-testid="request-workshop-event-other"
+                  />
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="rw-city" className="text-xs uppercase tracking-widest text-[#6B7280]">City / Location</Label>
+                <Input
+                  id="rw-city"
+                  value={requestForm.city}
+                  onChange={(e) => setRequestForm({ ...requestForm, city: e.target.value })}
+                  placeholder="e.g. London, Manchester, Edinburgh"
+                  className="mt-1.5 bg-white border-[#E5E0D6]"
+                  required
+                  data-testid="request-workshop-city"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="rw-headcount" className="text-xs uppercase tracking-widest text-[#6B7280]">How many people?</Label>
+                <Input
+                  id="rw-headcount"
+                  type="number"
+                  min={1}
+                  max={500}
+                  value={requestForm.headcount}
+                  onChange={(e) => setRequestForm({ ...requestForm, headcount: e.target.value })}
+                  placeholder="e.g. 12"
+                  className="mt-1.5 bg-white border-[#E5E0D6]"
+                  required
+                  data-testid="request-workshop-headcount"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="rw-date" className="text-xs uppercase tracking-widest text-[#6B7280]">
+                  Preferred date <span className="text-[10px] normal-case tracking-normal text-[#9CA3AF]">(optional)</span>
+                </Label>
+                <Input
+                  id="rw-date"
+                  type="date"
+                  value={requestForm.preferred_date}
+                  onChange={(e) => setRequestForm({ ...requestForm, preferred_date: e.target.value })}
+                  className="mt-1.5 bg-white border-[#E5E0D6]"
+                  data-testid="request-workshop-date"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <Label htmlFor="rw-name" className="text-xs uppercase tracking-widest text-[#6B7280]">Your name</Label>
+                  <Input
+                    id="rw-name"
+                    value={requestForm.full_name}
+                    onChange={(e) => setRequestForm({ ...requestForm, full_name: e.target.value })}
+                    placeholder="Jane Doe"
+                    className="mt-1.5 bg-white border-[#E5E0D6]"
+                    required
+                    data-testid="request-workshop-name"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="rw-email" className="text-xs uppercase tracking-widest text-[#6B7280]">Email</Label>
+                  <Input
+                    id="rw-email"
+                    type="email"
+                    value={requestForm.email}
+                    onChange={(e) => setRequestForm({ ...requestForm, email: e.target.value })}
+                    placeholder="you@example.com"
+                    className="mt-1.5 bg-white border-[#E5E0D6]"
+                    required
+                    data-testid="request-workshop-email"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="rw-notes" className="text-xs uppercase tracking-widest text-[#6B7280]">
+                  Anything else <span className="text-[10px] normal-case tracking-normal text-[#9CA3AF]">(optional)</span>
+                </Label>
+                <Textarea
+                  id="rw-notes"
+                  value={requestForm.notes}
+                  onChange={(e) => setRequestForm({ ...requestForm, notes: e.target.value.slice(0, 800) })}
+                  placeholder="Theme, time of day, dietary needs, venue ideas..."
+                  className="mt-1.5 bg-white border-[#E5E0D6] min-h-[80px]"
+                  data-testid="request-workshop-notes"
+                />
+                <p className="text-[10px] text-[#9CA3AF] mt-1 text-right">{requestForm.notes.length}/800</p>
+              </div>
+
+              {requestError && (
+                <p className="text-sm text-red-500 font-light" data-testid="request-workshop-error">{requestError}</p>
+              )}
+
+              <Button
+                type="submit"
+                disabled={requestSubmitting}
+                className="w-full rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-8 py-6 text-xs uppercase tracking-widest"
+                data-testid="request-workshop-submit"
+              >
+                {requestSubmitting ? (
+                  <><Loader2 size={14} className="mr-2 animate-spin" /> Sending request...</>
+                ) : (
+                  <>Send request <ArrowRight size={14} className="ml-2" /></>
+                )}
+              </Button>
+              <p className="text-[10px] text-[#9CA3AF] text-center font-light">
+                We'll reply within 2 working days from events@petalandpaw.co.uk.
+              </p>
+            </form>
+          )}
         </DialogContent>
       </Dialog>
     </div>
