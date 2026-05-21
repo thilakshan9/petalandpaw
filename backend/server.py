@@ -109,6 +109,18 @@ class ContactFormRequest(BaseModel):
     subject: str = ""
     message: str
 
+class WorkshopCheckoutRequest(BaseModel):
+    workshop_id: str
+    workshop_name: str
+    workshop_location: str
+    workshop_date: str
+    workshop_time: str
+    price: float
+    full_name: str
+    customer_email: str
+    notes: str = ""
+    origin_url: str
+
 # ============================================================
 # EMAIL HELPER (Resend)
 # ============================================================
@@ -174,6 +186,56 @@ async def send_contact_form_email(name: str, email: str, subject: str, message: 
     </div>
     """
     return _send_email(contact_email, f"[Petal & Paw] {subject or 'Contact Form Message'}", html_content, reply_to=email)
+
+async def send_workshop_booking_emails(booking: dict):
+    """Send confirmation to customer + notification to events@"""
+    customer_email = booking.get("customer_email", "")
+    full_name = booking.get("full_name", "")
+    workshop_name = booking.get("workshop_name", "")
+    workshop_location = booking.get("workshop_location", "")
+    workshop_date = booking.get("workshop_date", "")
+    workshop_time = booking.get("workshop_time", "")
+    price = booking.get("price", 0)
+    notes = booking.get("notes", "")
+
+    # Customer confirmation
+    customer_html = f"""
+    <div style="font-family: 'Helvetica', sans-serif; max-width: 600px; margin: 0 auto; background: #FAF9F6; padding: 40px;">
+        <h1 style="font-family: serif; color: #2C2C2C; font-weight: 400;">Your Workshop Booking is Confirmed</h1>
+        <p style="color: #6B7280;">Hi {full_name}, thank you for booking with Petal & Paw. We can't wait to see you!</p>
+        <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="color: #2C2C2C; font-weight: 500; margin-top: 0;">{workshop_name}</h3>
+            <p style="color: #4B5563; margin: 4px 0;"><strong>Location:</strong> {workshop_location}</p>
+            <p style="color: #4B5563; margin: 4px 0;"><strong>Date:</strong> {workshop_date}</p>
+            <p style="color: #4B5563; margin: 4px 0;"><strong>Time:</strong> {workshop_time}</p>
+            <p style="color: #4B5563; margin: 4px 0;"><strong>Amount Paid:</strong> £{price:.2f}</p>
+            {f'<hr style="border: none; border-top: 1px solid #E5E0D6; margin: 16px 0;" /><p style="color: #6B7280; margin: 0;"><strong>Your notes:</strong></p><p style="color: #4B5563; white-space: pre-wrap;">{notes}</p>' if notes else ''}
+        </div>
+        <p style="color: #6B7280;">If you need to make any changes or have any questions, just reply to this email.</p>
+        <p style="color: #8DA399; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;">Petal & Paw - Pet-Safe Florals</p>
+    </div>
+    """
+    if customer_email:
+        _send_email(customer_email, f"Workshop Booking Confirmed - {workshop_name}", customer_html, reply_to="events@petalandpaw.co.uk")
+
+    # Internal events@ notification
+    events_html = f"""
+    <div style="font-family: 'Helvetica', sans-serif; max-width: 600px; margin: 0 auto; background: #FAF9F6; padding: 40px;">
+        <h1 style="font-family: serif; color: #2C2C2C; font-weight: 400;">New Workshop Booking</h1>
+        <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <p style="color: #6B7280; margin: 0 0 8px;"><strong>Workshop:</strong> {workshop_name}</p>
+            <p style="color: #6B7280; margin: 0 0 8px;"><strong>Location:</strong> {workshop_location}</p>
+            <p style="color: #6B7280; margin: 0 0 8px;"><strong>Date / Time:</strong> {workshop_date} at {workshop_time}</p>
+            <p style="color: #6B7280; margin: 0 0 8px;"><strong>Amount Paid:</strong> £{price:.2f}</p>
+            <hr style="border: none; border-top: 1px solid #E5E0D6; margin: 16px 0;" />
+            <p style="color: #6B7280; margin: 0 0 8px;"><strong>Customer:</strong> {full_name}</p>
+            <p style="color: #6B7280; margin: 0 0 8px;"><strong>Email:</strong> <a href="mailto:{customer_email}">{customer_email}</a></p>
+            {f'<p style="color: #6B7280; margin: 0 0 8px;"><strong>Notes (dietary / access):</strong></p><p style="color: #4B5563; white-space: pre-wrap;">{notes}</p>' if notes else ''}
+        </div>
+        <p style="color: #8DA399; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;">Petal & Paw - Workshop Booking</p>
+    </div>
+    """
+    _send_email("events@petalandpaw.co.uk", f"[Workshop Booking] {workshop_name} - {full_name}", events_html, reply_to=customer_email)
 
 # ============================================================
 # AUTH HELPERS
@@ -846,6 +908,89 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
     })
     return {"url": session.url, "session_id": session.id, "order_id": order_id}
 
+@api_router.post("/workshops/checkout")
+async def create_workshop_checkout(req: WorkshopCheckoutRequest, request: Request):
+    if not req.full_name.strip() or not req.customer_email.strip():
+        raise HTTPException(status_code=400, detail="Full name and email are required")
+    if req.price <= 0:
+        raise HTTPException(status_code=400, detail="Invalid workshop price")
+
+    booking_id = str(uuid.uuid4())
+    success_url = f"{req.origin_url}/checkout/success?session_id={{CHECKOUT_SESSION_ID}}"
+    cancel_url = f"{req.origin_url}/workshops"
+
+    booking_metadata = {
+        "type": "workshop",
+        "booking_id": booking_id,
+        "workshop_id": req.workshop_id,
+        "workshop_name": req.workshop_name[:480],
+        "workshop_location": req.workshop_location[:480],
+        "workshop_date": req.workshop_date[:480],
+        "workshop_time": req.workshop_time[:480],
+        "full_name": req.full_name[:480],
+        "customer_email": req.customer_email[:480],
+        "notes": (req.notes or "")[:480],
+        "amount_paid": f"{req.price:.2f}",
+    }
+
+    try:
+        pid = {"metadata": booking_metadata, "receipt_email": req.customer_email}
+        checkout_params = {
+            "payment_method_types": ["card"],
+            "line_items": [{
+                "price_data": {
+                    "currency": "gbp",
+                    "unit_amount": int(req.price * 100),
+                    "product_data": {
+                        "name": f"{req.workshop_name} - {req.workshop_location}",
+                        "description": f"{req.workshop_date} at {req.workshop_time}",
+                    },
+                },
+                "quantity": 1,
+            }],
+            "mode": "payment",
+            "success_url": success_url,
+            "cancel_url": cancel_url,
+            "metadata": booking_metadata,
+            "payment_intent_data": pid,
+            "customer_email": req.customer_email,
+        }
+        session = stripe.checkout.Session.create(**checkout_params)
+    except stripe._error.AuthenticationError:
+        raise HTTPException(status_code=503, detail="Payment service is not configured. Please contact support.")
+    except Exception as e:
+        logger.error(f"Stripe workshop checkout error: {type(e).__name__}: {e}")
+        raise HTTPException(status_code=500, detail=f"Payment error: {str(e)}")
+
+    await db.workshop_bookings.insert_one({
+        "id": booking_id,
+        "workshop_id": req.workshop_id,
+        "workshop_name": req.workshop_name,
+        "workshop_location": req.workshop_location,
+        "workshop_date": req.workshop_date,
+        "workshop_time": req.workshop_time,
+        "price": float(req.price),
+        "full_name": req.full_name,
+        "customer_email": req.customer_email,
+        "notes": req.notes,
+        "stripe_session_id": session.id,
+        "status": "pending",
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    })
+    await db.payment_transactions.insert_one({
+        "id": str(uuid.uuid4()),
+        "session_id": session.id,
+        "amount": float(req.price),
+        "currency": "gbp",
+        "status": "initiated",
+        "payment_status": "pending",
+        "customer_email": req.customer_email,
+        "metadata": booking_metadata,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    })
+    return {"url": session.url, "session_id": session.id, "booking_id": booking_id}
+
+
 @api_router.get("/orders/status/{session_id}")
 async def get_order_status(session_id: str, request: Request, background_tasks: BackgroundTasks):
     try:
@@ -879,6 +1024,14 @@ async def get_order_status(session_id: str, request: Request, background_tasks: 
                 update_data["shipping"] = shipping
             if customer_email:
                 update_data["customer_email"] = customer_email
+            # Check for workshop booking
+            booking = await db.workshop_bookings.find_one({"stripe_session_id": session_id}, {"_id": 0})
+            if booking and booking.get("status") != "paid":
+                await db.workshop_bookings.update_one(
+                    {"stripe_session_id": session_id},
+                    {"$set": {"status": "paid", "paid_at": datetime.now(timezone.utc).isoformat()}}
+                )
+                background_tasks.add_task(send_workshop_booking_emails, booking)
             # Check for order (cart checkout) or subscription checkout
             order = await db.orders.find_one({"stripe_session_id": session_id}, {"_id": 0})
             if order:

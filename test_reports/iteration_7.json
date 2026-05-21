@@ -1,0 +1,31 @@
+{
+  "summary": "Full backend + frontend testing of the new Workshops feature (Paws Cat Café Stripe booking flow) plus regression on existing checkout/login endpoints. All 10 backend pytest tests passed. Frontend renders 3 workshop cards with correct copy, images, time chips and CTAs; Paws Cat Café dialog submits to /api/workshops/checkout and redirects to Stripe Checkout with proper £45 product line item. MongoDB persistence verified: workshop_bookings doc created with status='pending' and payment_transactions row with full metadata (workshop_id, workshop_name, workshop_location, workshop_date, workshop_time, full_name, customer_email, notes, amount_paid, booking_id, type).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "/workshops", "issues": ["Workshop images are placeholder Google Drive links and currently return broken images (404). Per E1 note this is EXPECTED until real images are supplied."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_workshops.py",
+    "/app/test_reports/pytest/pytest_workshops.xml"
+  ],
+  "action_items": [
+    "Provide real workshop image URLs (currently using Google Drive placeholders that 404)."
+  ],
+  "critical_code_review_comments": [
+    "server.py is 1371 lines — consider splitting into routers (orders, workshops, auth, contact, webhook) for maintainability.",
+    "workshop list is hardcoded in WorkshopsPage.jsx; future workshops require a code deploy. Consider moving to backend collection + admin UI.",
+    "send_workshop_booking_emails is sync inside async — _send_email uses requests/resend SDK synchronously; ok because invoked via background_tasks but worth noting for high volume.",
+    "Frontend dialog form relies on HTML5 required for empty-field validation; the explicit setError path (data-testid=workshop-booking-error) is only reachable if browser HTML5 validation is bypassed."
+  ],
+  "updated_files": ["/app/backend/tests/test_workshops.py"],
+  "success_rate": {"backend": "100% (10/10)", "frontend": "100% (all flows verified)"},
+  "test_credentials": "test@petalandpaw.com / test123 (from /app/memory/test_credentials.md), Stripe test card 4242 4242 4242 4242",
+  "seed_data_creation": "Tests created TEST_* prefixed bookings + payment_transactions; all cleaned up after run.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Workshops feature backend route: POST /api/workshops/checkout (validations on full_name/email/price>0, creates Stripe session w/ metadata, inserts workshop_bookings + payment_transactions). GET /api/orders/status/{session_id} now also handles workshop bookings (sets status='paid', triggers send_workshop_booking_emails to both customer + events@petalandpaw.co.uk). Frontend page /workshops has 3 cards w/ data-testid=workshop-{id} and book-workshop-{id}; only paws-cat-cafe-2026-06-26 uses Stripe dialog. Stripe redirect verified end-to-end (cs_test_* session created)."
+}
