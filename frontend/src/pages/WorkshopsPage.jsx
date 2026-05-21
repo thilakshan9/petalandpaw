@@ -51,6 +51,7 @@ const WORKSHOPS = [
     name: "Flower Arranging Workshop",
     place: "Paws Cat Café",
     address: "Angel Walk, 5 Angel Lane, Tonbridge, TN9 1TJ",
+    hideQtySelector: true,
     date: "26 June 2026",
     time: "6pm",
     duration: "60-90 mins",
@@ -376,8 +377,8 @@ export default function WorkshopsPage() {
                     </ul>
                   </div>
 
-                  {/* Quantity selector (only for Stripe-bookable workshops) */}
-                  {w.bookingType === "stripe" && (
+                  {/* Quantity selector (only for Stripe-bookable workshops that allow multi-ticket) */}
+                  {w.bookingType === "stripe" && !w.hideQtySelector && (
                     <div className="flex items-center justify-between bg-[#F2F0EB]/60 rounded-xl px-4 py-3 mb-5" data-testid={`workshop-qty-${w.id}`}>
                       <span className="text-xs uppercase tracking-widest font-semibold text-[#6B7280]">Tickets</span>
                       <div className="flex items-center gap-3">
