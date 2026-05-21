@@ -106,3 +106,16 @@ URL format: `https://lh3.googleusercontent.com/d/{FILE_ID}=w{WIDTH}`
 
 ## Mocked Services
 - SendGrid email sending (removed from roadmap per user request)
+
+### Phase 7 (Feb 2026) - Workshops Page Stripe Booking Flow
+- Updated `WorkshopsPage.jsx` to a 2-column layout (image + details) for each workshop
+- Existing workshops updated: show only start time (e.g. "1pm", "6pm") with new "Duration: 60-90 mins" chip; "Cat Play time" added to Cat-titude included list
+- New 3rd workshop card added: **Flower Arranging Workshop @ Paws Cat Café** - £45 - 26 June 2026 - 6pm. Included: Bouquet, Free Drink, Cat Play time
+- New endpoint: `POST /api/workshops/checkout` - creates Stripe session for workshop bookings, persists to `workshop_bookings` MongoDB collection, captures full metadata (workshop_name, location, date, time, full_name, customer_email, notes, amount_paid)
+- New booking dialog (shadcn Dialog) on Paws Cat Café card collects Full Name + Email + optional dietary/access notes, then redirects to Stripe Checkout
+- New helper `send_workshop_booking_emails` sends confirmation email to customer AND notification to events@petalandpaw.co.uk on successful payment
+- Updated `get_order_status` to handle workshop bookings (marks paid + triggers emails)
+- Image URLs are placeholders pending real Google Drive links from user
+
+### New DB Collection
+- `workshop_bookings`: {id, workshop_id, workshop_name, workshop_location, workshop_date, workshop_time, price, full_name, customer_email, notes, stripe_session_id, status, created_at, paid_at}
