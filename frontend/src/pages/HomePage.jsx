@@ -54,24 +54,24 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Feature: Pet-Safe Flowers */}
-      <section className="py-14 sm:py-24 md:py-36" data-testid="feature-petsafe">
+      {/* Feature: Workshops */}
+      <section className="py-14 sm:py-24 md:py-36" data-testid="feature-workshops">
         <div className="container mx-auto px-5 md:px-8 max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-20 items-center">
             <div className="aspect-[4/5] max-h-[60vh] lg:max-h-none rounded-2xl overflow-hidden animate-fade-in-up">
-              <img src="https://lh3.googleusercontent.com/d/16IURvclMQzZnIucglfEbfgsZFeegijRb=w800" alt="Cat with safe flowers" className="w-full h-full object-cover" />
+              <img src="https://lh3.googleusercontent.com/d/10eVZW0mATKtuTyfynNGdbw7e1j_oGM79=w800" alt="Flower arranging workshops" className="w-full h-full object-cover" />
             </div>
             <div className="animate-fade-in-up delay-200">
-              <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 sm:mb-4 block">Every Stem Pet-Safe</span>
+              <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 sm:mb-4 block">Learn & Create</span>
               <h2 className="font-['Playfair_Display'] text-2xl sm:text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C] mb-4 sm:mb-6">
-                Safe for Every Member of Your Family
+                Workshops
               </h2>
               <p className="text-sm sm:text-base font-light leading-relaxed text-[#6B7280] mb-6 sm:mb-8 max-w-md">
-                Every flower we sell is carefully checked against scientific data. Just beautiful, worry-free blooms for homes with curious cats, playful dogs, and everything in between.
+                Join us for a relaxed flower arranging experience. Create your own pet-safe bouquet to take home, meet like-minded people, and enjoy a creative session in good company.
               </p>
-              <Link to="/safe-flowers">
-                <Button className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-6 py-5 sm:px-8 sm:py-6 text-xs sm:text-sm uppercase tracking-[0.15em] transition-all hover:scale-105" data-testid="feature-shop-btn">
-                More Info <ArrowRight size={14} className="ml-2" />
+              <Link to="/workshops">
+                <Button className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-6 py-5 sm:px-8 sm:py-6 text-xs sm:text-sm uppercase tracking-[0.15em] transition-all hover:scale-105" data-testid="feature-workshops-btn">
+                  View Workshops <ArrowRight size={14} className="ml-2" />
                 </Button>
               </Link>
             </div>
@@ -104,24 +104,24 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Feature: Workshops */}
-      <section className="py-14 sm:py-24 md:py-36" data-testid="feature-workshops">
+      {/* Feature: Pet-Safe Flowers (More Info) */}
+      <section className="py-14 sm:py-24 md:py-36" data-testid="feature-petsafe">
         <div className="container mx-auto px-5 md:px-8 max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-20 items-center">
             <div className="aspect-[4/5] max-h-[60vh] lg:max-h-none rounded-2xl overflow-hidden animate-fade-in-up">
-              <img src="https://lh3.googleusercontent.com/d/10eVZW0mATKtuTyfynNGdbw7e1j_oGM79=w800" alt="Flower arranging workshops" className="w-full h-full object-cover" />
+              <img src="https://lh3.googleusercontent.com/d/16IURvclMQzZnIucglfEbfgsZFeegijRb=w800" alt="Cat with safe flowers" className="w-full h-full object-cover" />
             </div>
             <div className="animate-fade-in-up delay-200">
-              <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 sm:mb-4 block">Learn & Create</span>
+              <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 sm:mb-4 block">Every Stem Pet-Safe</span>
               <h2 className="font-['Playfair_Display'] text-2xl sm:text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C] mb-4 sm:mb-6">
-                Workshops
+                Safe for Every Member of Your Family
               </h2>
               <p className="text-sm sm:text-base font-light leading-relaxed text-[#6B7280] mb-6 sm:mb-8 max-w-md">
-                Join us for a relaxed flower arranging experience. Create your own pet-safe bouquet to take home, meet like-minded people, and enjoy a creative session in good company.
+                Every flower we sell is carefully checked against scientific data. Just beautiful, worry-free blooms for homes with curious cats, playful dogs, and everything in between.
               </p>
-              <Link to="/workshops">
-                <Button className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-6 py-5 sm:px-8 sm:py-6 text-xs sm:text-sm uppercase tracking-[0.15em] transition-all hover:scale-105" data-testid="feature-workshops-btn">
-                  View Workshops <ArrowRight size={14} className="ml-2" />
+              <Link to="/safe-flowers">
+                <Button className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-6 py-5 sm:px-8 sm:py-6 text-xs sm:text-sm uppercase tracking-[0.15em] transition-all hover:scale-105" data-testid="feature-shop-btn">
+                More Info <ArrowRight size={14} className="ml-2" />
                 </Button>
               </Link>
             </div>

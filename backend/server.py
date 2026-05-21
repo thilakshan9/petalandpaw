@@ -92,6 +92,7 @@ class SubscriptionCheckoutRequest(BaseModel):
     personalized_message: str = ""
     pet_type: str = ""
     pet_type_other: str = ""
+    delivery_date: str = ""
 
 class StepBouquetRequest(BaseModel):
     size: str  # small, medium, large
@@ -722,6 +723,7 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
             "add_pet_toy": str(req.add_pet_toy),
             "personalized_message": req.personalized_message[:500] if req.personalized_message else "",
             "pet_type": req.pet_type_other if req.pet_type == "other" else req.pet_type,
+            "preferred_delivery_date": req.delivery_date or "",
         }
 
         checkout_params = {
@@ -765,7 +767,8 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
         "metadata": {"type": req.checkout_mode, "plan_id": plan["id"],
                      "plan_name": plan["name"], "add_pet_toy": str(req.add_pet_toy),
                      "personalized_message": req.personalized_message[:500] if req.personalized_message else "",
-                     "pet_type": req.pet_type_other if req.pet_type == "other" else req.pet_type},
+                     "pet_type": req.pet_type_other if req.pet_type == "other" else req.pet_type,
+                     "preferred_delivery_date": req.delivery_date or ""},
         "created_at": datetime.now(timezone.utc).isoformat()
     })
     return {"url": session.url, "session_id": session.id}
@@ -1060,6 +1063,20 @@ async def get_order_status(session_id: str, request: Request, background_tasks: 
         result["shipping"] = shipping
     if session.mode:
         result["mode"] = session.mode
+    # Surface metadata for success page (workshop bookings, plan name, etc.)
+    session_metadata = dict(getattr(session, 'metadata', {}) or {})
+    if session_metadata:
+        result["metadata"] = session_metadata
+    booking = await db.workshop_bookings.find_one({"stripe_session_id": session_id}, {"_id": 0})
+    if booking:
+        result["booking"] = {
+            "workshop_name": booking.get("workshop_name", ""),
+            "workshop_location": booking.get("workshop_location", ""),
+            "workshop_date": booking.get("workshop_date", ""),
+            "workshop_time": booking.get("workshop_time", ""),
+            "full_name": booking.get("full_name", ""),
+            "customer_email": booking.get("customer_email", ""),
+        }
     return result
 
 @api_router.get("/orders")

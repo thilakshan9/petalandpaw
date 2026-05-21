@@ -119,3 +119,9 @@ URL format: `https://lh3.googleusercontent.com/d/{FILE_ID}=w{WIDTH}`
 
 ### New DB Collection
 - `workshop_bookings`: {id, workshop_id, workshop_name, workshop_location, workshop_date, workshop_time, price, full_name, customer_email, notes, stripe_session_id, status, created_at, paid_at}
+
+### Phase 8 (Feb 2026) - Polishing
+- Reordered homepage feature sections to: Workshops → Subscriptions → Pet-Safe (More Info)
+- Removed "Duration: 60-90mins" from workshop body copy (info now lives only in the duration chip)
+- `delivery_date` (`preferred_delivery_date`) is now passed through to Stripe checkout metadata for both one-time and subscription orders
+- Redesigned `CheckoutSuccess.jsx` with a branded confirmation card: blurred green/blush accents, workshop-aware copy ("You're booked in!"), inline workshop details (location/date/time + email-sent confirmation), preferred delivery date row for subscriptions, paired CTAs (Back to Home + contextual secondary CTA), brand sign-off line

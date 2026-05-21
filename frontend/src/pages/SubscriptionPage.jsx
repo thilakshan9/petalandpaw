@@ -142,6 +142,7 @@ export default function SubscriptionPage() {
           personalized_message: personalizedMessage,
           pet_type: petType[planId] || "",
           pet_type_other: petTypeOther[planId] || "",
+          delivery_date: deliveryDate[planId] || "",
         }),
       });
       const data = await res.json();
