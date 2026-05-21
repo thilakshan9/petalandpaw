@@ -287,7 +287,7 @@ export default function WorkshopsPage() {
                         >
                           <Plus size={14} />
                         </button>
-                        <span className="text-sm font-light text-[#2C2C2C] ml-2">= £{lineTotal}</span>
+                        <span className="text-sm font-light text-[#2C2C2C] ml-2">{quantity} × £{w.price} = £{lineTotal}</span>
                       </div>
                     </div>
                   )}

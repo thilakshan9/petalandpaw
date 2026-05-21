@@ -124,4 +124,10 @@ URL format: `https://lh3.googleusercontent.com/d/{FILE_ID}=w{WIDTH}`
 - Reordered homepage feature sections to: Workshops → Subscriptions → Pet-Safe (More Info)
 - Removed "Duration: 60-90mins" from workshop body copy (info now lives only in the duration chip)
 - `delivery_date` (`preferred_delivery_date`) is now passed through to Stripe checkout metadata for both one-time and subscription orders
-- Redesigned `CheckoutSuccess.jsx` with a branded confirmation card: blurred green/blush accents, workshop-aware copy ("You're booked in!"), inline workshop details (location/date/time + email-sent confirmation), preferred delivery date row for subscriptions, paired CTAs (Back to Home + contextual secondary CTA), brand sign-off line
+- Redesigned `CheckoutSuccess.jsx` with a branded confirmation card
+
+### Phase 9 (Feb 2026) - Workshop Tickets & Dashboard Linkage
+- **Multiple ticket purchase**: each Stripe-bookable workshop now has a quantity stepper (1..10). Stripe line item uses qty; total = price × qty, persisted on `workshop_bookings.total`.
+- **Guest vs Sign-In flow** mirrors subscriptions: clicking Book Now (logged-out) opens a guest dialog. "Sign In / Create Account" saves `pp_pending_workshop_checkout` to localStorage and routes to `/login`; after auth the booking dialog auto-resumes with name/email/quantity preserved.
+- **Logged-in linkage**: `customer_id` is now sent on the workshop checkout request and stored on the booking. `GET /api/customer/orders` returns a `bookings` array (paid only) which renders in a new **Workshop Bookings** section in the Customer Dashboard (`/account`). Workshop entries are filtered out of "Past Purchases" to avoid duplicates.
+- **iPhone delivery-date fix**: mobile Safari ignores HTML5 `min` on date inputs, so the 3-day enforcement now runs (a) on date selection with a toast + reset, (b) on the checkout-click handler, and (c) server-side in `/api/subscriptions/checkout` returning a 400 with a helpful message.
