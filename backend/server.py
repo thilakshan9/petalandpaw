@@ -1079,8 +1079,11 @@ async def get_order_status(session_id: str, request: Request, background_tasks: 
                     {"$set": {"status": "paid", "paid_at": datetime.now(timezone.utc).isoformat()}}
                 )
                 background_tasks.add_task(send_workshop_booking_emails, booking)
-            # Check for order (cart checkout) or subscription checkout
-            order = await db.orders.find_one({"stripe_session_id": session_id}, {"_id": 0})
+            # Check for order (cart checkout) or subscription checkout — skip if this was a workshop booking
+            if booking:
+                order = None
+            else:
+                order = await db.orders.find_one({"stripe_session_id": session_id}, {"_id": 0})
             if order:
                 order_update = {"status": "todo", "updated_at": datetime.now(timezone.utc).isoformat()}
                 if shipping:
