@@ -89,6 +89,18 @@ export default function SubscriptionPage() {
       toast.error("Please enter your pet type");
       return;
     }
+    // Enforce 3-day minimum on preferred delivery date (mobile Safari ignores HTML5 min)
+    const dDate = deliveryDate[planId];
+    if (dDate) {
+      const picked = new Date(dDate + "T00:00:00");
+      const minDate = new Date();
+      minDate.setHours(0, 0, 0, 0);
+      minDate.setDate(minDate.getDate() + 3);
+      if (picked < minDate) {
+        toast.error("Please choose a delivery date at least 3 days from today.");
+        return;
+      }
+    }
     setOrderType(type);
     if (!customer) {
       setGuestDialog(planId);
@@ -278,7 +290,21 @@ export default function SubscriptionPage() {
                       type="date"
                       value={deliveryDate[plan.id] || ""}
                       min={new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]}
-                      onChange={(e) => setDeliveryDate({ ...deliveryDate, [plan.id]: e.target.value })}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        if (!v) { setDeliveryDate({ ...deliveryDate, [plan.id]: "" }); return; }
+                        // Mobile Safari ignores `min`, so re-validate here
+                        const picked = new Date(v + "T00:00:00");
+                        const minDate = new Date();
+                        minDate.setHours(0, 0, 0, 0);
+                        minDate.setDate(minDate.getDate() + 3);
+                        if (picked < minDate) {
+                          toast.error("Please choose a date at least 3 days from today.");
+                          setDeliveryDate({ ...deliveryDate, [plan.id]: "" });
+                          return;
+                        }
+                        setDeliveryDate({ ...deliveryDate, [plan.id]: v });
+                      }}
                       className="w-full border border-[#E5E0D6] rounded-lg px-3 py-2.5 text-sm font-light text-[#2C2C2C] bg-white focus:outline-none focus:ring-1 focus:ring-[#8DA399]"
                       data-testid={`delivery-date-input-${plan.slug}`}
                     />

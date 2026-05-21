@@ -1,10 +1,12 @@
-import { useState } from "react";
-import { Calendar, Clock, MapPin, Gift, ArrowRight, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Calendar, Clock, MapPin, Gift, ArrowRight, Loader2, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useCustomerAuth } from "@/context/CustomerAuthContext";
 import SEOHead from "@/components/SEOHead";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -61,17 +63,75 @@ const WORKSHOPS = [
 ];
 
 export default function WorkshopsPage() {
+  const { customer, loading: authLoading } = useCustomerAuth();
+  const navigate = useNavigate();
+
+  const [qty, setQty] = useState({}); // per-workshop quantity
+  const [guestDialog, setGuestDialog] = useState(null); // workshop pending account choice
   const [bookingOpen, setBookingOpen] = useState(false);
   const [selectedWorkshop, setSelectedWorkshop] = useState(null);
   const [form, setForm] = useState({ full_name: "", customer_email: "", notes: "" });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  const openStripeBooking = (workshop) => {
-    setSelectedWorkshop(workshop);
+  const getQty = (id) => Math.max(1, Math.min(10, qty[id] || 1));
+  const updateQty = (id, delta) => {
+    setQty((q) => ({ ...q, [id]: Math.max(1, Math.min(10, (q[id] || 1) + delta)) }));
+  };
+
+  // Resume booking flow after login (if pending)
+  useEffect(() => {
+    if (authLoading || !customer) return;
+    const pending = localStorage.getItem("pp_pending_workshop_checkout");
+    if (!pending) return;
+    try {
+      const data = JSON.parse(pending);
+      localStorage.removeItem("pp_pending_workshop_checkout");
+      const w = WORKSHOPS.find((x) => x.id === data.workshop_id);
+      if (w) {
+        setQty((q) => ({ ...q, [w.id]: data.quantity || 1 }));
+        setSelectedWorkshop(w);
+        setForm({ full_name: customer.name || "", customer_email: customer.email || "", notes: data.notes || "" });
+        setError("");
+        setBookingOpen(true);
+      }
+    } catch {
+      localStorage.removeItem("pp_pending_workshop_checkout");
+    }
+  }, [authLoading, customer]);
+
+  const handleBookClick = (workshop) => {
+    if (customer) {
+      // Logged in — go straight to booking dialog with prefilled info
+      setSelectedWorkshop(workshop);
+      setForm({ full_name: customer.name || "", customer_email: customer.email || "", notes: "" });
+      setError("");
+      setBookingOpen(true);
+    } else {
+      // Not logged in — show guest/sign-in choice
+      setSelectedWorkshop(workshop);
+      setGuestDialog(workshop);
+    }
+  };
+
+  const handleGuestContinue = () => {
+    setGuestDialog(null);
     setForm({ full_name: "", customer_email: "", notes: "" });
     setError("");
     setBookingOpen(true);
+  };
+
+  const handleGuestLogin = () => {
+    // Save pending workshop so we can resume after login
+    if (selectedWorkshop) {
+      localStorage.setItem("pp_pending_workshop_checkout", JSON.stringify({
+        workshop_id: selectedWorkshop.id,
+        quantity: getQty(selectedWorkshop.id),
+        notes: form.notes || "",
+      }));
+    }
+    setGuestDialog(null);
+    navigate("/login");
   };
 
   const submitBooking = async (e) => {
@@ -84,6 +144,7 @@ export default function WorkshopsPage() {
     setSubmitting(true);
     setError("");
     try {
+      const quantity = getQty(selectedWorkshop.id);
       const res = await fetch(`${API}/workshops/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -94,10 +155,12 @@ export default function WorkshopsPage() {
           workshop_date: selectedWorkshop.date,
           workshop_time: selectedWorkshop.time,
           price: selectedWorkshop.price,
+          quantity,
           full_name: form.full_name.trim(),
           customer_email: form.customer_email.trim(),
           notes: form.notes.trim(),
           origin_url: window.location.origin,
+          customer_id: customer?.id || "",
         }),
       });
       if (!res.ok) {
@@ -132,96 +195,158 @@ export default function WorkshopsPage() {
         </div>
 
         <div className="space-y-10 animate-fade-in-up delay-100">
-          {WORKSHOPS.map((w) => (
-            <div
-              key={w.id}
-              className="bg-white border border-[#E5E0D6] rounded-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2"
-              data-testid={`workshop-${w.id}`}
-            >
-              {/* Image */}
-              <div className="relative aspect-[4/3] md:aspect-auto md:min-h-[420px] bg-[#F2F0EB] overflow-hidden">
-                <img
-                  src={w.image}
-                  alt={`${w.name} at ${w.place}`}
-                  className="absolute inset-0 w-full h-full object-cover"
-                  data-testid={`workshop-image-${w.id}`}
-                />
-              </div>
+          {WORKSHOPS.map((w) => {
+            const quantity = getQty(w.id);
+            const lineTotal = (w.price * quantity).toFixed(2);
+            return (
+              <div
+                key={w.id}
+                className="bg-white border border-[#E5E0D6] rounded-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2"
+                data-testid={`workshop-${w.id}`}
+              >
+                {/* Image */}
+                <div className="relative aspect-[4/3] md:aspect-auto md:min-h-[420px] bg-[#F2F0EB] overflow-hidden">
+                  <img
+                    src={w.image}
+                    alt={`${w.name} at ${w.place}`}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    data-testid={`workshop-image-${w.id}`}
+                  />
+                </div>
 
-              {/* Details */}
-              <div className="p-6 sm:p-8 flex flex-col">
-                {/* Header */}
-                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-5">
-                  <div>
-                    <h2 className="font-['Playfair_Display'] text-xl sm:text-2xl font-medium text-[#2C2C2C] mb-1">{w.name}</h2>
-                    <div className="flex items-center gap-1.5 text-sm font-light" style={{ color: w.accent }}>
-                      <MapPin size={14} />
-                      <span>{w.place}</span>
+                {/* Details */}
+                <div className="p-6 sm:p-8 flex flex-col">
+                  {/* Header */}
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-5">
+                    <div>
+                      <h2 className="font-['Playfair_Display'] text-xl sm:text-2xl font-medium text-[#2C2C2C] mb-1">{w.name}</h2>
+                      <div className="flex items-center gap-1.5 text-sm font-light" style={{ color: w.accent }}>
+                        <MapPin size={14} />
+                        <span>{w.place}</span>
+                      </div>
+                    </div>
+                    <div className="flex-shrink-0 text-right">
+                      <span className="text-2xl font-light text-[#2C2C2C]">£{w.price}</span>
+                      <span className="text-sm font-light text-[#6B7280]">/person</span>
                     </div>
                   </div>
-                  <div className="flex-shrink-0 text-right">
-                    <span className="text-2xl font-light text-[#2C2C2C]">£{w.price}</span>
-                    <span className="text-sm font-light text-[#6B7280]">/person</span>
-                  </div>
-                </div>
 
-                {/* Date & Time Cards */}
-                <div className="flex flex-wrap gap-2 mb-5">
-                  <div className="flex items-center gap-2 bg-[#F2F0EB] rounded-full px-4 py-2">
-                    <Calendar size={14} className="text-[#8DA399]" />
-                    <span className="text-sm font-light text-[#2C2C2C]">{w.date}</span>
+                  {/* Date & Time Cards */}
+                  <div className="flex flex-wrap gap-2 mb-5">
+                    <div className="flex items-center gap-2 bg-[#F2F0EB] rounded-full px-4 py-2">
+                      <Calendar size={14} className="text-[#8DA399]" />
+                      <span className="text-sm font-light text-[#2C2C2C]">{w.date}</span>
+                    </div>
+                    <div className="flex items-center gap-2 bg-[#F2F0EB] rounded-full px-4 py-2">
+                      <Clock size={14} className="text-[#8DA399]" />
+                      <span className="text-sm font-light text-[#2C2C2C]">{w.time}</span>
+                    </div>
+                    <div className="flex items-center gap-2 bg-[#F2F0EB] rounded-full px-4 py-2">
+                      <span className="text-sm font-light text-[#2C2C2C]">Duration: {w.duration}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 bg-[#F2F0EB] rounded-full px-4 py-2">
-                    <Clock size={14} className="text-[#8DA399]" />
-                    <span className="text-sm font-light text-[#2C2C2C]">{w.time}</span>
+
+                  {/* Description */}
+                  <p className="text-sm sm:text-base font-light leading-[1.8] text-[#6B7280] mb-6">{w.description}</p>
+
+                  {/* What's Included */}
+                  <div className="bg-[#F2F0EB]/60 rounded-xl p-5 mb-6">
+                    <h3 className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-3">What's Included</h3>
+                    <ul className="space-y-2">
+                      {w.included.map((item, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm font-light text-[#4B5563]">
+                          <Gift size={14} className="text-[#8DA399] mt-0.5 flex-shrink-0" /> {item}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <div className="flex items-center gap-2 bg-[#F2F0EB] rounded-full px-4 py-2">
-                    <span className="text-sm font-light text-[#2C2C2C]">Duration: {w.duration}</span>
-                  </div>
-                </div>
 
-                {/* Description */}
-                <p className="text-sm sm:text-base font-light leading-[1.8] text-[#6B7280] mb-6">{w.description}</p>
+                  {/* Quantity selector (only for Stripe-bookable workshops) */}
+                  {w.bookingType === "stripe" && (
+                    <div className="flex items-center justify-between bg-[#F2F0EB]/60 rounded-xl px-4 py-3 mb-5" data-testid={`workshop-qty-${w.id}`}>
+                      <span className="text-xs uppercase tracking-widest font-semibold text-[#6B7280]">Tickets</span>
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => updateQty(w.id, -1)}
+                          disabled={quantity <= 1}
+                          className="w-8 h-8 rounded-full bg-white border border-[#E5E0D6] flex items-center justify-center text-[#2C2C2C] disabled:opacity-30 transition hover:bg-[#F2F0EB]"
+                          data-testid={`workshop-qty-minus-${w.id}`}
+                          aria-label="Decrease quantity"
+                        >
+                          <Minus size={14} />
+                        </button>
+                        <span className="text-base font-medium text-[#2C2C2C] min-w-[20px] text-center" data-testid={`workshop-qty-value-${w.id}`}>{quantity}</span>
+                        <button
+                          type="button"
+                          onClick={() => updateQty(w.id, 1)}
+                          disabled={quantity >= 10}
+                          className="w-8 h-8 rounded-full bg-white border border-[#E5E0D6] flex items-center justify-center text-[#2C2C2C] disabled:opacity-30 transition hover:bg-[#F2F0EB]"
+                          data-testid={`workshop-qty-plus-${w.id}`}
+                          aria-label="Increase quantity"
+                        >
+                          <Plus size={14} />
+                        </button>
+                        <span className="text-sm font-light text-[#2C2C2C] ml-2">= £{lineTotal}</span>
+                      </div>
+                    </div>
+                  )}
 
-                {/* What's Included */}
-                <div className="bg-[#F2F0EB]/60 rounded-xl p-5 mb-6">
-                  <h3 className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-3">What's Included</h3>
-                  <ul className="space-y-2">
-                    {w.included.map((item, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm font-light text-[#4B5563]">
-                        <Gift size={14} className="text-[#8DA399] mt-0.5 flex-shrink-0" /> {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* CTA */}
-                <div className="mt-auto">
-                  {w.bookingType === "external" && w.bookingUrl ? (
-                    <a href={w.bookingUrl} target="_blank" rel="noopener noreferrer">
-                      <Button className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-8 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105" data-testid={`book-workshop-${w.id}`}>
+                  {/* CTA */}
+                  <div className="mt-auto">
+                    {w.bookingType === "external" && w.bookingUrl ? (
+                      <a href={w.bookingUrl} target="_blank" rel="noopener noreferrer">
+                        <Button className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-8 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105" data-testid={`book-workshop-${w.id}`}>
+                          Book Now <ArrowRight size={14} className="ml-2" />
+                        </Button>
+                      </a>
+                    ) : w.bookingType === "stripe" ? (
+                      <Button
+                        onClick={() => handleBookClick(w)}
+                        className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-8 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105"
+                        data-testid={`book-workshop-${w.id}`}
+                      >
                         Book Now <ArrowRight size={14} className="ml-2" />
                       </Button>
-                    </a>
-                  ) : w.bookingType === "stripe" ? (
-                    <Button
-                      onClick={() => openStripeBooking(w)}
-                      className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-8 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105"
-                      data-testid={`book-workshop-${w.id}`}
-                    >
-                      Book Now <ArrowRight size={14} className="ml-2" />
-                    </Button>
-                  ) : (
-                    <Button disabled className="rounded-full bg-[#E8E4D9] text-[#6B7280] px-8 py-6 text-xs uppercase tracking-widest cursor-not-allowed opacity-70" data-testid={`book-workshop-${w.id}`}>
-                      Booking Coming Soon
-                    </Button>
-                  )}
+                    ) : (
+                      <Button disabled className="rounded-full bg-[#E8E4D9] text-[#6B7280] px-8 py-6 text-xs uppercase tracking-widest cursor-not-allowed opacity-70" data-testid={`book-workshop-${w.id}`}>
+                        Booking Coming Soon
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
+
+      {/* Guest / Login Dialog */}
+      <Dialog open={!!guestDialog} onOpenChange={(v) => { if (!v) setGuestDialog(null); }}>
+        <DialogContent className="max-w-sm border-[#E5E0D6] bg-[#FAF9F6] rounded-2xl" data-testid="workshop-guest-dialog">
+          <DialogTitle className="font-['Playfair_Display'] text-xl font-medium text-[#2C2C2C]">Before You Continue</DialogTitle>
+          <DialogDescription className="text-sm font-light text-[#6B7280]">
+            Sign in to save your booking to your account, or continue as a guest.
+          </DialogDescription>
+          <div className="mt-4 space-y-3">
+            <Button
+              onClick={handleGuestLogin}
+              className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-8 py-6 text-xs uppercase tracking-widest w-full transition-all hover:scale-105"
+              data-testid="workshop-guest-login-btn"
+            >
+              Sign In / Create Account <ArrowRight size={14} className="ml-2" />
+            </Button>
+            <Button
+              onClick={handleGuestContinue}
+              variant="outline"
+              className="rounded-full border-[#E5E0D6] text-[#6B7280] hover:text-[#2C2C2C] hover:border-[#2C2C2C] px-8 py-6 text-xs uppercase tracking-widest w-full transition-all"
+              data-testid="workshop-guest-continue-btn"
+            >
+              Continue as Guest
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Stripe Booking Dialog */}
       <Dialog open={bookingOpen} onOpenChange={(open) => !submitting && setBookingOpen(open)}>
@@ -232,7 +357,11 @@ export default function WorkshopsPage() {
             </DialogTitle>
             {selectedWorkshop && (
               <DialogDescription className="text-sm font-light text-[#6B7280] pt-1">
-                {selectedWorkshop.name} at {selectedWorkshop.place} - {selectedWorkshop.date}, {selectedWorkshop.time} - £{selectedWorkshop.price}
+                {selectedWorkshop.name} at {selectedWorkshop.place} - {selectedWorkshop.date}, {selectedWorkshop.time}
+                <br />
+                <span className="font-medium text-[#2C2C2C]">
+                  {getQty(selectedWorkshop.id)} × £{selectedWorkshop.price} = £{(selectedWorkshop.price * getQty(selectedWorkshop.id)).toFixed(2)}
+                </span>
               </DialogDescription>
             )}
           </DialogHeader>

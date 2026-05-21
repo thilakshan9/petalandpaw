@@ -117,10 +117,12 @@ class WorkshopCheckoutRequest(BaseModel):
     workshop_date: str
     workshop_time: str
     price: float
+    quantity: int = 1
     full_name: str
     customer_email: str
     notes: str = ""
     origin_url: str
+    customer_id: str = ""
 
 # ============================================================
 # EMAIL HELPER (Resend)
@@ -498,8 +500,8 @@ async def customer_orders(customer=Depends(get_customer)):
                     tx["status"] = "complete"
             except Exception:
                 pass
-        # Only include paid/completed transactions
-        if tx.get("payment_status") == "paid":
+        # Only include paid/completed transactions, exclude workshop bookings (shown separately)
+        if tx.get("payment_status") == "paid" and tx.get("metadata", {}).get("type") != "workshop":
             updated_txs.append(tx)
 
     # Search Stripe for subscriptions - try multiple methods
@@ -549,7 +551,28 @@ async def customer_orders(customer=Depends(get_customer)):
     except Exception as e:
         logger.error(f"Stripe subscription fetch error: {e}")
 
-    return {"transactions": updated_txs, "subscriptions": subscriptions}
+    # Workshop bookings (paid only) — surfaced separately in dashboard
+    bookings = []
+    try:
+        booking_docs = await db.workshop_bookings.find(
+            {"customer_email": email, "status": "paid"}, {"_id": 0}
+        ).sort("created_at", -1).to_list(50)
+        for b in booking_docs:
+            bookings.append({
+                "id": b.get("id"),
+                "workshop_name": b.get("workshop_name", ""),
+                "workshop_location": b.get("workshop_location", ""),
+                "workshop_date": b.get("workshop_date", ""),
+                "workshop_time": b.get("workshop_time", ""),
+                "quantity": b.get("quantity", 1),
+                "total": b.get("total", b.get("price", 0)),
+                "status": b.get("status", "paid"),
+                "created_at": b.get("created_at", ""),
+            })
+    except Exception as e:
+        logger.error(f"Workshop bookings fetch error: {e}")
+
+    return {"transactions": updated_txs, "subscriptions": subscriptions, "bookings": bookings}
 
 @api_router.post("/customer/cancel-subscription/{sub_id}")
 async def cancel_subscription(sub_id: str, customer=Depends(get_customer)):
@@ -698,6 +721,18 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
     plan = await db.subscription_plans.find_one({"id": req.plan_id}, {"_id": 0})
     if not plan:
         raise HTTPException(status_code=404, detail="Plan not found")
+    # Validate delivery date (must be at least 3 days from today) — server-side safeguard
+    if req.delivery_date:
+        try:
+            from datetime import date
+            picked = datetime.strptime(req.delivery_date, "%Y-%m-%d").date()
+            min_date = date.today() + timedelta(days=3)
+            if picked < min_date:
+                raise HTTPException(status_code=400, detail=f"Delivery date must be on or after {min_date.isoformat()} (3 days from today).")
+        except HTTPException:
+            raise
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid delivery date format")
     total = float(plan.get("price", 0))
     if total < 0.30:
         logger.error(f"Plan price too low: {plan.get('name')} = £{total}. Plan data: {plan}")
@@ -917,6 +952,8 @@ async def create_workshop_checkout(req: WorkshopCheckoutRequest, request: Reques
         raise HTTPException(status_code=400, detail="Full name and email are required")
     if req.price <= 0:
         raise HTTPException(status_code=400, detail="Invalid workshop price")
+    qty = max(1, min(10, int(req.quantity or 1)))
+    total = float(req.price) * qty
 
     booking_id = str(uuid.uuid4())
     success_url = f"{req.origin_url}/checkout/success?session_id={{CHECKOUT_SESSION_ID}}"
@@ -933,8 +970,12 @@ async def create_workshop_checkout(req: WorkshopCheckoutRequest, request: Reques
         "full_name": req.full_name[:480],
         "customer_email": req.customer_email[:480],
         "notes": (req.notes or "")[:480],
-        "amount_paid": f"{req.price:.2f}",
+        "quantity": str(qty),
+        "amount_paid": f"{total:.2f}",
+        "plan_name": req.workshop_name[:480],  # so dashboard "Past Purchases" shows nicely
     }
+    if req.customer_id:
+        booking_metadata["customer_id"] = req.customer_id[:480]
 
     try:
         pid = {"metadata": booking_metadata, "receipt_email": req.customer_email}
@@ -949,7 +990,7 @@ async def create_workshop_checkout(req: WorkshopCheckoutRequest, request: Reques
                         "description": f"{req.workshop_date} at {req.workshop_time}",
                     },
                 },
-                "quantity": 1,
+                "quantity": qty,
             }],
             "mode": "payment",
             "success_url": success_url,
@@ -973,8 +1014,11 @@ async def create_workshop_checkout(req: WorkshopCheckoutRequest, request: Reques
         "workshop_date": req.workshop_date,
         "workshop_time": req.workshop_time,
         "price": float(req.price),
+        "quantity": qty,
+        "total": total,
         "full_name": req.full_name,
         "customer_email": req.customer_email,
+        "customer_id": req.customer_id or None,
         "notes": req.notes,
         "stripe_session_id": session.id,
         "status": "pending",
@@ -983,7 +1027,7 @@ async def create_workshop_checkout(req: WorkshopCheckoutRequest, request: Reques
     await db.payment_transactions.insert_one({
         "id": str(uuid.uuid4()),
         "session_id": session.id,
-        "amount": float(req.price),
+        "amount": total,
         "currency": "gbp",
         "status": "initiated",
         "payment_status": "pending",

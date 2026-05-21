@@ -1,0 +1,34 @@
+{
+  "summary": "Tested NEW workshop quantity + guest/login flow + dashboard linkage + 3-day delivery validation. 20/20 backend pytest pass. Frontend: quantity stepper (1..10 clamping), live total update, guest dialog, sign-in-and-resume via pp_pending_workshop_checkout, logged-in skip-guest, Stripe redirect with correct Qty 2/£90 line item, dashboard Workshop Bookings section, subscription 3-day client+server validation all verified end-to-end.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "/workshops", "issues": ["Quantity line-total currently rendered as '£<total>' (e.g. '= £45.00') rather than the spec's literal 'X × £45 = £Y'. Total amount is correct but the multiplier label differs slightly from spec — minor copy issue, easy fix if E1 wants exact wording."]},
+      {"screen": "/workshops", "issues": ["First two workshops still use Google Drive image URLs that 404 — known/expected per E1; not blocking."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_workshops.py",
+    "/app/test_reports/pytest/pytest_workshops.xml"
+  ],
+  "action_items": [
+    "(Optional copy tweak) Show explicit 'qty × £price = £total' format on workshop card line-total to match spec wording.",
+    "(Optional) Provide real images for the first two workshops (still placeholder Drive links that 404)."
+  ],
+  "critical_code_review_comments": [
+    "server.py now 1431 lines — still single-file; recommend splitting into routers (orders/workshops/auth/subscriptions/contact) for maintainability.",
+    "Workshop list remains hardcoded in WorkshopsPage.jsx — adding/removing workshops requires code change.",
+    "subscription_checkout uses datetime.now() (naive) inside a UTC-async app; for users near midnight UTC the 3-day cutoff could be off by ±1 day. Consider using `datetime.now(timezone.utc).date()` consistently both client- and server-side.",
+    "Quantity clamping uses `max(1, min(10, int(req.quantity or 1)))` — non-int values would 422 from Pydantic before reaching this clamp; clamp+silent-coerce is fine but consider returning 400 with a message for explicit invalid inputs in future."
+  ],
+  "updated_files": ["/app/backend/tests/test_workshops.py"],
+  "success_rate": {"backend": "100% (20/20)", "frontend": "100% — all required flows verified"},
+  "test_credentials": "test@petalandpaw.com / test123 (customer); Stripe 4242 (only redirect verified, no payment completed)",
+  "seed_data_creation": "Inserted/cleaned TEST_-prefixed workshop_bookings + payment_transactions docs in test_database during dashboard tests. All cleaned up via try/finally.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "New /api/workshops/checkout body fields: quantity (1..10 clamp), customer_id (optional). Workshop bookings exposed via GET /api/customer/orders -> data.bookings (status='paid' only, joined by customer_email). Workshop payment_transactions filtered out of data.transactions (metadata.type='workshop'). Subscription /api/subscriptions/checkout enforces delivery_date >= today+3 (400 with helpful message). Frontend selectors: workshop-qty-{id}, workshop-qty-minus/plus/value-{id}, workshop-guest-dialog with workshop-guest-login-btn/workshop-guest-continue-btn, workshop-booking-dialog, booking-{id} on dashboard, browse-workshops-cta empty-state. LocalStorage key for resume: pp_pending_workshop_checkout = {workshop_id, quantity, notes}.",
+  "rca of the issue": "N/A — no issues."
+}
