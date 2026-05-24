@@ -59,8 +59,8 @@ const WORKSHOPS = [
     included: ["Your bouquet to take home", "Free drink included", "Cat play time"],
     accent: "#8DA399",
     image: "https://lh3.googleusercontent.com/d/1vyvkDLBp9j2-dxnL7AyAfBXbYlKKuk4a=w800",
-    bookingType: "stripe",
-    bookingUrl: null,
+    bookingType: "external",
+    bookingUrl: "https://pawscatcafe.resova.co.uk/items/view/37",
     status: "live",
   },
 ];
