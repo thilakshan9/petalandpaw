@@ -42,9 +42,9 @@ const WORKSHOPS = [
     included: ["Your bouquet to take home", "Prosecco (+£10 add-on)", "Cat play time"],
     accent: "#C4A2B0",
     image: "https://lh3.googleusercontent.com/d/1YxXERg81kUe5wSQdxoncSSYFMKaBSaE9=w800",
-    bookingType: "pending",
-    bookingUrl: null,
-    status: "pending",
+    bookingType: "external",
+    bookingUrl: "https://bookwhen.com/cat-titudecatcafe/e/ev-s3tgt-20260619180000",
+    status: "live",
   },
   {
     id: "paws-cat-cafe-2026-06-26",
