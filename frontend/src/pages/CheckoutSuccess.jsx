@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import { CheckCircle2, XCircle, Loader2, Calendar, MapPin, Clock, Mail, ArrowRight, Sparkles } from "lucide-react";
+import { CircleCheck as CheckCircle2, Circle as XCircle, Loader as Loader2, Calendar, MapPin, Clock, Mail, ArrowRight, Sparkles, Gift, Ticket, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/components/CartProvider";
 
@@ -75,8 +75,22 @@ export default function CheckoutSuccess() {
 
   const meta = paymentData?.metadata || {};
   const booking = paymentData?.booking;
-  const isWorkshop = meta?.type === "workshop" || !!booking;
-  const isSubscription = paymentData?.mode === "subscription";
+  const voucher = paymentData?.voucher;
+  const redemption = paymentData?.redemption;
+  const isVoucher = meta?.type === "voucher" || !!voucher;
+  const isRedemption = meta?.type === "voucher_redemption" || !!redemption;
+  const isWorkshop = !isVoucher && !isRedemption && (meta?.type === "workshop" || !!booking);
+  const isSubscription = !isVoucher && !isRedemption && paymentData?.mode === "subscription";
+
+  const [voucherCopied, setVoucherCopied] = useState(false);
+  const copyVoucher = async () => {
+    if (!voucher?.code) return;
+    try {
+      await navigator.clipboard.writeText(voucher.code);
+      setVoucherCopied(true);
+      setTimeout(() => setVoucherCopied(false), 1500);
+    } catch {}
+  };
 
   return (
     <div className="min-h-[80vh] py-12 sm:py-20 md:py-28" data-testid="checkout-success-page">
@@ -107,17 +121,29 @@ export default function CheckoutSuccess() {
                 </div>
 
                 <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 block">
-                  {isWorkshop ? "Booking Confirmed" : isSubscription ? "Subscription Active" : "Order Confirmed"}
+                  {isVoucher ? "Voucher Issued" : isRedemption ? "Booking Confirmed" : isWorkshop ? "Booking Confirmed" : isSubscription ? "Subscription Active" : "Order Confirmed"}
                 </span>
                 <h1 className="font-['Playfair_Display'] text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C] mb-4" data-testid="payment-success-title">
-                  {isWorkshop ? "You're booked in!" : isSubscription ? "Welcome to the family" : "Thank you"}
+                  {isVoucher
+                    ? "Your voucher is ready"
+                    : isRedemption
+                      ? "Workshops booked using voucher"
+                      : isWorkshop
+                        ? "You're booked in!"
+                        : isSubscription
+                          ? "Welcome to the family"
+                          : "Thank you"}
                 </h1>
                 <p className="text-sm sm:text-base font-light leading-relaxed text-[#6B7280] max-w-md mx-auto">
-                  {isWorkshop
-                    ? `${booking?.full_name ? booking.full_name.split(" ")[0] + ", we" : "We"} can't wait to see you. A confirmation with all the details has been sent to your email.`
-                    : isSubscription
-                      ? "Your subscription is all set up. Look out for your first bouquet soon - we'll be in touch."
-                      : "Your order has been confirmed and is being prepared with care. A receipt is on its way to your inbox."}
+                  {isVoucher
+                    ? `${voucher?.recipient_email ? "We've emailed the voucher to your recipient. A copy is in your inbox too." : "We've emailed your voucher code. Use it any time on our workshops page."}`
+                    : isRedemption
+                      ? `Your voucher covered £${Number(redemption?.voucher_applied || 0).toFixed(2)}${Number(redemption?.excess || 0) > 0 ? ` and you topped up £${Number(redemption?.excess).toFixed(2)}` : ""}. Confirmation emails are on the way.`
+                      : isWorkshop
+                        ? `${booking?.full_name ? booking.full_name.split(" ")[0] + ", we" : "We"} can't wait to see you. A confirmation with all the details has been sent to your email.`
+                        : isSubscription
+                          ? "Your subscription is all set up. Look out for your first bouquet soon - we'll be in touch."
+                          : "Your order has been confirmed and is being prepared with care. A receipt is on its way to your inbox."}
                 </p>
 
                 {paymentData?.amount_total && (
@@ -130,6 +156,55 @@ export default function CheckoutSuccess() {
                   </div>
                 )}
               </div>
+
+              {/* Voucher details panel */}
+              {isVoucher && voucher && (
+                <div className="relative mt-8 pt-8 border-t border-[#E5E0D6]" data-testid="voucher-details-card">
+                  <h3 className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-4 text-center flex items-center justify-center gap-2">
+                    <Gift size={12} className="text-[#C4A2B0]" /> Voucher Code
+                  </h3>
+                  <div className="bg-gradient-to-br from-[#F2F0EB] to-[#FAF9F6] border border-[#E5E0D6] rounded-2xl p-6 text-center">
+                    <p className="font-['Playfair_Display'] text-3xl sm:text-4xl font-medium text-[#2C2C2C] mb-3">
+                      £{Number(voucher.original_amount || 0).toFixed(2)}
+                    </p>
+                    <button
+                      onClick={copyVoucher}
+                      className="font-mono text-base sm:text-lg tracking-[0.25em] text-[#2C2C2C] hover:text-[#8DA399] transition-colors inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 border border-[#E5E0D6]"
+                      data-testid="success-voucher-code"
+                    >
+                      {voucher.code}
+                      {voucherCopied ? <Check size={14} /> : <Copy size={14} />}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Voucher redemption details */}
+              {isRedemption && redemption && (
+                <div className="relative mt-8 pt-8 border-t border-[#E5E0D6]" data-testid="redemption-details-card">
+                  <h3 className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-4 text-center flex items-center justify-center gap-2">
+                    <Ticket size={12} className="text-[#8DA399]" /> Bookings via voucher {redemption.voucher_code}
+                  </h3>
+                  <div className="space-y-2">
+                    {redemption.items?.map((it, i) => (
+                      <div key={i} className="bg-[#F2F0EB]/70 rounded-xl px-4 py-3 flex items-center justify-between text-sm font-light">
+                        <span className="text-[#2C2C2C]">{it.workshop_location} - {it.workshop_date}</span>
+                        <span className="text-[#6B7280]">{it.quantity} × £{(Number(it.line_total) / Math.max(1, it.quantity)).toFixed(2)}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-4 grid grid-cols-2 gap-3 text-sm font-light">
+                    <div className="bg-[#F2F0EB]/70 rounded-xl px-4 py-3">
+                      <p className="text-[10px] uppercase tracking-widest text-[#6B7280] font-semibold">Voucher applied</p>
+                      <p className="text-[#8DA399] font-medium">£{Number(redemption.voucher_applied || 0).toFixed(2)}</p>
+                    </div>
+                    <div className="bg-[#F2F0EB]/70 rounded-xl px-4 py-3">
+                      <p className="text-[10px] uppercase tracking-widest text-[#6B7280] font-semibold">Top-up paid</p>
+                      <p className="text-[#2C2C2C] font-medium">£{Number(redemption.excess || 0).toFixed(2)}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Workshop details panel */}
               {isWorkshop && booking && (
@@ -190,7 +265,13 @@ export default function CheckoutSuccess() {
                   Back to Home <ArrowRight size={14} className="ml-2" />
                 </Button>
               </Link>
-              {isWorkshop ? (
+              {isVoucher ? (
+                <Link to="/workshops">
+                  <Button variant="outline" className="rounded-full border-[#8DA399] text-[#8DA399] hover:bg-[#8DA399] hover:text-white px-8 py-6 text-xs sm:text-sm uppercase tracking-widest w-full sm:w-auto transition-all">
+                    Browse workshops
+                  </Button>
+                </Link>
+              ) : isRedemption || isWorkshop ? (
                 <Link to="/workshops">
                   <Button variant="outline" className="rounded-full border-[#8DA399] text-[#8DA399] hover:bg-[#8DA399] hover:text-white px-8 py-6 text-xs sm:text-sm uppercase tracking-widest w-full sm:w-auto transition-all">
                     Explore more workshops

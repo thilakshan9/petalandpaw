@@ -21,6 +21,7 @@ import FaqPage from "@/pages/FaqPage";
 import ReturnsPage from "@/pages/ReturnsPage";
 import EventsPage from "@/pages/EventsPage";
 import WorkshopsPage from "@/pages/WorkshopsPage";
+import VouchersPage from "@/pages/VouchersPage";
 import SafeFlowersPage from "@/pages/SafeFlowersPage";
 import CustomerAuthPage from "@/pages/CustomerAuthPage";
 import CustomerDashboard from "@/pages/CustomerDashboard";
@@ -121,25 +122,47 @@ function AppRouter() {
   return (
     <Routes>
       <Route path="/" element={<Layout><HomePage /></Layout>} />
+      }
       <Route path="/gallery" element={<Layout><GalleryPage /></Layout>} />
+      }
       <Route path="/subscriptions" element={<Layout><SubscriptionPage /></Layout>} />
+      }
       <Route path="/bouquet-builder" element={<Layout><BouquetBuilder /></Layout>} />
+      }
       <Route path="/cart" element={<Layout><CartPage /></Layout>} />
+      }
       <Route path="/checkout/success" element={<Layout><CheckoutSuccess /></Layout>} />
+      }
       <Route path="/about" element={<Layout><AboutPage /></Layout>} />
+      }
       <Route path="/contact" element={<Layout><ContactPage /></Layout>} />
+      }
       <Route path="/faq" element={<Layout><FaqPage /></Layout>} />
+      }
       <Route path="/returns" element={<Layout><ReturnsPage /></Layout>} />
+      }
       <Route path="/hire-us" element={<Layout><EventsPage /></Layout>} />
+      }
       <Route path="/events" element={<Layout><EventsPage /></Layout>} />
+      }
       <Route path="/workshops" element={<Layout><WorkshopsPage /></Layout>} />
+      }
+      <Route path="/vouchers" element={<Layout><VouchersPage /></Layout>} />
+      }
       <Route path="/safe-flowers" element={<Layout><SafeFlowersPage /></Layout>} />
+      }
       <Route path="/privacy" element={<Layout><PrivacyPage /></Layout>} />
+      }
       <Route path="/terms" element={<Layout><TermsPage /></Layout>} />
+      }
       <Route path="/login" element={<Layout><CustomerAuthPage /></Layout>} />
+      }
       <Route path="/reset-password" element={<Layout><ResetPasswordPage /></Layout>} />
+      }
       <Route path="/account" element={<Layout><CustomerDashboard /></Layout>} />
+      }
       <Route path="/referral/:code" element={<Layout><ReferralPage /></Layout>} />
+      }
     </Routes>
   );
 }

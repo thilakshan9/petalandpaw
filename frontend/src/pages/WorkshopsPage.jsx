@@ -8,62 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useCustomerAuth } from "@/context/CustomerAuthContext";
 import SEOHead from "@/components/SEOHead";
+import { WORKSHOPS, upcomingWorkshops, pastWorkshops } from "@/lib/workshops";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
-
-const WORKSHOPS = [
-  {
-    id: "kings-dog-daycare-2026-05-30",
-    name: "Flower Arranging Workshop",
-    place: "King's Dog Daycare",
-    address: "117 Fulham Road, London, SW3 6JW",
-    date: "30 May 2026",
-    time: "1pm",
-    duration: "60-90 mins",
-    price: 35,
-    description: "Relax with dogs and enjoy a creative afternoon of flower arranging. Whether you're a complete beginner or just looking for something different, this laid-back workshop is for you. Bring your furry friend along and make something beautiful together. All levels welcome - come meet like-minded people and leave with a gorgeous bouquet.",
-    included: ["Your bouquet to take home", "x1 drink included", "Doggy treat cup if you bring a furry friend"],
-    accent: "#B8926A",
-    image: "https://lh3.googleusercontent.com/d/1CAoxohkarGmRVzsdAaUSSr7HG2VMWH4O=w800",
-    bookingType: "external",
-    bookingUrl: "https://kingsdogdaycare.replit.app/events/1",
-    status: "live",
-  },
-  {
-    id: "cat-titude-2026-06-19",
-    name: "Flower Arranging Workshop",
-    place: "Cat-titude Cat Cafe",
-    address: "134 St John's Hill, London, SW11 1SL",
-    date: "19 June 2026",
-    time: "6pm",
-    duration: "60-90 mins",
-    price: 35,
-    description: "Enjoy a creative evening surrounded by cats at the cosiest cafe in town. Unwind after work, learn to arrange a beautiful pet-safe bouquet, and soak up the calm vibes. All levels welcome - no experience needed, just come ready to relax and meet like-minded people.",
-    included: ["Your bouquet to take home", "Prosecco (+£10 add-on)", "Cat play time"],
-    accent: "#C4A2B0",
-    image: "https://lh3.googleusercontent.com/d/1YxXERg81kUe5wSQdxoncSSYFMKaBSaE9=w800",
-    bookingType: "external",
-    bookingUrl: "https://bookwhen.com/cat-titudecatcafe/e/ev-s3tgt-20260619180000",
-    status: "live",
-  },
-  {
-    id: "paws-cat-cafe-2026-06-26",
-    name: "Flower Arranging Workshop",
-    place: "Paws Cat Café",
-    address: "Angel Walk, 5 Angel Lane, Tonbridge, TN9 1TJ",
-    date: "26 June 2026",
-    time: "6pm",
-    duration: "60-90 mins",
-    price: 45,
-    description: "Spend a relaxed evening at Paws Cat Café arranging your own pet-safe bouquet while playing with the resident cats. Sip on a complimentary drink and let your creativity flow in this charming, calming setting. All levels welcome.",
-    included: ["Your bouquet to take home", "Free drink included", "Cat play time"],
-    accent: "#8DA399",
-    image: "https://lh3.googleusercontent.com/d/1vyvkDLBp9j2-dxnL7AyAfBXbYlKKuk4a=w800",
-    bookingType: "external",
-    bookingUrl: "https://pawscatcafe.resova.co.uk/items/view/37",
-    status: "live",
-  },
-];
 
 export default function WorkshopsPage() {
   const { customer, loading: authLoading } = useCustomerAuth();
@@ -307,7 +254,7 @@ export default function WorkshopsPage() {
         </div>
 
         <div className="space-y-10 animate-fade-in-up delay-100">
-          {WORKSHOPS.map((w) => {
+          {upcomingWorkshops().map((w) => {
             const quantity = getQty(w.id);
             const lineTotal = (w.price * quantity).toFixed(2);
             return (
@@ -434,6 +381,58 @@ export default function WorkshopsPage() {
             );
           })}
         </div>
+
+        {/* Past Workshops */}
+        {pastWorkshops().length > 0 && (
+          <div className="mt-20 sm:mt-24 animate-fade-in-up delay-200" data-testid="past-workshops-section">
+            <div className="text-center mb-10 sm:mb-12">
+              <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#B8926A] mb-2 sm:mb-3 block">Archive</span>
+              <h2 className="font-['Playfair_Display'] text-2xl sm:text-3xl md:text-4xl font-medium tracking-tight text-[#2C2C2C] mb-3">
+                Past Workshops
+              </h2>
+              <p className="text-sm font-light text-[#6B7280] max-w-xl mx-auto">
+                A look back at the workshops we've already hosted. Want to see one return? Get in touch.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+              {pastWorkshops().map((w) => (
+                <div
+                  key={w.id}
+                  className="bg-white border border-[#E5E0D6] rounded-2xl overflow-hidden flex flex-col opacity-90"
+                  data-testid={`past-workshop-${w.id}`}
+                >
+                  <div className="relative aspect-[4/3] bg-[#F2F0EB] overflow-hidden">
+                    <img
+                      src={w.image}
+                      alt={`${w.name} at ${w.place}`}
+                      className="absolute inset-0 w-full h-full object-cover grayscale-[40%]"
+                    />
+                    <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-[10px] uppercase tracking-widest font-semibold text-[#6B7280] px-3 py-1 rounded-full">
+                      Past Event
+                    </span>
+                  </div>
+                  <div className="p-5 sm:p-6 flex flex-col flex-1">
+                    <div className="flex items-center gap-1.5 text-xs font-light mb-1" style={{ color: w.accent }}>
+                      <MapPin size={12} />
+                      <span>{w.place}</span>
+                    </div>
+                    <h3 className="font-['Playfair_Display'] text-lg font-medium text-[#2C2C2C] mb-2">{w.name}</h3>
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      <span className="inline-flex items-center gap-1.5 bg-[#F2F0EB] rounded-full px-3 py-1 text-xs font-light text-[#6B7280]">
+                        <Calendar size={12} className="text-[#8DA399]" /> {w.date}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 bg-[#F2F0EB] rounded-full px-3 py-1 text-xs font-light text-[#6B7280]">
+                        <Clock size={12} className="text-[#8DA399]" /> {w.time}
+                      </span>
+                    </div>
+                    <p className="text-xs font-light leading-relaxed text-[#6B7280] line-clamp-3">{w.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Guest / Login Dialog */}

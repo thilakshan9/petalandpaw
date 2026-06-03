@@ -125,6 +125,34 @@ class WorkshopCheckoutRequest(BaseModel):
     origin_url: str
     customer_id: str = ""
 
+class VoucherCheckoutRequest(BaseModel):
+    amount: float
+    purchaser_name: str
+    purchaser_email: str
+    recipient_name: str = ""
+    recipient_email: str = ""
+    personal_message: str = ""
+    origin_url: str
+
+class VoucherRedeemItem(BaseModel):
+    workshop_id: str
+    workshop_name: str
+    workshop_location: str
+    workshop_address: str = ""
+    workshop_date: str
+    workshop_time: str
+    price: float
+    quantity: int = 1
+
+class VoucherRedeemRequest(BaseModel):
+    code: str
+    items: List[VoucherRedeemItem]
+    full_name: str
+    customer_email: str
+    notes: str = ""
+    origin_url: str
+    customer_id: str = ""
+
 # ============================================================
 # EMAIL HELPER (Resend)
 # ============================================================
@@ -1043,6 +1071,370 @@ async def create_workshop_checkout(req: WorkshopCheckoutRequest, request: Reques
     return {"url": session.url, "session_id": session.id, "booking_id": booking_id}
 
 
+# ============================================================
+# VOUCHERS
+# ============================================================
+
+VOUCHER_MAX_AMOUNT = 250.0
+VOUCHER_MIN_AMOUNT = 10.0
+
+def _generate_voucher_code() -> str:
+    """Format: PP-XXXX-XXXX-XXXX (alphanumeric, no ambiguous chars)."""
+    alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+    parts = ["".join(random.choices(alphabet, k=4)) for _ in range(3)]
+    return "PP-" + "-".join(parts)
+
+async def _allocate_unique_voucher_code() -> str:
+    for _ in range(10):
+        code = _generate_voucher_code()
+        existing = await db.vouchers.find_one({"code": code}, {"_id": 0})
+        if not existing:
+            return code
+    raise HTTPException(status_code=500, detail="Could not allocate voucher code, please retry.")
+
+async def send_voucher_purchase_email(voucher: dict):
+    purchaser_email = voucher.get("purchaser_email", "")
+    purchaser_name = voucher.get("purchaser_name", "")
+    recipient_name = voucher.get("recipient_name", "")
+    recipient_email = voucher.get("recipient_email", "")
+    code = voucher.get("code", "")
+    amount = voucher.get("original_amount", 0)
+    personal_message = voucher.get("personal_message", "")
+
+    voucher_card_html = f"""
+    <div style="background: linear-gradient(135deg, #FAF9F6 0%, #F2F0EB 100%); border: 1px solid #E5E0D6; padding: 32px; border-radius: 16px; text-align: center; margin: 20px 0;">
+        <p style="color: #8DA399; font-size: 11px; text-transform: uppercase; letter-spacing: 3px; margin: 0 0 8px;">Petal & Paw Voucher</p>
+        <h2 style="font-family: serif; color: #2C2C2C; font-weight: 400; font-size: 32px; margin: 0 0 16px;">£{amount:.2f}</h2>
+        <p style="color: #6B7280; font-size: 12px; margin: 0 0 6px;">Voucher Code</p>
+        <p style="font-family: monospace; font-size: 22px; letter-spacing: 4px; color: #2C2C2C; margin: 0; font-weight: 500;">{code}</p>
+    </div>
+    """
+
+    if purchaser_email:
+        purchaser_html = f"""
+        <div style="font-family: 'Helvetica', sans-serif; max-width: 600px; margin: 0 auto; background: #FAF9F6; padding: 40px;">
+            <h1 style="font-family: serif; color: #2C2C2C; font-weight: 400;">Thank you for your voucher purchase</h1>
+            <p style="color: #6B7280;">Hi {purchaser_name or 'there'}, your Petal &amp; Paw voucher is ready to use.</p>
+            {voucher_card_html}
+            <p style="color: #6B7280;">Use this code at checkout on our workshops page to redeem your balance. Any unused balance stays on the voucher for next time.</p>
+            <p style="color: #8DA399; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;">Petal & Paw - Pet-Safe Florals</p>
+        </div>
+        """
+        _send_email(purchaser_email, f"Your Petal & Paw Voucher - £{amount:.2f}", purchaser_html, reply_to="info@petalandpaw.co.uk")
+
+    if recipient_email and recipient_email.lower() != purchaser_email.lower():
+        gift_html = f"""
+        <div style="font-family: 'Helvetica', sans-serif; max-width: 600px; margin: 0 auto; background: #FAF9F6; padding: 40px;">
+            <h1 style="font-family: serif; color: #2C2C2C; font-weight: 400;">You've been gifted a Petal &amp; Paw voucher</h1>
+            <p style="color: #6B7280;">Hi {recipient_name or 'there'}, {purchaser_name or 'someone wonderful'} has sent you a voucher to use on our flower arranging workshops.</p>
+            {voucher_card_html}
+            {f'<div style="background: white; border-left: 3px solid #C4A2B0; padding: 16px 20px; margin: 20px 0; border-radius: 4px;"><p style="color: #6B7280; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; margin: 0 0 6px;">Personal Message</p><p style="color: #2C2C2C; margin: 0; white-space: pre-wrap; font-style: italic;">{personal_message}</p></div>' if personal_message else ''}
+            <p style="color: #6B7280;">Head to our website, browse the workshops, and enter the code at checkout. Any unused balance stays on the voucher for next time.</p>
+            <p style="color: #8DA399; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;">Petal & Paw - Pet-Safe Florals</p>
+        </div>
+        """
+        _send_email(recipient_email, f"You've received a Petal & Paw Voucher", gift_html, reply_to=purchaser_email or "info@petalandpaw.co.uk")
+
+
+@api_router.post("/vouchers/checkout")
+async def create_voucher_checkout(req: VoucherCheckoutRequest, request: Request):
+    if not req.purchaser_name.strip() or not req.purchaser_email.strip():
+        raise HTTPException(status_code=400, detail="Your name and email are required")
+    try:
+        amount = float(req.amount)
+    except (TypeError, ValueError):
+        raise HTTPException(status_code=400, detail="Invalid voucher amount")
+    if amount < VOUCHER_MIN_AMOUNT:
+        raise HTTPException(status_code=400, detail=f"Minimum voucher amount is £{VOUCHER_MIN_AMOUNT:.0f}.")
+    if amount > VOUCHER_MAX_AMOUNT:
+        raise HTTPException(status_code=400, detail=f"Maximum voucher amount is £{VOUCHER_MAX_AMOUNT:.0f}.")
+
+    voucher_id = str(uuid.uuid4())
+    code = await _allocate_unique_voucher_code()
+    success_url = f"{req.origin_url}/checkout/success?session_id={{CHECKOUT_SESSION_ID}}"
+    cancel_url = f"{req.origin_url}/vouchers"
+
+    voucher_metadata = {
+        "type": "voucher",
+        "voucher_id": voucher_id,
+        "voucher_code": code,
+        "purchaser_name": req.purchaser_name[:480],
+        "purchaser_email": req.purchaser_email[:480],
+        "recipient_name": (req.recipient_name or "")[:480],
+        "recipient_email": (req.recipient_email or "")[:480],
+        "amount": f"{amount:.2f}",
+        "plan_name": f"Voucher £{amount:.2f}",
+    }
+
+    try:
+        checkout_params = {
+            "payment_method_types": ["card"],
+            "line_items": [{
+                "price_data": {
+                    "currency": "gbp",
+                    "unit_amount": int(amount * 100),
+                    "product_data": {
+                        "name": f"Petal & Paw Voucher - £{amount:.2f}",
+                        "description": "Redeemable against any flower arranging workshop.",
+                    },
+                },
+                "quantity": 1,
+            }],
+            "mode": "payment",
+            "success_url": success_url,
+            "cancel_url": cancel_url,
+            "metadata": voucher_metadata,
+            "payment_intent_data": {"metadata": voucher_metadata, "receipt_email": req.purchaser_email},
+            "customer_email": req.purchaser_email,
+        }
+        session = stripe.checkout.Session.create(**checkout_params)
+    except stripe._error.AuthenticationError:
+        raise HTTPException(status_code=503, detail="Payment service is not configured. Please contact support.")
+    except Exception as e:
+        logger.error(f"Stripe voucher checkout error: {type(e).__name__}: {e}")
+        raise HTTPException(status_code=500, detail=f"Payment error: {str(e)}")
+
+    await db.vouchers.insert_one({
+        "id": voucher_id,
+        "code": code,
+        "original_amount": amount,
+        "remaining_balance": amount,
+        "purchaser_name": req.purchaser_name,
+        "purchaser_email": req.purchaser_email,
+        "recipient_name": req.recipient_name or "",
+        "recipient_email": req.recipient_email or "",
+        "personal_message": (req.personal_message or "")[:500],
+        "stripe_session_id": session.id,
+        "status": "pending",
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    })
+    await db.payment_transactions.insert_one({
+        "id": str(uuid.uuid4()),
+        "session_id": session.id,
+        "amount": amount,
+        "currency": "gbp",
+        "status": "initiated",
+        "payment_status": "pending",
+        "customer_email": req.purchaser_email,
+        "metadata": voucher_metadata,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    })
+    return {"url": session.url, "session_id": session.id, "voucher_id": voucher_id}
+
+
+@api_router.get("/vouchers/validate/{code}")
+async def validate_voucher(code: str):
+    code = (code or "").strip().upper()
+    if not code:
+        raise HTTPException(status_code=400, detail="Voucher code is required")
+    v = await db.vouchers.find_one({"code": code}, {"_id": 0})
+    if not v:
+        raise HTTPException(status_code=404, detail="Voucher not found")
+    if v.get("status") == "pending":
+        raise HTTPException(status_code=400, detail="This voucher hasn't been activated yet. Please check your email after payment confirms.")
+    remaining = float(v.get("remaining_balance", 0))
+    if remaining <= 0 or v.get("status") == "depleted":
+        raise HTTPException(status_code=400, detail="This voucher has no balance remaining.")
+    return {
+        "code": v["code"],
+        "remaining_balance": round(remaining, 2),
+        "original_amount": round(float(v.get("original_amount", 0)), 2),
+        "status": v.get("status", "active"),
+    }
+
+
+@api_router.post("/vouchers/redeem")
+async def redeem_voucher(req: VoucherRedeemRequest, request: Request, background_tasks: BackgroundTasks):
+    code = (req.code or "").strip().upper()
+    if not code:
+        raise HTTPException(status_code=400, detail="Voucher code is required")
+    if not req.full_name.strip() or not req.customer_email.strip():
+        raise HTTPException(status_code=400, detail="Your name and email are required")
+    if not req.items:
+        raise HTTPException(status_code=400, detail="Select at least one workshop")
+
+    v = await db.vouchers.find_one({"code": code}, {"_id": 0})
+    if not v:
+        raise HTTPException(status_code=404, detail="Voucher not found")
+    if v.get("status") == "pending":
+        raise HTTPException(status_code=400, detail="This voucher hasn't been activated yet.")
+    remaining = float(v.get("remaining_balance", 0))
+    if remaining <= 0:
+        raise HTTPException(status_code=400, detail="This voucher has no balance remaining.")
+
+    items = []
+    cart_total = 0.0
+    for it in req.items:
+        qty = max(1, min(10, int(it.quantity or 1)))
+        line_total = round(float(it.price) * qty, 2)
+        cart_total += line_total
+        items.append({
+            "workshop_id": it.workshop_id,
+            "workshop_name": it.workshop_name,
+            "workshop_location": it.workshop_location,
+            "workshop_address": it.workshop_address or "",
+            "workshop_date": it.workshop_date,
+            "workshop_time": it.workshop_time,
+            "price": float(it.price),
+            "quantity": qty,
+            "line_total": line_total,
+        })
+    cart_total = round(cart_total, 2)
+    voucher_applied = round(min(remaining, cart_total), 2)
+    excess = round(cart_total - voucher_applied, 2)
+
+    redemption_id = str(uuid.uuid4())
+    now = datetime.now(timezone.utc).isoformat()
+
+    if excess <= 0.01:
+        # Voucher fully covers - confirm bookings, deduct balance
+        new_balance = round(remaining - voucher_applied, 2)
+        new_status = "depleted" if new_balance <= 0.01 else "active"
+        await db.vouchers.update_one(
+            {"code": code},
+            {"$set": {
+                "remaining_balance": new_balance,
+                "status": new_status,
+                "last_used_at": now,
+            }}
+        )
+        # Insert workshop bookings (paid via voucher)
+        for it in items:
+            booking_id = str(uuid.uuid4())
+            booking_doc = {
+                "id": booking_id,
+                "workshop_id": it["workshop_id"],
+                "workshop_name": it["workshop_name"],
+                "workshop_location": it["workshop_location"],
+                "workshop_address": it["workshop_address"],
+                "workshop_date": it["workshop_date"],
+                "workshop_time": it["workshop_time"],
+                "price": it["price"],
+                "quantity": it["quantity"],
+                "total": it["line_total"],
+                "full_name": req.full_name,
+                "customer_email": req.customer_email,
+                "customer_id": req.customer_id or None,
+                "notes": req.notes or "",
+                "voucher_code": code,
+                "voucher_applied": it["line_total"],
+                "status": "paid",
+                "paid_at": now,
+                "paid_via": "voucher",
+                "redemption_id": redemption_id,
+                "created_at": now,
+            }
+            await db.workshop_bookings.insert_one(booking_doc)
+            background_tasks.add_task(send_workshop_booking_emails, booking_doc)
+        await db.voucher_redemptions.insert_one({
+            "id": redemption_id,
+            "voucher_code": code,
+            "items": items,
+            "cart_total": cart_total,
+            "voucher_applied": voucher_applied,
+            "excess": 0.0,
+            "status": "complete",
+            "full_name": req.full_name,
+            "customer_email": req.customer_email,
+            "customer_id": req.customer_id or None,
+            "notes": req.notes or "",
+            "created_at": now,
+        })
+        return {
+            "covered": True,
+            "voucher_applied": voucher_applied,
+            "excess": 0.0,
+            "remaining_balance": new_balance,
+            "redemption_id": redemption_id,
+        }
+
+    # Excess - create Stripe checkout for the difference; only finalise on success
+    success_url = f"{req.origin_url}/checkout/success?session_id={{CHECKOUT_SESSION_ID}}"
+    cancel_url = f"{req.origin_url}/vouchers"
+    redemption_metadata = {
+        "type": "voucher_redemption",
+        "redemption_id": redemption_id,
+        "voucher_code": code,
+        "voucher_applied": f"{voucher_applied:.2f}",
+        "excess": f"{excess:.2f}",
+        "cart_total": f"{cart_total:.2f}",
+        "full_name": req.full_name[:480],
+        "customer_email": req.customer_email[:480],
+        "plan_name": "Workshop bookings (voucher + top-up)",
+    }
+    try:
+        line_items = [{
+            "price_data": {
+                "currency": "gbp",
+                "unit_amount": int(round(it["price"] * 100)),
+                "product_data": {
+                    "name": f"{it['workshop_name']} - {it['workshop_location']}",
+                    "description": f"{it['workshop_date']} at {it['workshop_time']}",
+                },
+            },
+            "quantity": it["quantity"],
+        } for it in items]
+        # Apply voucher as a discount via coupon
+        coupon = stripe.Coupon.create(
+            amount_off=int(round(voucher_applied * 100)),
+            currency="gbp",
+            duration="once",
+            name=f"Voucher {code}",
+        )
+        checkout_params = {
+            "payment_method_types": ["card"],
+            "line_items": line_items,
+            "mode": "payment",
+            "success_url": success_url,
+            "cancel_url": cancel_url,
+            "metadata": redemption_metadata,
+            "payment_intent_data": {"metadata": redemption_metadata, "receipt_email": req.customer_email},
+            "customer_email": req.customer_email,
+            "discounts": [{"coupon": coupon.id}],
+        }
+        session = stripe.checkout.Session.create(**checkout_params)
+    except stripe._error.AuthenticationError:
+        raise HTTPException(status_code=503, detail="Payment service is not configured. Please contact support.")
+    except Exception as e:
+        logger.error(f"Stripe voucher redemption error: {type(e).__name__}: {e}")
+        raise HTTPException(status_code=500, detail=f"Payment error: {str(e)}")
+
+    await db.voucher_redemptions.insert_one({
+        "id": redemption_id,
+        "voucher_code": code,
+        "items": items,
+        "cart_total": cart_total,
+        "voucher_applied": voucher_applied,
+        "excess": excess,
+        "status": "pending",
+        "stripe_session_id": session.id,
+        "full_name": req.full_name,
+        "customer_email": req.customer_email,
+        "customer_id": req.customer_id or None,
+        "notes": req.notes or "",
+        "created_at": now,
+    })
+    await db.payment_transactions.insert_one({
+        "id": str(uuid.uuid4()),
+        "session_id": session.id,
+        "amount": excess,
+        "currency": "gbp",
+        "status": "initiated",
+        "payment_status": "pending",
+        "customer_email": req.customer_email,
+        "metadata": redemption_metadata,
+        "created_at": now,
+    })
+    return {
+        "covered": False,
+        "voucher_applied": voucher_applied,
+        "excess": excess,
+        "url": session.url,
+        "session_id": session.id,
+        "redemption_id": redemption_id,
+    }
+
+
 @api_router.get("/orders/status/{session_id}")
 async def get_order_status(session_id: str, request: Request, background_tasks: BackgroundTasks):
     try:
@@ -1084,8 +1476,62 @@ async def get_order_status(session_id: str, request: Request, background_tasks: 
                     {"$set": {"status": "paid", "paid_at": datetime.now(timezone.utc).isoformat()}}
                 )
                 background_tasks.add_task(send_workshop_booking_emails, booking)
-            # Check for order (cart checkout) or subscription checkout — skip if this was a workshop booking
-            if booking:
+            # Check for voucher purchase activation
+            voucher_record = await db.vouchers.find_one({"stripe_session_id": session_id}, {"_id": 0})
+            if voucher_record and voucher_record.get("status") == "pending":
+                await db.vouchers.update_one(
+                    {"stripe_session_id": session_id},
+                    {"$set": {"status": "active", "paid_at": datetime.now(timezone.utc).isoformat()}}
+                )
+                voucher_record["status"] = "active"
+                background_tasks.add_task(send_voucher_purchase_email, voucher_record)
+            # Check for voucher redemption with top-up
+            redemption = await db.voucher_redemptions.find_one({"stripe_session_id": session_id}, {"_id": 0})
+            if redemption and redemption.get("status") == "pending":
+                voucher_applied = float(redemption.get("voucher_applied", 0))
+                v = await db.vouchers.find_one({"code": redemption.get("voucher_code", "")}, {"_id": 0})
+                now_iso = datetime.now(timezone.utc).isoformat()
+                if v:
+                    new_balance = round(max(0.0, float(v.get("remaining_balance", 0)) - voucher_applied), 2)
+                    new_status = "depleted" if new_balance <= 0.01 else "active"
+                    await db.vouchers.update_one(
+                        {"code": v["code"]},
+                        {"$set": {"remaining_balance": new_balance, "status": new_status, "last_used_at": now_iso}}
+                    )
+                # Insert workshop bookings for each item (paid via voucher + top-up)
+                for it in redemption.get("items", []):
+                    booking_id = str(uuid.uuid4())
+                    booking_doc = {
+                        "id": booking_id,
+                        "workshop_id": it.get("workshop_id", ""),
+                        "workshop_name": it.get("workshop_name", ""),
+                        "workshop_location": it.get("workshop_location", ""),
+                        "workshop_address": it.get("workshop_address", ""),
+                        "workshop_date": it.get("workshop_date", ""),
+                        "workshop_time": it.get("workshop_time", ""),
+                        "price": float(it.get("price", 0)),
+                        "quantity": int(it.get("quantity", 1)),
+                        "total": float(it.get("line_total", 0)),
+                        "full_name": redemption.get("full_name", ""),
+                        "customer_email": redemption.get("customer_email", ""),
+                        "customer_id": redemption.get("customer_id"),
+                        "notes": redemption.get("notes", ""),
+                        "voucher_code": redemption.get("voucher_code", ""),
+                        "stripe_session_id": session_id,
+                        "status": "paid",
+                        "paid_at": now_iso,
+                        "paid_via": "voucher_plus_card",
+                        "redemption_id": redemption.get("id"),
+                        "created_at": now_iso,
+                    }
+                    await db.workshop_bookings.insert_one(booking_doc)
+                    background_tasks.add_task(send_workshop_booking_emails, booking_doc)
+                await db.voucher_redemptions.update_one(
+                    {"id": redemption["id"]},
+                    {"$set": {"status": "complete", "paid_at": now_iso}}
+                )
+            # Check for order (cart checkout) or subscription checkout — skip if this was a workshop booking, voucher, or redemption
+            if booking or voucher_record or redemption:
                 order = None
             else:
                 order = await db.orders.find_one({"stripe_session_id": session_id}, {"_id": 0})
@@ -1128,6 +1574,31 @@ async def get_order_status(session_id: str, request: Request, background_tasks: 
             "workshop_time": booking.get("workshop_time", ""),
             "full_name": booking.get("full_name", ""),
             "customer_email": booking.get("customer_email", ""),
+        }
+    voucher_record = await db.vouchers.find_one({"stripe_session_id": session_id}, {"_id": 0})
+    if voucher_record:
+        result["voucher"] = {
+            "code": voucher_record.get("code", ""),
+            "original_amount": voucher_record.get("original_amount", 0),
+            "remaining_balance": voucher_record.get("remaining_balance", 0),
+            "recipient_name": voucher_record.get("recipient_name", ""),
+            "recipient_email": voucher_record.get("recipient_email", ""),
+        }
+    redemption = await db.voucher_redemptions.find_one({"stripe_session_id": session_id}, {"_id": 0})
+    if redemption:
+        result["redemption"] = {
+            "voucher_code": redemption.get("voucher_code", ""),
+            "voucher_applied": redemption.get("voucher_applied", 0),
+            "excess": redemption.get("excess", 0),
+            "cart_total": redemption.get("cart_total", 0),
+            "items": [{
+                "workshop_name": it.get("workshop_name", ""),
+                "workshop_location": it.get("workshop_location", ""),
+                "workshop_date": it.get("workshop_date", ""),
+                "workshop_time": it.get("workshop_time", ""),
+                "quantity": it.get("quantity", 1),
+                "line_total": it.get("line_total", 0),
+            } for it in redemption.get("items", [])],
         }
     return result
 

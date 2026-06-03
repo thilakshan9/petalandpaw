@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Leaf, Instagram } from "lucide-react";
+import { Leaf, Drama as Instagram } from "lucide-react";
 
 function ScrollLink({ to, children, ...props }) {
   const navigate = useNavigate();
@@ -43,6 +43,7 @@ export default function Footer() {
               <ScrollLink to="/gallery" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-shop">Gallery</ScrollLink>
               <ScrollLink to="/subscriptions" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-subscriptions">Shop</ScrollLink>
               <ScrollLink to="/workshops" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-workshops">Workshops</ScrollLink>
+              <ScrollLink to="/vouchers" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-vouchers">Vouchers</ScrollLink>
               <ScrollLink to="/hire-us" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-hire">Hire Us</ScrollLink>
             </nav>
           </div>
