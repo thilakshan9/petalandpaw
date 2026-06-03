@@ -1136,6 +1136,82 @@ async def send_voucher_purchase_email(voucher: dict):
         _send_email(recipient_email, f"You've received a Petal & Paw Voucher", gift_html, reply_to=purchaser_email or "info@petalandpaw.co.uk")
 
 
+async def send_voucher_redemption_admin_email(redemption: dict):
+    """Notify info@ when a voucher is redeemed for workshops."""
+    full_name = redemption.get("full_name", "")
+    customer_email = redemption.get("customer_email", "")
+    voucher_code = redemption.get("voucher_code", "")
+    voucher_applied = float(redemption.get("voucher_applied", 0) or 0)
+    excess = float(redemption.get("excess", 0) or 0)
+    cart_total = float(redemption.get("cart_total", 0) or 0)
+    items = redemption.get("items", []) or []
+    purchased_at = redemption.get("paid_at") or redemption.get("created_at") or datetime.now(timezone.utc).isoformat()
+    notes = redemption.get("notes", "")
+
+    try:
+        ts = datetime.fromisoformat(purchased_at.replace("Z", "+00:00"))
+        purchased_display = ts.strftime("%d %b %Y, %H:%M UTC")
+    except Exception:
+        purchased_display = purchased_at
+
+    rows_html = ""
+    for it in items:
+        qty = int(it.get("quantity", 1) or 1)
+        line_total = float(it.get("line_total", 0) or 0)
+        rows_html += f"""
+        <tr>
+            <td style="padding: 10px 12px; border-bottom: 1px solid #E5E0D6; color: #2C2C2C;">{it.get('workshop_name','')}</td>
+            <td style="padding: 10px 12px; border-bottom: 1px solid #E5E0D6; color: #6B7280;">{it.get('workshop_location','')}</td>
+            <td style="padding: 10px 12px; border-bottom: 1px solid #E5E0D6; color: #6B7280;">{it.get('workshop_date','')}<br/>{it.get('workshop_time','')}</td>
+            <td style="padding: 10px 12px; border-bottom: 1px solid #E5E0D6; color: #6B7280; text-align: center;">{qty}</td>
+            <td style="padding: 10px 12px; border-bottom: 1px solid #E5E0D6; color: #2C2C2C; text-align: right;">£{line_total:.2f}</td>
+        </tr>
+        """
+
+    admin_html = f"""
+    <div style="font-family: 'Helvetica', sans-serif; max-width: 640px; margin: 0 auto; background: #FAF9F6; padding: 40px;">
+        <p style="color: #8DA399; font-size: 11px; text-transform: uppercase; letter-spacing: 3px; margin: 0 0 6px;">Voucher Redemption</p>
+        <h1 style="font-family: serif; color: #2C2C2C; font-weight: 400; margin: 0 0 24px;">Workshops booked using a voucher</h1>
+
+        <div style="background: white; padding: 20px 24px; border-radius: 8px; margin: 0 0 20px;">
+            <p style="color: #6B7280; margin: 0 0 6px;"><strong style="color:#2C2C2C;">Customer:</strong> {full_name}</p>
+            <p style="color: #6B7280; margin: 0 0 6px;"><strong style="color:#2C2C2C;">Email:</strong> <a href="mailto:{customer_email}" style="color:#8DA399;">{customer_email}</a></p>
+            <p style="color: #6B7280; margin: 0 0 6px;"><strong style="color:#2C2C2C;">Time of purchase:</strong> {purchased_display}</p>
+            <p style="color: #6B7280; margin: 0;"><strong style="color:#2C2C2C;">Voucher code:</strong> <span style="font-family: monospace; letter-spacing: 2px;">{voucher_code}</span></p>
+        </div>
+
+        <table style="width:100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; margin: 0 0 20px;">
+            <thead>
+                <tr style="background: #F2F0EB;">
+                    <th style="padding: 10px 12px; text-align:left; color:#6B7280; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Workshop</th>
+                    <th style="padding: 10px 12px; text-align:left; color:#6B7280; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Location</th>
+                    <th style="padding: 10px 12px; text-align:left; color:#6B7280; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Date / Time</th>
+                    <th style="padding: 10px 12px; text-align:center; color:#6B7280; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Qty</th>
+                    <th style="padding: 10px 12px; text-align:right; color:#6B7280; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Total</th>
+                </tr>
+            </thead>
+            <tbody>{rows_html}</tbody>
+        </table>
+
+        <div style="background: white; padding: 16px 24px; border-radius: 8px; margin: 0 0 20px;">
+            <p style="color: #6B7280; margin: 0 0 6px; display:flex; justify-content: space-between;"><span>Cart total</span><strong style="color:#2C2C2C;">£{cart_total:.2f}</strong></p>
+            <p style="color: #6B7280; margin: 0 0 6px; display:flex; justify-content: space-between;"><span>Voucher applied</span><strong style="color:#8DA399;">- £{voucher_applied:.2f}</strong></p>
+            <p style="color: #2C2C2C; margin: 8px 0 0; display:flex; justify-content: space-between; border-top: 1px solid #E5E0D6; padding-top: 10px;"><span><strong>Excess paid by card</strong></span><strong>£{excess:.2f}</strong></p>
+        </div>
+
+        {f'<div style="background: white; padding: 16px 24px; border-radius: 8px; margin: 0 0 20px;"><p style="color: #6B7280; margin: 0 0 6px; font-size: 11px; text-transform: uppercase; letter-spacing: 2px;">Customer notes</p><p style="color: #2C2C2C; margin: 0; white-space: pre-wrap;">{notes}</p></div>' if notes else ''}
+
+        <p style="color: #8DA399; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;">Petal & Paw - Voucher Redemption</p>
+    </div>
+    """
+
+    workshop_summary = ", ".join([it.get("workshop_name", "") for it in items[:3]])
+    if len(items) > 3:
+        workshop_summary += f" +{len(items) - 3} more"
+    subject = f"[Voucher Redeemed] {full_name} - {workshop_summary or voucher_code}"
+    _send_email("info@petalandpaw.co.uk", subject, admin_html, reply_to=customer_email or "")
+
+
 @api_router.post("/vouchers/checkout")
 async def create_voucher_checkout(req: VoucherCheckoutRequest, request: Request):
     if not req.purchaser_name.strip() or not req.purchaser_email.strip():
@@ -1326,7 +1402,7 @@ async def redeem_voucher(req: VoucherRedeemRequest, request: Request, background
             }
             await db.workshop_bookings.insert_one(booking_doc)
             background_tasks.add_task(send_workshop_booking_emails, booking_doc)
-        await db.voucher_redemptions.insert_one({
+        redemption_doc = {
             "id": redemption_id,
             "voucher_code": code,
             "items": items,
@@ -1339,7 +1415,10 @@ async def redeem_voucher(req: VoucherRedeemRequest, request: Request, background
             "customer_id": req.customer_id or None,
             "notes": req.notes or "",
             "created_at": now,
-        })
+            "paid_at": now,
+        }
+        await db.voucher_redemptions.insert_one(redemption_doc)
+        background_tasks.add_task(send_voucher_redemption_admin_email, redemption_doc)
         return {
             "covered": True,
             "voucher_applied": voucher_applied,
@@ -1530,6 +1609,9 @@ async def get_order_status(session_id: str, request: Request, background_tasks: 
                     {"id": redemption["id"]},
                     {"$set": {"status": "complete", "paid_at": now_iso}}
                 )
+                redemption["status"] = "complete"
+                redemption["paid_at"] = now_iso
+                background_tasks.add_task(send_voucher_redemption_admin_email, redemption)
             # Check for order (cart checkout) or subscription checkout — skip if this was a workshop booking, voucher, or redemption
             if booking or voucher_record or redemption:
                 order = None
@@ -1891,6 +1973,33 @@ async def seed_data():
         ]
         await db.bouquet_flowers.insert_many(flowers)
         logger.info("Seeded bouquet flowers")
+
+    # Enforce unique voucher codes at the DB level
+    try:
+        await db.vouchers.create_index("code", unique=True)
+    except Exception as e:
+        logger.warning(f"Could not ensure voucher code index: {e}")
+
+    # Seed a single £35 test voucher for manual QA / demos (idempotent)
+    test_code = "PP-TEST-PAWS-3535"
+    if await db.vouchers.find_one({"code": test_code}, {"_id": 0}) is None:
+        now_iso = datetime.now(timezone.utc).isoformat()
+        await db.vouchers.insert_one({
+            "id": str(uuid.uuid4()),
+            "code": test_code,
+            "original_amount": 35.00,
+            "remaining_balance": 35.00,
+            "purchaser_name": "Petal & Paw (test seed)",
+            "purchaser_email": "info@petalandpaw.co.uk",
+            "recipient_name": "",
+            "recipient_email": "",
+            "personal_message": "Internal test voucher - not from a real purchase.",
+            "stripe_session_id": "",
+            "status": "active",
+            "created_at": now_iso,
+            "paid_at": now_iso,
+        })
+        logger.info(f"Seeded test voucher {test_code} (£35)")
 
 # ============================================================
 # APP SETUP
