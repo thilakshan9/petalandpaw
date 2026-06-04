@@ -3,22 +3,22 @@ import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
 
 const GALLERY_IMAGES = [
-  { id: 1, src: "https://lh3.googleusercontent.com/d/1VN1VeOiew3g4Hs7LnnbF8NeQcCPage9z", name: "Gallery" },
-  { id: 2, src: "https://lh3.googleusercontent.com/d/1o_EX2oKQBPhWGqBM0OxZXqY4Nx94kQIY", name: "Gallery" },
-  { id: 3, src: "https://lh3.googleusercontent.com/d/1Hm47eMLOJ7xx1ASublVaPKM6TcLGAmaC", name: "Gallery" },
-  { id: 4, src: "https://lh3.googleusercontent.com/d/1NtfK2F7T9s1GcGqU0PsK8OcQBtj2eznC", name: "Gallery" },
-  { id: 5, src: "https://lh3.googleusercontent.com/d/1sa4gz3Rb6uO8Agc3Y1fwsaGIT9UlekJn", name: "Gallery" },
-  { id: 6, src: "https://lh3.googleusercontent.com/d/1E8vfkUVfUfBPJrxtY6SjswnMfrzxY9Tp", name: "Gallery" },
-  { id: 7, src: "https://lh3.googleusercontent.com/d/1pvRya4Mf7MNYn2bZZWXf78Zsl-l31n4y", name: "Gallery" },
-  { id: 8, src: "https://lh3.googleusercontent.com/d/1rn5Vk3psbpdD8IckBL4mkb9gWAT-jVMu", name: "Gallery" },
-  { id: 9, src: "https://lh3.googleusercontent.com/d/1p7NRwL2MISSKI8lmndAg2yHJ_Q1nv09Y", name: "Gallery" },
-  { id: 10, src: "https://lh3.googleusercontent.com/d/1Pwy6ZZbUwDnNeoDlcLbOGwVBPfcjwk39", name: "Gallery" },
-  { id: 11, src: "https://lh3.googleusercontent.com/d/1gHZ1JMFc4x1_vmoJb27QobEQpfHVNl2P", name: "Gallery" },
-  { id: 12, src: "https://lh3.googleusercontent.com/d/10ZfxvDRc93OzzvXVJrNqnoShsVEDOMB-", name: "Gallery" },
-  { id: 13, src: "https://lh3.googleusercontent.com/d/1FoeVcqPJ5-6036Y0JwV4_UhBrEM0EWjL", name: "Gallery" },
-  { id: 14, src: "https://lh3.googleusercontent.com/d/1Ajc_BFBK7BLNzA9kS_Sq4POSj0bSPtuL", name: "Gallery" },
-  { id: 15, src: "https://lh3.googleusercontent.com/d/1DHMIRqEqKT82vywOf77C5C_l4Ayj_UNT", name: "Gallery" },
-  { id: 16, src: "https://lh3.googleusercontent.com/d/1ZXlsjDA7MQlXx9UPlFknMKIB4UpHMU-5", name: "Gallery" },
+  { id: 1, src: "https://lh3.googleusercontent.com/d/1Ajc_BFBK7BLNzA9kS_Sq4POSj0bSPtuL", name: "Gallery" },
+  { id: 2, src: "https://lh3.googleusercontent.com/d/1DHMIRqEqKT82vywOf77C5C_l4Ayj_UNT", name: "Gallery" },
+  { id: 3, src: "https://lh3.googleusercontent.com/d/11qMT3JmsGJZCjyHUyiCNG_HnynZNs4SD", name: "Gallery" },
+  { id: 4, src: "https://lh3.googleusercontent.com/d/1VN1VeOiew3g4Hs7LnnbF8NeQcCPage9z", name: "Gallery" },
+  { id: 5, src: "https://lh3.googleusercontent.com/d/1o_EX2oKQBPhWGqBM0OxZXqY4Nx94kQIY", name: "Gallery" },
+  { id: 6, src: "https://lh3.googleusercontent.com/d/1Hm47eMLOJ7xx1ASublVaPKM6TcLGAmaC", name: "Gallery" },
+  { id: 7, src: "https://lh3.googleusercontent.com/d/1NtfK2F7T9s1GcGqU0PsK8OcQBtj2eznC", name: "Gallery" },
+  { id: 8, src: "https://lh3.googleusercontent.com/d/1sa4gz3Rb6uO8Agc3Y1fwsaGIT9UlekJn", name: "Gallery" },
+  { id: 9, src: "https://lh3.googleusercontent.com/d/1E8vfkUVfUfBPJrxtY6SjswnMfrzxY9Tp", name: "Gallery" },
+  { id: 10, src: "https://lh3.googleusercontent.com/d/1pvRya4Mf7MNYn2bZZWXf78Zsl-l31n4y", name: "Gallery" },
+  { id: 11, src: "https://lh3.googleusercontent.com/d/1rn5Vk3psbpdD8IckBL4mkb9gWAT-jVMu", name: "Gallery" },
+  { id: 12, src: "https://lh3.googleusercontent.com/d/1p7NRwL2MISSKI8lmndAg2yHJ_Q1nv09Y", name: "Gallery" },
+  { id: 13, src: "https://lh3.googleusercontent.com/d/1Pwy6ZZbUwDnNeoDlcLbOGwVBPfcjwk39", name: "Gallery" },
+  { id: 14, src: "https://lh3.googleusercontent.com/d/1gHZ1JMFc4x1_vmoJb27QobEQpfHVNl2P", name: "Gallery" },
+  { id: 15, src: "https://lh3.googleusercontent.com/d/10ZfxvDRc93OzzvXVJrNqnoShsVEDOMB-", name: "Gallery" },
+  { id: 16, src: "https://lh3.googleusercontent.com/d/1FoeVcqPJ5-6036Y0JwV4_UhBrEM0EWjL", name: "Gallery" },
 ];
 
 export default function GalleryPage() {
