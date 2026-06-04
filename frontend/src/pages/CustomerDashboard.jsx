@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { LogOut, Package, RefreshCw, XCircle, Check, Ticket, MapPin, Calendar, Clock } from "lucide-react";
+import { LogOut, Package, RefreshCw, Circle as XCircle, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -14,7 +14,6 @@ export default function CustomerDashboard() {
   const { customer, logout, loading: authLoading } = useCustomerAuth();
   const [orders, setOrders] = useState([]);
   const [subscriptions, setSubscriptions] = useState([]);
-  const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [cancelDialog, setCancelDialog] = useState(null);
   const [cancelInput, setCancelInput] = useState("");
@@ -28,11 +27,10 @@ export default function CustomerDashboard() {
     }
     if (customer) {
       fetch(`${API}/customer/orders`, { headers: authHeaders() })
-        .then((r) => r.ok ? r.json() : { transactions: [], subscriptions: [], bookings: [] })
+        .then((r) => r.ok ? r.json() : { transactions: [], subscriptions: [] })
         .then((data) => {
           setOrders(data.transactions || []);
           setSubscriptions(data.subscriptions || []);
-          setBookings(data.bookings || []);
           setLoading(false);
         })
         .catch(() => setLoading(false));
@@ -177,54 +175,6 @@ export default function CustomerDashboard() {
                         <XCircle size={14} className="mr-1" /> Cancel Subscription
                       </Button>
                     )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Workshop Bookings */}
-        <div className="mb-10 animate-fade-in-up delay-150">
-          <h2 className="font-['Playfair_Display'] text-xl sm:text-2xl font-medium text-[#2C2C2C] mb-4">Workshop Bookings</h2>
-          {loading ? (
-            <div className="space-y-3">{[1,2].map(i => <div key={i} className="h-24 bg-[#F2F0EB] rounded-xl animate-pulse" />)}</div>
-          ) : bookings.length === 0 ? (
-            <div className="bg-white border border-[#E5E0D6] rounded-2xl p-6 text-center">
-              <p className="text-sm font-light text-[#6B7280] mb-3">No workshop bookings yet.</p>
-              <Button onClick={() => navigate("/workshops")} variant="outline" className="rounded-full border-[#8DA399] text-[#8DA399] hover:bg-[#8DA399] hover:text-white px-5 py-2 text-xs uppercase tracking-widest" data-testid="browse-workshops-cta">
-                Browse Workshops
-              </Button>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {bookings.map((b) => (
-                <div key={b.id} className="bg-white border border-[#E5E0D6] rounded-2xl p-5 sm:p-6" data-testid={`booking-${b.id}`}>
-                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2 flex-wrap">
-                        <Ticket size={14} className="text-[#8DA399]" />
-                        <span className="text-base font-medium text-[#2C2C2C]">{b.workshop_name}</span>
-                        <span className="text-[9px] uppercase tracking-widest font-semibold px-2 py-0.5 rounded-full bg-[#8DA399]/10 text-[#8DA399]">{b.status}</span>
-                        {b.quantity > 1 && (
-                          <span className="text-[9px] uppercase tracking-widest font-semibold px-2 py-0.5 rounded-full bg-[#C4A2B0]/15 text-[#C4A2B0]">{b.quantity} tickets</span>
-                        )}
-                      </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-3">
-                        <div className="flex items-center gap-2 text-xs font-light text-[#6B7280]">
-                          <MapPin size={12} className="text-[#8DA399]" /> {b.workshop_location}
-                        </div>
-                        <div className="flex items-center gap-2 text-xs font-light text-[#6B7280]">
-                          <Calendar size={12} className="text-[#8DA399]" /> {b.workshop_date}
-                        </div>
-                        <div className="flex items-center gap-2 text-xs font-light text-[#6B7280]">
-                          <Clock size={12} className="text-[#8DA399]" /> {b.workshop_time}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex-shrink-0 text-right">
-                      <span className="text-base font-medium text-[#2C2C2C]">£{(b.total || 0).toFixed(2)}</span>
-                    </div>
                   </div>
                 </div>
               ))}
