@@ -62,7 +62,7 @@ export const WORKSHOPS = [
     description: "Spend a relaxing afternoon in Brighton creating a beautiful pet-safe bouquet surrounded by playful cats. This longer session gives you plenty of time to craft something special while enjoying a free drink and feline company. All levels welcome.",
     included: ["Your bouquet to take home", "Free Drink", "Cat play time"],
     accent: "#C4A2B0",
-    image: "https://lh3.googleusercontent.com/d/1YxXERg81kUe5wSQdxoncSSYFMKaBSaE9=w800",
+    image: "https://lh3.googleusercontent.com/d/1VwBn0d7xmKWaOJrVE9HSQsKF08CPOynK",
     bookingType: "external",
     bookingUrl: "https://ecom.roller.app/purrfectspace/artworkshop/en/product/1315239?date=2026-07-25",
     status: "live",
