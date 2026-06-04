@@ -16,6 +16,9 @@ const GALLERY_IMAGES = [
   { id: 11, src: "https://lh3.googleusercontent.com/d/1gHZ1JMFc4x1_vmoJb27QobEQpfHVNl2P", name: "Gallery" },
   { id: 12, src: "https://lh3.googleusercontent.com/d/10ZfxvDRc93OzzvXVJrNqnoShsVEDOMB-", name: "Gallery" },
   { id: 13, src: "https://lh3.googleusercontent.com/d/1FoeVcqPJ5-6036Y0JwV4_UhBrEM0EWjL", name: "Gallery" },
+  { id: 14, src: "https://lh3.googleusercontent.com/d/1Ajc_BFBK7BLNzA9kS_Sq4POSj0bSPtuL", name: "Gallery" },
+  { id: 15, src: "https://lh3.googleusercontent.com/d/1DHMIRqEqKT82vywOf77C5C_l4Ayj_UNT", name: "Gallery" },
+  { id: 16, src: "https://lh3.googleusercontent.com/d/1ZXlsjDA7MQlXx9UPlFknMKIB4UpHMU-5", name: "Gallery" },
 ];
 
 export default function GalleryPage() {
