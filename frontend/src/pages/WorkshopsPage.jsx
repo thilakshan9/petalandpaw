@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useCustomerAuth } from "@/context/CustomerAuthContext";
 import SEOHead from "@/components/SEOHead";
-import { WORKSHOPS, upcomingWorkshops, pastWorkshops } from "@/lib/workshops";
+import { WORKSHOPS, upcomingWorkshops } from "@/lib/workshops";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -381,58 +381,6 @@ export default function WorkshopsPage() {
             );
           })}
         </div>
-
-        {/* Past Workshops */}
-        {pastWorkshops().length > 0 && (
-          <div className="mt-20 sm:mt-24 animate-fade-in-up delay-200" data-testid="past-workshops-section">
-            <div className="text-center mb-10 sm:mb-12">
-              <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#B8926A] mb-2 sm:mb-3 block">Archive</span>
-              <h2 className="font-['Playfair_Display'] text-2xl sm:text-3xl md:text-4xl font-medium tracking-tight text-[#2C2C2C] mb-3">
-                Past Workshops
-              </h2>
-              <p className="text-sm font-light text-[#6B7280] max-w-xl mx-auto">
-                A look back at the workshops we've already hosted. Want to see one return? Get in touch.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-              {pastWorkshops().map((w) => (
-                <div
-                  key={w.id}
-                  className="bg-white border border-[#E5E0D6] rounded-2xl overflow-hidden flex flex-col opacity-90"
-                  data-testid={`past-workshop-${w.id}`}
-                >
-                  <div className="relative aspect-[4/3] bg-[#F2F0EB] overflow-hidden">
-                    <img
-                      src={w.image}
-                      alt={`${w.name} at ${w.place}`}
-                      className="absolute inset-0 w-full h-full object-cover grayscale-[40%]"
-                    />
-                    <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-[10px] uppercase tracking-widest font-semibold text-[#6B7280] px-3 py-1 rounded-full">
-                      Past Event
-                    </span>
-                  </div>
-                  <div className="p-5 sm:p-6 flex flex-col flex-1">
-                    <div className="flex items-center gap-1.5 text-xs font-light mb-1" style={{ color: w.accent }}>
-                      <MapPin size={12} />
-                      <span>{w.place}</span>
-                    </div>
-                    <h3 className="font-['Playfair_Display'] text-lg font-medium text-[#2C2C2C] mb-2">{w.name}</h3>
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      <span className="inline-flex items-center gap-1.5 bg-[#F2F0EB] rounded-full px-3 py-1 text-xs font-light text-[#6B7280]">
-                        <Calendar size={12} className="text-[#8DA399]" /> {w.date}
-                      </span>
-                      <span className="inline-flex items-center gap-1.5 bg-[#F2F0EB] rounded-full px-3 py-1 text-xs font-light text-[#6B7280]">
-                        <Clock size={12} className="text-[#8DA399]" /> {w.time}
-                      </span>
-                    </div>
-                    <p className="text-xs font-light leading-relaxed text-[#6B7280] line-clamp-3">{w.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Guest / Login Dialog */}
