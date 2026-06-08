@@ -311,6 +311,33 @@ export default function WorkshopsPage() {
                   {/* Description */}
                   <p className="text-sm sm:text-base font-light leading-[1.8] text-[#6B7280] mb-6">{w.description}</p>
 
+                  {/* Upcoming Dates Table */}
+                  {w.upcomingDates && w.upcomingDates.length > 0 && (
+                    <div className="mb-6 border border-[#E5E0D6] rounded-xl overflow-hidden">
+                      <div className="bg-[#F2F0EB] px-4 py-2.5">
+                        <h3 className="text-xs uppercase tracking-widest font-semibold text-[#6B7280]">Upcoming Dates</h3>
+                      </div>
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-[#E5E0D6]">
+                            <th className="text-left px-4 py-2.5 text-[10px] uppercase tracking-widest font-semibold text-[#9CA3AF]">Date</th>
+                            <th className="text-left px-4 py-2.5 text-[10px] uppercase tracking-widest font-semibold text-[#9CA3AF]">Day</th>
+                            <th className="text-left px-4 py-2.5 text-[10px] uppercase tracking-widest font-semibold text-[#9CA3AF]">Time</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {w.upcomingDates.map((d, i) => (
+                            <tr key={i} className={i < w.upcomingDates.length - 1 ? "border-b border-[#E5E0D6]" : ""}>
+                              <td className="px-4 py-3 font-light text-[#2C2C2C]">{d.date}</td>
+                              <td className="px-4 py-3 font-light text-[#6B7280]">{d.day}</td>
+                              <td className="px-4 py-3 font-light text-[#6B7280]">{w.time}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+
                   {/* What's Included */}
                   <div className="bg-[#F2F0EB]/60 rounded-xl p-5 mb-6">
                     <h3 className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-3">What's Included</h3>

@@ -42,7 +42,11 @@ export const WORKSHOPS = [
     time: "1pm",
     duration: "60-90 mins",
     price: 35,
-    description: "Relax with dogs and enjoy a creative afternoon of flower arranging. Whether you're a complete beginner or just looking for something different, this laid-back workshop is for you. Bring your furry friend along and make something beautiful together. All levels welcome - come meet like-minded people and leave with a gorgeous bouquet.\n\nUpcoming dates: 27 June 2026, 01 August 2026",
+    description: "Relax with dogs and enjoy a creative afternoon of flower arranging. Whether you're a complete beginner or just looking for something different, this laid-back workshop is for you. Bring your furry friend along and make something beautiful together. All levels welcome - come meet like-minded people and leave with a gorgeous bouquet.",
+    upcomingDates: [
+      { date: "27 June 2026", day: "Friday" },
+      { date: "01 August 2026", day: "Friday" },
+    ],
     included: ["Your bouquet to take home", "Free Drink", "Dog Treat"],
     accent: "#B8926A",
     image: "https://lh3.googleusercontent.com/d/1CAoxohkarGmRVzsdAaUSSr7HG2VMWH4O=w800",
