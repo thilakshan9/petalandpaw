@@ -21,7 +21,8 @@ import FaqPage from "@/pages/FaqPage";
 import ReturnsPage from "@/pages/ReturnsPage";
 import EventsPage from "@/pages/EventsPage";
 import WorkshopsPage from "@/pages/WorkshopsPage";
-import RafflePage from "@/pages/RafflePage";
+// RafflePage is intentionally kept for future re-enable.
+// import RafflePage from "@/pages/RafflePage";
 import VouchersPage from "@/pages/VouchersPage";
 import SafeFlowersPage from "@/pages/SafeFlowersPage";
 import CustomerAuthPage from "@/pages/CustomerAuthPage";
@@ -148,8 +149,9 @@ function AppRouter() {
       }
       <Route path="/workshops" element={<Layout><WorkshopsPage /></Layout>} />
       }
+      {/* Raffle route intentionally disabled for future re-enable.
       <Route path="/raffle" element={<Layout><RafflePage /></Layout>} />
-      }
+      } */}
       <Route path="/vouchers" element={<Layout><VouchersPage /></Layout>} />
       }
       <Route path="/safe-flowers" element={<Layout><SafeFlowersPage /></Layout>} />

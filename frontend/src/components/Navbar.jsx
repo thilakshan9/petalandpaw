@@ -11,7 +11,6 @@ const navLinks = [
   { href: "/hire-us", label: "Hire Us" },
   { href: "/subscriptions", label: "Shop" },
   { href: "/workshops", label: "Workshops" },
-  { href: "/raffle", label: "Raffle" },
   { href: "/vouchers", label: "Vouchers" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
