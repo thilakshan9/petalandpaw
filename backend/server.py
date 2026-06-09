@@ -1807,7 +1807,7 @@ async def get_order_status(session_id: str, request: Request, background_tasks: 
                             {"$inc": {"credits": 10.0}})
                 if order.get("customer_email"):
                     background_tasks.add_task(send_order_confirmation_email, order["customer_email"], order)
-            elif customer_email:
+            elif customer_email and not raffle_entry:
                 background_tasks.add_task(send_order_confirmation_email, customer_email, {
                     "items": [{"name": tx.get("metadata", {}).get("plan_name", "Subscription"), "quantity": 1, "price": tx.get("amount", 0)}],
                     "total": tx.get("amount", 0),
