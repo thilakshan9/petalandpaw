@@ -88,11 +88,14 @@ export default function RafflePage() {
             <div className="absolute -bottom-12 -left-12 w-36 h-36 rounded-full bg-[#8DA399]/8 blur-2xl pointer-events-none" />
 
             <div className="relative">
-              <h2 className="font-['Playfair_Display'] text-xl sm:text-2xl font-medium text-[#2C2C2C] mb-5">About Camp Beagle</h2>
+              <h2 className="font-['Playfair_Display'] text-xl sm:text-2xl font-medium text-[#2C2C2C] mb-3">About Camp Beagle</h2>
+              <p className="text-sm sm:text-base font-semibold text-[#2C2C2C] mb-5 leading-relaxed">
+                They are fighting to shut down MBR Acres, a facility that breeds over 2,000 beagle puppies a year for laboratory testing.
+              </p>
 
               <div className="space-y-4 text-sm sm:text-base font-light leading-[1.8] text-[#6B7280]">
                 <p>
-                  Camp Beagle is a grassroots animal rights protest group, the longest-running animal rights camp in the UK and globally. They are fighting to shut down MBR Acres, a facility that breeds over 2,000 beagle puppies a year for laboratory testing.
+                  Camp Beagle is a grassroots animal rights protest group, the longest-running animal rights camp in the UK and globally.
                 </p>
                 <p>
                   Since the summer of 2021 they have camped outside MBR Acres in Huntingdon, Cambridgeshire, in peaceful protest, campaigning tirelessly to save the beagles bred for experimentation.
