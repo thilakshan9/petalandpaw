@@ -21,6 +21,7 @@ import FaqPage from "@/pages/FaqPage";
 import ReturnsPage from "@/pages/ReturnsPage";
 import EventsPage from "@/pages/EventsPage";
 import WorkshopsPage from "@/pages/WorkshopsPage";
+import RafflePage from "@/pages/RafflePage";
 import VouchersPage from "@/pages/VouchersPage";
 import SafeFlowersPage from "@/pages/SafeFlowersPage";
 import CustomerAuthPage from "@/pages/CustomerAuthPage";
@@ -146,6 +147,8 @@ function AppRouter() {
       <Route path="/events" element={<Layout><EventsPage /></Layout>} />
       }
       <Route path="/workshops" element={<Layout><WorkshopsPage /></Layout>} />
+      }
+      <Route path="/raffle" element={<Layout><RafflePage /></Layout>} />
       }
       <Route path="/vouchers" element={<Layout><VouchersPage /></Layout>} />
       }

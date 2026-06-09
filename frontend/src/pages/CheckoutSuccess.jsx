@@ -77,10 +77,12 @@ export default function CheckoutSuccess() {
   const booking = paymentData?.booking;
   const voucher = paymentData?.voucher;
   const redemption = paymentData?.redemption;
+  const raffle = paymentData?.raffle;
   const isVoucher = meta?.type === "voucher" || !!voucher;
   const isRedemption = meta?.type === "voucher_redemption" || !!redemption;
-  const isWorkshop = !isVoucher && !isRedemption && (meta?.type === "workshop" || !!booking);
-  const isSubscription = !isVoucher && !isRedemption && paymentData?.mode === "subscription";
+  const isRaffle = meta?.type === "raffle" || !!raffle;
+  const isWorkshop = !isVoucher && !isRedemption && !isRaffle && (meta?.type === "workshop" || !!booking);
+  const isSubscription = !isVoucher && !isRedemption && !isRaffle && paymentData?.mode === "subscription";
 
   const [voucherCopied, setVoucherCopied] = useState(false);
   const copyVoucher = async () => {
@@ -121,26 +123,30 @@ export default function CheckoutSuccess() {
                 </div>
 
                 <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 block">
-                  {isVoucher ? "Voucher Issued" : isRedemption ? "Booking Confirmed" : isWorkshop ? "Booking Confirmed" : isSubscription ? "Subscription Active" : "Order Confirmed"}
+                  {isVoucher ? "Voucher Issued" : isRedemption ? "Booking Confirmed" : isRaffle ? "Raffle Entry Confirmed" : isWorkshop ? "Booking Confirmed" : isSubscription ? "Subscription Active" : "Order Confirmed"}
                 </span>
                 <h1 className="font-['Playfair_Display'] text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C] mb-4" data-testid="payment-success-title">
                   {isVoucher
                     ? "Your voucher is ready"
                     : isRedemption
                       ? "Workshops booked using voucher"
-                      : isWorkshop
-                        ? "You're booked in!"
-                        : isSubscription
-                          ? "Welcome to the family"
-                          : "Thank you"}
+                      : isRaffle
+                        ? "You're in the draw!"
+                        : isWorkshop
+                          ? "You're booked in!"
+                          : isSubscription
+                            ? "Welcome to the family"
+                            : "Thank you"}
                 </h1>
                 <p className="text-sm sm:text-base font-light leading-relaxed text-[#6B7280] max-w-md mx-auto">
                   {isVoucher
                     ? `${voucher?.recipient_email ? "We've emailed the voucher to your recipient. A copy is in your inbox too." : "We've emailed your voucher code. Use it any time on our workshops page."}`
                     : isRedemption
                       ? `Your voucher covered £${Number(redemption?.voucher_applied || 0).toFixed(2)}${Number(redemption?.excess || 0) > 0 ? ` and you topped up £${Number(redemption?.excess).toFixed(2)}` : ""}. Confirmation emails are on the way.`
-                      : isWorkshop
-                        ? `${booking?.full_name ? booking.full_name.split(" ")[0] + ", we" : "We"} can't wait to see you. A confirmation with all the details has been sent to your email.`
+                      : isRaffle
+                        ? `Congratulations! You've entered the Camp Beagle raffle. Your ticket number${raffle?.quantity > 1 ? "s have" : " has"} been emailed to you. Good luck!`
+                        : isWorkshop
+                          ? `${booking?.full_name ? booking.full_name.split(" ")[0] + ", we" : "We"} can't wait to see you. A confirmation with all the details has been sent to your email.`
                         : isSubscription
                           ? "Your subscription is all set up. Look out for your first bouquet soon - we'll be in touch."
                           : "Your order has been confirmed and is being prepared with care. A receipt is on its way to your inbox."}
@@ -203,6 +209,33 @@ export default function CheckoutSuccess() {
                       <p className="text-[#2C2C2C] font-medium">£{Number(redemption.excess || 0).toFixed(2)}</p>
                     </div>
                   </div>
+                </div>
+              )}
+
+              {/* Raffle ticket details */}
+              {isRaffle && raffle && (
+                <div className="relative mt-8 pt-8 border-t border-[#E5E0D6]" data-testid="raffle-details-card">
+                  <h3 className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-4 text-center flex items-center justify-center gap-2">
+                    <Ticket size={12} className="text-[#B8926A]" /> Your Raffle Ticket{raffle.quantity > 1 ? "s" : ""}
+                  </h3>
+                  <div className="bg-gradient-to-br from-[#F2F0EB] to-[#FAF9F6] border border-[#E5E0D6] rounded-2xl p-6 text-center">
+                    <div className="flex flex-wrap justify-center gap-2 mb-4">
+                      {raffle.ticket_numbers.map((ticket, i) => (
+                        <span key={i} className="inline-block bg-white border border-[#E5E0D6] rounded-lg px-4 py-2.5 font-mono text-base sm:text-lg tracking-[0.15em] text-[#2C2C2C] font-medium">
+                          {ticket}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="text-xs font-light text-[#6B7280]">
+                      Supporting <strong className="font-medium text-[#B8926A]">Camp Beagle</strong>
+                    </p>
+                  </div>
+                  {raffle.email && (
+                    <div className="mt-4 flex items-center justify-center gap-2 text-xs font-light text-[#6B7280]">
+                      <Mail size={12} className="text-[#B8926A]" />
+                      <span>Confirmation sent to <strong className="font-medium text-[#2C2C2C]">{raffle.email}</strong></span>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -269,6 +302,12 @@ export default function CheckoutSuccess() {
                 <Link to="/workshops">
                   <Button variant="outline" className="rounded-full border-[#8DA399] text-[#8DA399] hover:bg-[#8DA399] hover:text-white px-8 py-6 text-xs sm:text-sm uppercase tracking-widest w-full sm:w-auto transition-all">
                     Browse workshops
+                  </Button>
+                </Link>
+              ) : isRaffle ? (
+                <Link to="/raffle">
+                  <Button variant="outline" className="rounded-full border-[#B8926A] text-[#B8926A] hover:bg-[#B8926A] hover:text-white px-8 py-6 text-xs sm:text-sm uppercase tracking-widest w-full sm:w-auto transition-all">
+                    Buy more tickets
                   </Button>
                 </Link>
               ) : isRedemption || isWorkshop ? (

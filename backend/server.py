@@ -125,6 +125,13 @@ class WorkshopCheckoutRequest(BaseModel):
     origin_url: str
     customer_id: str = ""
 
+class RaffleCheckoutRequest(BaseModel):
+    full_name: str
+    email: str
+    quantity: int = 1
+    origin_url: str
+    customer_id: str = ""
+
 class VoucherCheckoutRequest(BaseModel):
     amount: float
     purchaser_name: str
@@ -159,7 +166,7 @@ class VoucherRedeemRequest(BaseModel):
 
 resend_api_key = os.environ.get('RESEND_API_KEY', '')
 
-def _send_email(to_email: str, subject: str, html_content: str, reply_to: str = ""):
+def _send_email(to_email: str, subject: str, html_content: str, reply_to: str = "", from_email: str = ""):
     if not resend_api_key:
         logger.info(f"[EMAIL NOT CONFIGURED] Would send to {to_email}: {subject}")
         return False
@@ -167,7 +174,7 @@ def _send_email(to_email: str, subject: str, html_content: str, reply_to: str = 
         import resend
         resend.api_key = resend_api_key
         params = {
-            "from": "Petal & Paw <noreply@petalandpaw.co.uk>",
+            "from": from_email or "Petal & Paw <noreply@petalandpaw.co.uk>",
             "to": [to_email],
             "subject": subject,
             "html": html_content,
@@ -1072,6 +1079,167 @@ async def create_workshop_checkout(req: WorkshopCheckoutRequest, request: Reques
 
 
 # ============================================================
+# RAFFLE - Camp Beagle
+# ============================================================
+
+async def send_raffle_confirmation_email(raffle_data: dict):
+    customer_email = raffle_data.get("email", "")
+    full_name = raffle_data.get("full_name", "")
+    ticket_numbers = raffle_data.get("ticket_numbers", [])
+    quantity = raffle_data.get("quantity", 1)
+    total = raffle_data.get("total", 0)
+    first_name = full_name.split(" ")[0] if full_name else "there"
+
+    tickets_html = "".join([
+        f'<div style="display:inline-block;background:#F2F0EB;border:1px solid #E5E0D6;border-radius:8px;padding:12px 20px;margin:5px;font-family:monospace;font-size:18px;letter-spacing:2px;color:#2C2C2C;font-weight:600;">{t}</div>'
+        for t in ticket_numbers
+    ])
+
+    html_content = f"""
+    <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #FAF9F6;">
+        <div style="background: linear-gradient(135deg, #B8926A 0%, #D4A574 100%); padding: 48px 32px; text-align: center; border-radius: 0 0 24px 24px;">
+            <h1 style="font-family: Georgia, serif; color: #FFFFFF; font-weight: 400; font-size: 32px; margin: 0 0 8px;">Congratulations!</h1>
+            <p style="color: rgba(255,255,255,0.9); font-size: 15px; margin: 0; font-weight: 300;">You've entered the Camp Beagle Raffle</p>
+        </div>
+
+        <div style="padding: 40px 32px;">
+            <p style="color: #4B5563; font-size: 15px; line-height: 1.8; margin: 0 0 28px;">
+                Hi {first_name}, thank you so much for supporting Camp Beagle! Your raffle {'tickets are' if quantity > 1 else 'ticket is'} confirmed.
+            </p>
+
+            <div style="background: #FFFFFF; border: 1px solid #E5E0D6; border-radius: 16px; padding: 28px; text-align: center; margin: 0 0 28px;">
+                <p style="color: #6B7280; font-size: 11px; text-transform: uppercase; letter-spacing: 3px; margin: 0 0 16px; font-weight: 600;">Your Raffle Ticket{'s' if quantity > 1 else ''}</p>
+                {tickets_html}
+            </div>
+
+            <div style="background: #F2F0EB; border-radius: 12px; padding: 20px 24px; margin: 0 0 28px;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="color: #6B7280; font-size: 13px; padding: 6px 0;">Tickets purchased</td>
+                        <td style="color: #2C2C2C; font-size: 13px; padding: 6px 0; text-align: right;">{quantity}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #6B7280; font-size: 13px; padding: 6px 0;">Price per ticket</td>
+                        <td style="color: #2C2C2C; font-size: 13px; padding: 6px 0; text-align: right;">&pound;2.00</td>
+                    </tr>
+                    <tr style="border-top: 1px solid #E5E0D6;">
+                        <td style="color: #2C2C2C; font-size: 15px; padding: 10px 0 0; font-weight: 600;">Total paid</td>
+                        <td style="color: #2C2C2C; font-size: 15px; padding: 10px 0 0; text-align: right; font-weight: 600;">&pound;{total:.2f}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div style="border-left: 3px solid #B8926A; padding-left: 18px; margin: 0 0 28px;">
+                <p style="color: #4B5563; font-size: 13px; line-height: 1.8; margin: 0;">
+                    <strong style="color: #2C2C2C;">About Camp Beagle</strong><br>
+                    Camp Beagle is the longest-running animal rights camp in the UK, campaigning peacefully outside MBR Acres since 2021 to save beagles bred for experimentation. 100% of your raffle contribution goes towards sustaining this vital campaign.
+                </p>
+            </div>
+
+            <p style="color: #6B7280; font-size: 13px; line-height: 1.7; margin: 0;">
+                Keep hold of your ticket number{'s' if quantity > 1 else ''} &mdash; we'll announce the winner soon. Good luck!
+            </p>
+        </div>
+
+        <div style="text-align: center; padding: 24px 32px 40px; border-top: 1px solid #E5E0D6;">
+            <p style="color: #8DA399; font-size: 10px; text-transform: uppercase; letter-spacing: 3px; margin: 0;">Petal & Paw &bull; Pet-Safe Florals</p>
+        </div>
+    </div>
+    """
+    _send_email(
+        customer_email,
+        f"Your Camp Beagle Raffle Ticket{'s' if quantity > 1 else ''} - Good Luck!",
+        html_content,
+        from_email="Petal & Paw <info@petalandpaw.co.uk>"
+    )
+
+
+@api_router.post("/raffle/checkout")
+async def create_raffle_checkout(req: RaffleCheckoutRequest, request: Request):
+    if not req.full_name.strip() or not req.email.strip():
+        raise HTTPException(status_code=400, detail="Full name and email are required")
+    qty = max(1, min(20, int(req.quantity or 1)))
+    unit_price = 2.00
+    total = unit_price * qty
+
+    ticket_numbers = []
+    for _ in range(qty):
+        ticket_num = "CB-" + "".join(random.choices(string.ascii_uppercase + string.digits, k=8))
+        ticket_numbers.append(ticket_num)
+
+    raffle_metadata = {
+        "type": "raffle",
+        "cause": "Camp Beagle",
+        "ticket_numbers": ", ".join(ticket_numbers),
+        "full_name": req.full_name[:480],
+        "email": req.email[:480],
+        "quantity": str(qty),
+        "amount_paid": f"{total:.2f}",
+    }
+    if req.customer_id:
+        raffle_metadata["customer_id"] = req.customer_id[:480]
+
+    success_url = f"{req.origin_url}/checkout/success?session_id={{CHECKOUT_SESSION_ID}}"
+    cancel_url = f"{req.origin_url}/raffle"
+
+    try:
+        checkout_params = {
+            "payment_method_types": ["card"],
+            "line_items": [{
+                "price_data": {
+                    "currency": "gbp",
+                    "unit_amount": int(unit_price * 100),
+                    "product_data": {
+                        "name": "Camp Beagle Raffle Ticket",
+                        "description": f"Raffle ticket(s): {', '.join(ticket_numbers)}",
+                    },
+                },
+                "quantity": qty,
+            }],
+            "mode": "payment",
+            "success_url": success_url,
+            "cancel_url": cancel_url,
+            "metadata": raffle_metadata,
+            "payment_intent_data": {
+                "metadata": raffle_metadata,
+                "receipt_email": req.email,
+            },
+            "customer_email": req.email,
+        }
+        session = stripe.checkout.Session.create(**checkout_params)
+    except stripe._error.AuthenticationError:
+        raise HTTPException(status_code=503, detail="Payment service is not configured. Please contact support.")
+    except Exception as e:
+        logger.error(f"Stripe raffle checkout error: {type(e).__name__}: {e}")
+        raise HTTPException(status_code=500, detail=f"Payment error: {str(e)}")
+
+    await db.raffle_entries.insert_one({
+        "id": str(uuid.uuid4()),
+        "ticket_numbers": ticket_numbers,
+        "quantity": qty,
+        "total": total,
+        "full_name": req.full_name,
+        "email": req.email,
+        "customer_id": req.customer_id or None,
+        "stripe_session_id": session.id,
+        "status": "pending",
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    })
+    await db.payment_transactions.insert_one({
+        "id": str(uuid.uuid4()),
+        "session_id": session.id,
+        "amount": total,
+        "currency": "gbp",
+        "status": "initiated",
+        "payment_status": "pending",
+        "customer_email": req.email,
+        "metadata": raffle_metadata,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    })
+    return {"url": session.url, "session_id": session.id, "ticket_numbers": ticket_numbers}
+
+
+# ============================================================
 # VOUCHERS
 # ============================================================
 
@@ -1612,8 +1780,16 @@ async def get_order_status(session_id: str, request: Request, background_tasks: 
                 redemption["status"] = "complete"
                 redemption["paid_at"] = now_iso
                 background_tasks.add_task(send_voucher_redemption_admin_email, redemption)
+            # Check for raffle entry
+            raffle_entry = await db.raffle_entries.find_one({"stripe_session_id": session_id}, {"_id": 0})
+            if raffle_entry and raffle_entry.get("status") != "paid":
+                await db.raffle_entries.update_one(
+                    {"stripe_session_id": session_id},
+                    {"$set": {"status": "paid", "paid_at": datetime.now(timezone.utc).isoformat()}}
+                )
+                background_tasks.add_task(send_raffle_confirmation_email, raffle_entry)
             # Check for order (cart checkout) or subscription checkout — skip if this was a workshop booking, voucher, or redemption
-            if booking or voucher_record or redemption:
+            if booking or voucher_record or redemption or raffle_entry:
                 order = None
             else:
                 order = await db.orders.find_one({"stripe_session_id": session_id}, {"_id": 0})
@@ -1681,6 +1857,16 @@ async def get_order_status(session_id: str, request: Request, background_tasks: 
                 "quantity": it.get("quantity", 1),
                 "line_total": it.get("line_total", 0),
             } for it in redemption.get("items", [])],
+        }
+    raffle_entry = await db.raffle_entries.find_one({"stripe_session_id": session_id}, {"_id": 0})
+    if raffle_entry:
+        result["raffle"] = {
+            "ticket_numbers": raffle_entry.get("ticket_numbers", []),
+            "quantity": raffle_entry.get("quantity", 1),
+            "total": raffle_entry.get("total", 0),
+            "full_name": raffle_entry.get("full_name", ""),
+            "email": raffle_entry.get("email", ""),
+            "cause": "Camp Beagle",
         }
     return result
 

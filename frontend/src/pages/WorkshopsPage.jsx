@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Calendar, Clock, MapPin, Gift, ArrowRight, Loader as Loader2, Minus, Plus, Sparkles, CircleCheck as CheckCircle2 } from "lucide-react";
+import { Calendar, Clock, MapPin, Gift, ArrowRight, Loader as Loader2, Minus, Plus, Sparkles, CircleCheck as CheckCircle2, Heart, Ticket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -39,6 +39,13 @@ export default function WorkshopsPage() {
   const [requestSubmitting, setRequestSubmitting] = useState(false);
   const [requestError, setRequestError] = useState("");
   const [requestSuccess, setRequestSuccess] = useState(false);
+
+  // Raffle state
+  const [raffleQty, setRaffleQty] = useState(1);
+  const [raffleOpen, setRaffleOpen] = useState(false);
+  const [raffleForm, setRaffleForm] = useState({ full_name: "", email: "" });
+  const [raffleSubmitting, setRaffleSubmitting] = useState(false);
+  const [raffleError, setRaffleError] = useState("");
 
   const getQty = (id) => Math.max(1, Math.min(10, qty[id] || 1));
   const updateQty = (id, delta) => {
@@ -158,6 +165,49 @@ export default function WorkshopsPage() {
       setRequestError(err.message || "Something went wrong. Please try again.");
     }
     setRequestSubmitting(false);
+  };
+
+  const openRaffleDialog = () => {
+    setRaffleForm({ full_name: customer?.name || "", email: customer?.email || "" });
+    setRaffleError("");
+    setRaffleQty(1);
+    setRaffleOpen(true);
+  };
+
+  const submitRaffle = async (e) => {
+    e.preventDefault();
+    if (!raffleForm.full_name.trim() || !raffleForm.email.trim()) {
+      setRaffleError("Please enter your name and email.");
+      return;
+    }
+    setRaffleSubmitting(true);
+    setRaffleError("");
+    try {
+      const res = await fetch(`${API}/raffle/checkout`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          full_name: raffleForm.full_name.trim(),
+          email: raffleForm.email.trim(),
+          quantity: raffleQty,
+          origin_url: window.location.origin,
+          customer_id: customer?.id || "",
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || "Unable to start checkout. Please try again.");
+      }
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("Payment session unavailable.");
+      }
+    } catch (err) {
+      setRaffleError(err.message || "Something went wrong. Please try again.");
+      setRaffleSubmitting(false);
+    }
   };
 
   const submitBooking = async (e) => {
@@ -407,6 +457,78 @@ export default function WorkshopsPage() {
               </div>
             );
           })}
+        </div>
+
+        {/* Camp Beagle Raffle Section */}
+        <div className="mt-16 animate-fade-in-up delay-150" data-testid="raffle-section">
+          <div className="relative bg-white border border-[#E5E0D6] rounded-2xl overflow-hidden">
+            <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-[#D4956A]/10 blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-12 -left-12 w-40 h-40 rounded-full bg-[#B8926A]/10 blur-2xl pointer-events-none" />
+            <div className="relative grid grid-cols-1 md:grid-cols-[1fr_1.2fr] items-center">
+              {/* Left: visual */}
+              <div className="p-8 sm:p-10 flex flex-col items-center text-center md:border-r border-[#E5E0D6]">
+                <div className="w-16 h-16 rounded-full bg-[#B8926A]/15 flex items-center justify-center mb-4">
+                  <Heart size={28} strokeWidth={1.5} className="text-[#B8926A]" />
+                </div>
+                <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-[#B8926A] mb-2">Charity Raffle</span>
+                <h2 className="font-['Playfair_Display'] text-2xl sm:text-3xl font-medium text-[#2C2C2C] mb-3">
+                  Support Camp Beagle
+                </h2>
+                <div className="inline-flex items-center gap-2 bg-[#B8926A]/10 rounded-full px-4 py-2 mb-4">
+                  <Ticket size={16} className="text-[#B8926A]" />
+                  <span className="text-lg font-medium text-[#2C2C2C]">£2</span>
+                  <span className="text-sm font-light text-[#6B7280]">per ticket</span>
+                </div>
+              </div>
+
+              {/* Right: info + CTA */}
+              <div className="p-8 sm:p-10">
+                <p className="text-sm sm:text-base font-light leading-[1.8] text-[#6B7280] mb-5">
+                  Camp Beagle is a grassroots animal rights protest group — the longest-running animal rights camp in the UK, and globally. Since the summer of 2021 they have camped outside MBR Acres in peaceful protest, campaigning tirelessly to save the beagles bred for experimentation.
+                </p>
+                <p className="text-sm sm:text-base font-light leading-[1.8] text-[#6B7280] mb-6">
+                  Everyone involved contributes their time, expertise, and dedication on a voluntary basis. All donations are used to cover the essential costs of running Camp Beagle and sustaining their campaign to shut down MBR Acres for good.
+                </p>
+
+                {/* Quantity selector */}
+                <div className="flex items-center justify-between bg-[#F2F0EB]/60 rounded-xl px-4 py-3 mb-5">
+                  <span className="text-xs uppercase tracking-widest font-semibold text-[#6B7280]">Tickets</span>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setRaffleQty((q) => Math.max(1, q - 1))}
+                      disabled={raffleQty <= 1}
+                      className="w-8 h-8 rounded-full bg-white border border-[#E5E0D6] flex items-center justify-center text-[#2C2C2C] disabled:opacity-30 transition hover:bg-[#F2F0EB]"
+                      aria-label="Decrease raffle quantity"
+                    >
+                      <Minus size={14} />
+                    </button>
+                    <span className="text-base font-medium text-[#2C2C2C] min-w-[20px] text-center">{raffleQty}</span>
+                    <button
+                      type="button"
+                      onClick={() => setRaffleQty((q) => Math.min(20, q + 1))}
+                      disabled={raffleQty >= 20}
+                      className="w-8 h-8 rounded-full bg-white border border-[#E5E0D6] flex items-center justify-center text-[#2C2C2C] disabled:opacity-30 transition hover:bg-[#F2F0EB]"
+                      aria-label="Increase raffle quantity"
+                    >
+                      <Plus size={14} />
+                    </button>
+                    <span className="text-sm font-light text-[#2C2C2C] ml-2">
+                      {raffleQty} {raffleQty === 1 ? "ticket" : "tickets"} — £{(raffleQty * 2).toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={openRaffleDialog}
+                  className="rounded-full bg-[#B8926A] text-white hover:bg-[#B8926A]/90 px-8 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105"
+                  data-testid="raffle-buy-btn"
+                >
+                  Buy Raffle Ticket{raffleQty > 1 ? "s" : ""} <ArrowRight size={14} className="ml-2" />
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -686,6 +808,65 @@ export default function WorkshopsPage() {
               </p>
             </form>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Raffle Checkout Dialog */}
+      <Dialog open={raffleOpen} onOpenChange={(open) => !raffleSubmitting && setRaffleOpen(open)}>
+        <DialogContent className="bg-[#FAF9F6] max-w-md border-[#E5E0D6] rounded-2xl" data-testid="raffle-dialog">
+          <DialogHeader>
+            <DialogTitle className="font-['Playfair_Display'] text-2xl text-[#2C2C2C] font-medium">
+              Camp Beagle Raffle
+            </DialogTitle>
+            <DialogDescription className="text-sm font-light text-[#6B7280] pt-1">
+              {raffleQty} {raffleQty === 1 ? "ticket" : "tickets"} — <span className="font-medium text-[#2C2C2C]">£{(raffleQty * 2).toFixed(2)}</span>
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={submitRaffle} className="space-y-4 mt-2">
+            <div>
+              <Label htmlFor="raffle-name" className="text-xs uppercase tracking-widest text-[#6B7280]">Full Name</Label>
+              <Input
+                id="raffle-name"
+                value={raffleForm.full_name}
+                onChange={(e) => setRaffleForm({ ...raffleForm, full_name: e.target.value })}
+                placeholder="Jane Doe"
+                className="mt-1.5 bg-white border-[#E5E0D6]"
+                required
+                data-testid="raffle-name"
+              />
+            </div>
+            <div>
+              <Label htmlFor="raffle-email" className="text-xs uppercase tracking-widest text-[#6B7280]">Email</Label>
+              <Input
+                id="raffle-email"
+                type="email"
+                value={raffleForm.email}
+                onChange={(e) => setRaffleForm({ ...raffleForm, email: e.target.value })}
+                placeholder="you@example.com"
+                className="mt-1.5 bg-white border-[#E5E0D6]"
+                required
+                data-testid="raffle-email"
+              />
+            </div>
+            {raffleError && (
+              <p className="text-sm text-red-500 font-light" data-testid="raffle-error">{raffleError}</p>
+            )}
+            <Button
+              type="submit"
+              disabled={raffleSubmitting}
+              className="w-full rounded-full bg-[#B8926A] text-white hover:bg-[#B8926A]/90 px-8 py-6 text-xs uppercase tracking-widest"
+              data-testid="raffle-submit"
+            >
+              {raffleSubmitting ? (
+                <><Loader2 size={14} className="mr-2 animate-spin" /> Redirecting to payment...</>
+              ) : (
+                <>Continue to payment <ArrowRight size={14} className="ml-2" /></>
+              )}
+            </Button>
+            <p className="text-[10px] text-[#9CA3AF] text-center font-light">
+              You'll be redirected to Stripe to complete your £{(raffleQty * 2).toFixed(2)} payment. Your unique raffle ticket number(s) will be included in your receipt.
+            </p>
+          </form>
         </DialogContent>
       </Dialog>
     </div>
