@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Heart, Ticket, ArrowRight, Loader as Loader2, Minus, Plus } from "lucide-react";
+import { Heart, Ticket, ArrowRight, Loader as Loader2, Minus, Plus, Award, Flower2, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -184,6 +184,74 @@ export default function RafflePage() {
                 <p className="text-[10px] text-[#9CA3AF] text-center mt-3 font-light">
                   Secure payment via Stripe. Ticket number(s) emailed to you.
                 </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Prizes */}
+        <div className="mt-12 sm:mt-16 animate-fade-in-up delay-150">
+          <div className="text-center mb-8">
+            <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#B8926A] mb-2 block">What You Could Win</span>
+            <h2 className="font-['Playfair_Display'] text-2xl sm:text-3xl font-medium text-[#2C2C2C]">Prizes</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* First Prize */}
+            <div className="relative group bg-white border-2 border-[#B8926A]/40 rounded-2xl p-6 sm:p-8 text-center overflow-hidden hover:shadow-lg hover:shadow-[#B8926A]/10 transition-all duration-300 hover:-translate-y-1">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#B8926A]/5 to-[#D4A574]/5 pointer-events-none" />
+              <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full bg-[#B8926A]/8 blur-xl pointer-events-none group-hover:scale-125 transition-transform duration-500" />
+              <div className="relative">
+                <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-[#B8926A] to-[#D4A574] mb-4 shadow-md shadow-[#B8926A]/20">
+                  <Crown size={22} strokeWidth={1.5} className="text-white" />
+                </div>
+                <span className="block text-[10px] uppercase tracking-[0.25em] font-bold text-[#B8926A] mb-2">1st Prize</span>
+                <h3 className="font-['Playfair_Display'] text-xl sm:text-2xl font-medium text-[#2C2C2C] mb-3">A Bouquet Every Month</h3>
+                <p className="text-sm font-light text-[#6B7280] leading-relaxed">
+                  A stunning, hand-crafted bouquet delivered to your door every month for an entire year. 12 bouquets in total.
+                </p>
+                <div className="mt-4 inline-flex items-center gap-1.5 bg-[#B8926A]/10 rounded-full px-3 py-1.5">
+                  <Flower2 size={12} className="text-[#B8926A]" />
+                  <span className="text-[10px] uppercase tracking-widest font-semibold text-[#B8926A]">12 Months</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Second Prize */}
+            <div className="relative group bg-white border border-[#E5E0D6] rounded-2xl p-6 sm:p-8 text-center overflow-hidden hover:shadow-lg hover:shadow-[#8DA399]/10 transition-all duration-300 hover:-translate-y-1">
+              <div className="absolute -top-8 -left-8 w-20 h-20 rounded-full bg-[#8DA399]/8 blur-xl pointer-events-none group-hover:scale-125 transition-transform duration-500" />
+              <div className="relative">
+                <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-[#8DA399] to-[#A8BFB0] mb-4 shadow-md shadow-[#8DA399]/20">
+                  <Award size={22} strokeWidth={1.5} className="text-white" />
+                </div>
+                <span className="block text-[10px] uppercase tracking-[0.25em] font-bold text-[#8DA399] mb-2">2nd Prize</span>
+                <h3 className="font-['Playfair_Display'] text-xl sm:text-2xl font-medium text-[#2C2C2C] mb-3">A Beautiful Bouquet</h3>
+                <p className="text-sm font-light text-[#6B7280] leading-relaxed">
+                  One gorgeous, seasonal hand-tied bouquet crafted with love and delivered straight to you.
+                </p>
+                <div className="mt-4 inline-flex items-center gap-1.5 bg-[#8DA399]/10 rounded-full px-3 py-1.5">
+                  <Flower2 size={12} className="text-[#8DA399]" />
+                  <span className="text-[10px] uppercase tracking-widest font-semibold text-[#8DA399]">1 Bouquet</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Third Prize */}
+            <div className="relative group bg-white border border-[#E5E0D6] rounded-2xl p-6 sm:p-8 text-center overflow-hidden hover:shadow-lg hover:shadow-[#D4A574]/10 transition-all duration-300 hover:-translate-y-1">
+              <div className="absolute -bottom-8 -right-8 w-20 h-20 rounded-full bg-[#D4A574]/8 blur-xl pointer-events-none group-hover:scale-125 transition-transform duration-500" />
+              <div className="relative">
+                <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-[#D4A574] to-[#E5C4A0] mb-4 shadow-md shadow-[#D4A574]/20">
+                  <Award size={22} strokeWidth={1.5} className="text-white" />
+                </div>
+                <span className="block text-[10px] uppercase tracking-[0.25em] font-bold text-[#D4A574] mb-2">3rd Prize</span>
+                <h3 className="font-['Playfair_Display'] text-xl sm:text-2xl font-medium text-[#2C2C2C] mb-3">A Beautiful Bouquet</h3>
+                <p className="text-sm font-light text-[#6B7280] leading-relaxed">
+                  Another stunning, seasonal hand-tied bouquet — because one winner is never enough.
+                </p>
+                <div className="mt-4 inline-flex items-center gap-1.5 bg-[#D4A574]/10 rounded-full px-3 py-1.5">
+                  <Flower2 size={12} className="text-[#D4A574]" />
+                  <span className="text-[10px] uppercase tracking-widest font-semibold text-[#D4A574]">1 Bouquet</span>
+                </div>
               </div>
             </div>
           </div>
