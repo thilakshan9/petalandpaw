@@ -109,6 +109,14 @@ export default function RafflePage() {
                   <div className="w-2 h-2 rounded-full bg-[#8DA399]" />
                   <span className="text-xs font-light text-[#6B7280]">100% of raffle proceeds go directly to Camp Beagle</span>
                 </div>
+                <a
+                  href="https://thecampbeagle.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 mt-4 text-sm font-medium text-[#B8926A] hover:text-[#9A7A56] transition-colors group"
+                >
+                  Find out more about Camp Beagle <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+                </a>
               </div>
             </div>
           </div>
