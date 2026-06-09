@@ -61,7 +61,7 @@ export default function RafflePage() {
 
   return (
     <div className="py-8 sm:py-12 md:py-20" data-testid="raffle-page">
-      <SEOHead title="Camp Beagle Raffle" description="Buy a £2 raffle ticket to support Camp Beagle — the longest-running animal rights camp in the UK." />
+      <SEOHead title="Camp Beagle Raffle" description="Buy a £2 raffle ticket to support Camp Beagle, the longest-running animal rights camp in the UK." />
       <div className="container mx-auto px-5 md:px-8 max-w-5xl">
 
         {/* Hero */}
@@ -76,6 +76,7 @@ export default function RafflePage() {
           <p className="text-sm md:text-lg font-light text-[#6B7280] max-w-2xl mx-auto leading-relaxed">
             Buy a raffle ticket and help fund the longest-running animal rights camp in the UK. Every penny counts.
           </p>
+          <p className="text-xs font-medium text-[#9CA3AF] uppercase tracking-widest mt-3">UK only</p>
         </div>
 
         {/* Main Content */}
@@ -91,16 +92,16 @@ export default function RafflePage() {
 
               <div className="space-y-4 text-sm sm:text-base font-light leading-[1.8] text-[#6B7280]">
                 <p>
-                  Camp Beagle is a grassroots animal rights protest group — the longest-running animal rights camp in the UK, and globally.
+                  Camp Beagle is a grassroots animal rights protest group, the longest-running animal rights camp in the UK and globally. They are fighting to shut down MBR Acres, a facility that breeds over 2,000 beagle puppies a year for laboratory testing.
                 </p>
                 <p>
-                  Since the summer of 2021 they have camped outside MBR Acres in peaceful protest, campaigning tirelessly to save the beagles bred for experimentation.
+                  Since the summer of 2021 they have camped outside MBR Acres in Huntingdon, Cambridgeshire, in peaceful protest, campaigning tirelessly to save the beagles bred for experimentation.
                 </p>
                 <p>
                   Everyone involved in Camp Beagle contributes their time, expertise, and dedication on a voluntary basis.
                 </p>
                 <p>
-                  All donations, which are gratefully received, are used to cover the essential costs of running Camp Beagle and sustaining their relentless campaign to shut down MBR Acres for good.
+                  All donations, which are gratefully received, are used to cover the essential costs of running Camp Beagle and sustaining their campaign to shut down MBR Acres for good.
                 </p>
               </div>
 
@@ -246,7 +247,7 @@ export default function RafflePage() {
                 <span className="block text-[10px] uppercase tracking-[0.25em] font-bold text-[#D4A574] mb-2">3rd Prize</span>
                 <h3 className="font-['Playfair_Display'] text-xl sm:text-2xl font-medium text-[#2C2C2C] mb-3">A Beautiful Bouquet</h3>
                 <p className="text-sm font-light text-[#6B7280] leading-relaxed">
-                  Another stunning, seasonal hand-tied bouquet — because one winner is never enough.
+                  Another stunning, seasonal hand-tied bouquet. Because one winner is never enough.
                 </p>
                 <div className="mt-4 inline-flex items-center gap-1.5 bg-[#D4A574]/10 rounded-full px-3 py-1.5">
                   <Flower2 size={12} className="text-[#D4A574]" />
@@ -278,7 +279,7 @@ export default function RafflePage() {
                 <div className="w-10 h-10 mx-auto rounded-full bg-white border border-[#E5E0D6] flex items-center justify-center mb-3">
                   <span className="text-sm font-medium text-[#B8926A]">3</span>
                 </div>
-                <p className="text-sm font-light text-[#4B5563]">We'll announce the winner — all proceeds go to Camp Beagle</p>
+                <p className="text-sm font-light text-[#4B5563]">We'll announce the winner and all proceeds go to Camp Beagle</p>
               </div>
             </div>
           </div>
