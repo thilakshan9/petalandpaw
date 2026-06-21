@@ -53,7 +53,7 @@ export const WORKSHOPS = [
     duration: "60 mins",
     price: 48,
     description: "Spend a relaxed evening at Alfi creating your own seasonal floral arrangement in a stylish Italian setting. Enjoy a complimentary drink, unwind with friends, and let your creativity bloom. Perfect for beginners and experienced flower lovers alike.",
-    included: ["Your bouquet to take home", "Glass of prosecco included"],
+    included: ["Your bouquet to take home", "Glass of prosecco"],
     accent: "#8DA399",
     image: "https://lh3.googleusercontent.com/d/1EkWGa7V1JU7xAbQDpFigeJp54T_JO3qF=w800",
     bookingType: "external",
