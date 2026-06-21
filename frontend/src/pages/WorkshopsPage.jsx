@@ -459,78 +459,82 @@ export default function WorkshopsPage() {
           })}
         </div>
 
-        /* {/* Camp Beagle Raffle Section */}
-        <div className="mt-16 animate-fade-in-up delay-150" data-testid="raffle-section">
-          <div className="relative bg-white border border-[#E5E0D6] rounded-2xl overflow-hidden">
-            <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-[#D4956A]/10 blur-3xl pointer-events-none" />
-            <div className="absolute -bottom-12 -left-12 w-40 h-40 rounded-full bg-[#B8926A]/10 blur-2xl pointer-events-none" />
-            <div className="relative grid grid-cols-1 md:grid-cols-[1fr_1.2fr] items-center">
-              {/* Left: visual */}
-              <div className="p-8 sm:p-10 flex flex-col items-center text-center md:border-r border-[#E5E0D6]">
-                <div className="w-16 h-16 rounded-full bg-[#B8926A]/15 flex items-center justify-center mb-4">
-                  <Heart size={28} strokeWidth={1.5} className="text-[#B8926A]" />
-                </div>
-                <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-[#B8926A] mb-2">Charity Raffle</span>
-                <h2 className="font-['Playfair_Display'] text-2xl sm:text-3xl font-medium text-[#2C2C2C] mb-3">
-                  Support Camp Beagle
-                </h2>
-                <div className="inline-flex items-center gap-2 bg-[#B8926A]/10 rounded-full px-4 py-2 mb-4">
-                  <Ticket size={16} className="text-[#B8926A]" />
-                  <span className="text-lg font-medium text-[#2C2C2C]">£2</span>
-                  <span className="text-sm font-light text-[#6B7280]">per ticket</span>
-                </div>
-              </div>
+        {false && (
+          <>
+            {/* Camp Beagle Raffle Section */}
+            <div className="mt-16 animate-fade-in-up delay-150" data-testid="raffle-section">
+              <div className="relative bg-white border border-[#E5E0D6] rounded-2xl overflow-hidden">
+                <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-[#D4956A]/10 blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-12 -left-12 w-40 h-40 rounded-full bg-[#B8926A]/10 blur-2xl pointer-events-none" />
+                <div className="relative grid grid-cols-1 md:grid-cols-[1fr_1.2fr] items-center">
+                  {/* Left: visual */}
+                  <div className="p-8 sm:p-10 flex flex-col items-center text-center md:border-r border-[#E5E0D6]">
+                    <div className="w-16 h-16 rounded-full bg-[#B8926A]/15 flex items-center justify-center mb-4">
+                      <Heart size={28} strokeWidth={1.5} className="text-[#B8926A]" />
+                    </div>
+                    <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-[#B8926A] mb-2">Charity Raffle</span>
+                    <h2 className="font-['Playfair_Display'] text-2xl sm:text-3xl font-medium text-[#2C2C2C] mb-3">
+                      Support Camp Beagle
+                    </h2>
+                    <div className="inline-flex items-center gap-2 bg-[#B8926A]/10 rounded-full px-4 py-2 mb-4">
+                      <Ticket size={16} className="text-[#B8926A]" />
+                      <span className="text-lg font-medium text-[#2C2C2C]">£2</span>
+                      <span className="text-sm font-light text-[#6B7280]">per ticket</span>
+                    </div>
+                  </div>
 
-              {/* Right: info + CTA */}
-              <div className="p-8 sm:p-10">
-                <p className="text-sm sm:text-base font-light leading-[1.8] text-[#6B7280] mb-5">
-                  Camp Beagle is a grassroots animal rights protest group — the longest-running animal rights camp in the UK, and globally. Since the summer of 2021 they have camped outside MBR Acres in peaceful protest, campaigning tirelessly to save the beagles bred for experimentation.
-                </p>
-                <p className="text-sm sm:text-base font-light leading-[1.8] text-[#6B7280] mb-6">
-                  Everyone involved contributes their time, expertise, and dedication on a voluntary basis. All donations are used to cover the essential costs of running Camp Beagle and sustaining their campaign to shut down MBR Acres for good.
-                </p>
+                  {/* Right: info + CTA */}
+                  <div className="p-8 sm:p-10">
+                    <p className="text-sm sm:text-base font-light leading-[1.8] text-[#6B7280] mb-5">
+                      Camp Beagle is a grassroots animal rights protest group — the longest-running animal rights camp in the UK, and globally. Since the summer of 2021 they have camped outside MBR Acres in peaceful protest, campaigning tirelessly to save the beagles bred for experimentation.
+                    </p>
+                    <p className="text-sm sm:text-base font-light leading-[1.8] text-[#6B7280] mb-6">
+                      Everyone involved contributes their time, expertise, and dedication on a voluntary basis. All donations are used to cover the essential costs of running Camp Beagle and sustaining their campaign to shut down MBR Acres for good.
+                    </p>
 
-                {/* Quantity selector */}
-                <div className="flex items-center justify-between bg-[#F2F0EB]/60 rounded-xl px-4 py-3 mb-5">
-                  <span className="text-xs uppercase tracking-widest font-semibold text-[#6B7280]">Tickets</span>
-                  <div className="flex items-center gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setRaffleQty((q) => Math.max(1, q - 1))}
-                      disabled={raffleQty <= 1}
-                      className="w-8 h-8 rounded-full bg-white border border-[#E5E0D6] flex items-center justify-center text-[#2C2C2C] disabled:opacity-30 transition hover:bg-[#F2F0EB]"
-                      aria-label="Decrease raffle quantity"
+                    {/* Quantity selector */}
+                    <div className="flex items-center justify-between bg-[#F2F0EB]/60 rounded-xl px-4 py-3 mb-5">
+                      <span className="text-xs uppercase tracking-widest font-semibold text-[#6B7280]">Tickets</span>
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setRaffleQty((q) => Math.max(1, q - 1))}
+                          disabled={raffleQty <= 1}
+                          className="w-8 h-8 rounded-full bg-white border border-[#E5E0D6] flex items-center justify-center text-[#2C2C2C] disabled:opacity-30 transition hover:bg-[#F2F0EB]"
+                          aria-label="Decrease raffle quantity"
+                        >
+                          <Minus size={14} />
+                        </button>
+                        <span className="text-base font-medium text-[#2C2C2C] min-w-[20px] text-center">{raffleQty}</span>
+                        <button
+                          type="button"
+                          onClick={() => setRaffleQty((q) => Math.min(20, q + 1))}
+                          disabled={raffleQty >= 20}
+                          className="w-8 h-8 rounded-full bg-white border border-[#E5E0D6] flex items-center justify-center text-[#2C2C2C] disabled:opacity-30 transition hover:bg-[#F2F0EB]"
+                          aria-label="Increase raffle quantity"
+                        >
+                          <Plus size={14} />
+                        </button>
+                        <span className="text-sm font-light text-[#2C2C2C] ml-2">
+                          {raffleQty} {raffleQty === 1 ? "ticket" : "tickets"} — £{(raffleQty * 2).toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+
+                    <Button
+                      onClick={openRaffleDialog}
+                      className="rounded-full bg-[#B8926A] text-white hover:bg-[#B8926A]/90 px-8 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105"
+                      data-testid="raffle-buy-btn"
                     >
-                      <Minus size={14} />
-                    </button>
-                    <span className="text-base font-medium text-[#2C2C2C] min-w-[20px] text-center">{raffleQty}</span>
-                    <button
-                      type="button"
-                      onClick={() => setRaffleQty((q) => Math.min(20, q + 1))}
-                      disabled={raffleQty >= 20}
-                      className="w-8 h-8 rounded-full bg-white border border-[#E5E0D6] flex items-center justify-center text-[#2C2C2C] disabled:opacity-30 transition hover:bg-[#F2F0EB]"
-                      aria-label="Increase raffle quantity"
-                    >
-                      <Plus size={14} />
-                    </button>
-                    <span className="text-sm font-light text-[#2C2C2C] ml-2">
-                      {raffleQty} {raffleQty === 1 ? "ticket" : "tickets"} — £{(raffleQty * 2).toFixed(2)}
-                    </span>
+                      Buy Raffle Ticket{raffleQty > 1 ? "s" : ""} <ArrowRight size={14} className="ml-2" />
+                    </Button>
                   </div>
                 </div>
-
-                <Button
-                  onClick={openRaffleDialog}
-                  className="rounded-full bg-[#B8926A] text-white hover:bg-[#B8926A]/90 px-8 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105"
-                  data-testid="raffle-buy-btn"
-                >
-                  Buy Raffle Ticket{raffleQty > 1 ? "s" : ""} <ArrowRight size={14} className="ml-2" />
-                </Button>
               </div>
             </div>
-          </div>
-        </div>
-      </div> */
+          </>
+        )}
+      </div>
 
       {/* Guest / Login Dialog */}
       <Dialog open={!!guestDialog} onOpenChange={(v) => { if (!v) setGuestDialog(null); }}>
@@ -812,7 +816,7 @@ export default function WorkshopsPage() {
       </Dialog>
 
       {/* Raffle Checkout Dialog */}
-      <Dialog open={raffleOpen} onOpenChange={(open) => !raffleSubmitting && setRaffleOpen(open)}>
+      <Dialog open={false && raffleOpen} onOpenChange={(open) => !raffleSubmitting && setRaffleOpen(open)}>
         <DialogContent className="bg-[#FAF9F6] max-w-md border-[#E5E0D6] rounded-2xl" data-testid="raffle-dialog">
           <DialogHeader>
             <DialogTitle className="font-['Playfair_Display'] text-2xl text-[#2C2C2C] font-medium">
