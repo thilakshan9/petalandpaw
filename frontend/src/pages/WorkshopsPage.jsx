@@ -459,7 +459,7 @@ export default function WorkshopsPage() {
           })}
         </div>
 
-        {/* Camp Beagle Raffle Section */}
+        /* {/* Camp Beagle Raffle Section */}
         <div className="mt-16 animate-fade-in-up delay-150" data-testid="raffle-section">
           <div className="relative bg-white border border-[#E5E0D6] rounded-2xl overflow-hidden">
             <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-[#D4956A]/10 blur-3xl pointer-events-none" />
@@ -530,7 +530,7 @@ export default function WorkshopsPage() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */
 
       {/* Guest / Login Dialog */}
       <Dialog open={!!guestDialog} onOpenChange={(v) => { if (!v) setGuestDialog(null); }}>
