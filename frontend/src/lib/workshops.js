@@ -41,7 +41,7 @@ export const WORKSHOPS = [
     name: "Flower Arranging Workshop",
     place: "Alfi Spitalfields Market",
     address: "3 Crispin Place, London E1 6DW",
-    date: "Monthly"
+    date: "Monthly",
     upcomingDates: [
       { date: "10 July 2026", day: "Friday" },
       { date: "14 August 2026", day: "Friday" },
