@@ -1,22 +1,5 @@
 export const WORKSHOPS = [
   {
-    id: "paws-cat-cafe-2026-06-26",
-    name: "Flower Arranging Workshop",
-    place: "Paws Cat Caf\u00e9",
-    address: "Angel Walk, 5 Angel Lane, Tonbridge, TN9 1TJ",
-    date: "26 June 2026",
-    time: "6pm",
-    duration: "60-90 mins",
-    price: 45,
-    description: "Spend a relaxed evening at Paws Cat Caf\u00e9 arranging your own pet-safe bouquet while playing with the resident cats. Sip on a complimentary drink and let your creativity flow in this charming, calming setting. All levels welcome.",
-    included: ["Your bouquet to take home", "Free drink included", "Cat play time"],
-    accent: "#8DA399",
-    image: "https://lh3.googleusercontent.com/d/1vyvkDLBp9j2-dxnL7AyAfBXbYlKKuk4a=w800",
-    bookingType: "external",
-    bookingUrl: "https://pawscatcafe.resova.co.uk/items/view/37",
-    status: "live",
-  },
-  {
     id: "kings-dog-daycare-monthly",
     name: "Flower Arranging Workshop",
     place: "King's Dog Daycare",
