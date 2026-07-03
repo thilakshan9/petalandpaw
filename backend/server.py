@@ -2102,7 +2102,7 @@ async def seed_data():
         {"slug": "petite-paws"},
         {"$set": {"features": ["Letterbox friendly", "Free delivery", "Biodegradable packaging", "Care guide included"], "pet_toy_price": 8.99,
                   "price": 29.99,
-                  "image_url": "https://lh3.googleusercontent.com/d/1LMlbm572CvuSiN5y5G-jFil4w_VuMDFL=w800"}}
+                  "image_url": "https://lh3.googleusercontent.com/d/1EqXJPTQcbnXSFuLe3lu45AbgZ5poYe2X=w800"}}
     )
     await db.subscription_plans.update_one(
         {"slug": "classic-bloom"},
