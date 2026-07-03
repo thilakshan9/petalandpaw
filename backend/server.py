@@ -2116,7 +2116,7 @@ async def seed_data():
         {"$set": {"features": ["Biodegradable packaging", "Free delivery", "More variety and volume", "Signature wrapping upgrade", "Care guide included"], "pet_toy_price": 8.99,
                   "price": 74.99,
                   "description": "Our extra large monthly arrangement with premium pet-safe flowers.",
-                  "image_url": "https://lh3.googleusercontent.com/d/1axhsznjGVKBop-M8XPr06HKDaRoC5JJp=w800"}}
+                  "image_url": "https://lh3.googleusercontent.com/d/1xHzmP0017rCugQvuYkdRPVmR7IQVTPKJ=w800"}}
     )
 
     if await db.blog_posts.count_documents({}) == 0:
