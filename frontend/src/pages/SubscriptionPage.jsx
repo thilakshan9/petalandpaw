@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check, ArrowRight, PawPrint, ChevronDown, ShoppingBag } from "lucide-react";
+import { Check, ArrowRight, PawPrint, ChevronDown, ShoppingBag, Sparkles, Loader as Loader2, CircleCheck as CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useCustomerAuth } from "@/context/CustomerAuthContext";
 import { useCart } from "@/components/CartProvider";
@@ -31,6 +33,19 @@ export default function SubscriptionPage() {
   const [deliveryDate, setDeliveryDate] = useState({});
   const [orderCount, setOrderCount] = useState(0);
   const [stockLimit, setStockLimit] = useState(60);
+  const [requestOpen, setRequestOpen] = useState(false);
+  const [requestForm, setRequestForm] = useState({
+    bouquet_style: "",
+    pet_type: "",
+    occasion: "",
+    preferred_date: "",
+    full_name: "",
+    email: "",
+    notes: "",
+  });
+  const [requestSubmitting, setRequestSubmitting] = useState(false);
+  const [requestError, setRequestError] = useState("");
+  const [requestSuccess, setRequestSuccess] = useState(false);
 
   useEffect(() => {
     fetch(`${API}/subscriptions/plans`)
@@ -194,6 +209,60 @@ export default function SubscriptionPage() {
     }
   };
 
+  const openRequestDialog = () => {
+    setRequestForm({
+      bouquet_style: "",
+      pet_type: "",
+      occasion: "",
+      preferred_date: "",
+      full_name: customer?.name || "",
+      email: customer?.email || "",
+      notes: "",
+    });
+    setRequestError("");
+    setRequestSuccess(false);
+    setRequestOpen(true);
+  };
+
+  const submitRequest = async (e) => {
+    e.preventDefault();
+    const f = requestForm;
+    if (!f.bouquet_style || !f.pet_type || !f.full_name.trim() || !f.email.trim()) {
+      setRequestError("Please fill in the required fields.");
+      return;
+    }
+    setRequestSubmitting(true);
+    setRequestError("");
+    const message = [
+      `Bouquet style: ${f.bouquet_style}`,
+      `Pet type: ${f.pet_type}`,
+      f.occasion.trim() ? `Occasion: ${f.occasion.trim()}` : null,
+      f.preferred_date ? `Preferred date: ${f.preferred_date}` : null,
+      "",
+      f.notes ? `Additional notes:\n${f.notes.trim()}` : null,
+    ].filter(Boolean).join("\n");
+    try {
+      const res = await fetch(`${API}/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: f.full_name.trim(),
+          email: f.email.trim(),
+          subject: `Bespoke Bouquet Request - ${f.bouquet_style}`,
+          message,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || "Unable to send your request. Please try again.");
+      }
+      setRequestSuccess(true);
+    } catch (err) {
+      setRequestError(err.message || "Something went wrong. Please try again.");
+    }
+    setRequestSubmitting(false);
+  };
+
   // Progress bar: starts at 20% minimum, scales to 100% at stockLimit orders
   const progressPercent = Math.min(100, Math.max(55, (orderCount / stockLimit) * 100));
   const spotsLeft = Math.max(0, stockLimit - orderCount);
@@ -210,6 +279,37 @@ export default function SubscriptionPage() {
           <p className="text-base md:text-xl font-light text-[#2C2C2C] max-w-2xl mx-auto mb-3">
             Luxury pet-safe bouquets delivered to your door. Safe for curious cats and dogs, beautifully arranged and always seasonal
           </p>
+        </div>
+
+        <div className="mb-12 sm:mb-16 animate-fade-in-up delay-50" data-testid="request-bouquet-hero">
+          <div className="relative bg-white border border-[#E5E0D6] rounded-2xl px-6 py-7 sm:px-10 sm:py-9 overflow-hidden">
+            <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-[#C4A2B0]/15 blur-2xl pointer-events-none" />
+            <div className="absolute -bottom-16 -left-12 w-44 h-44 rounded-full bg-[#8DA399]/10 blur-2xl pointer-events-none" />
+            <div className="relative flex flex-col md:flex-row md:items-center gap-5 md:gap-8">
+              <div className="flex items-center gap-3 md:gap-4">
+                <div className="w-11 h-11 flex-shrink-0 rounded-full bg-[#C4A2B0]/15 flex items-center justify-center">
+                  <Sparkles size={18} strokeWidth={1.5} className="text-[#C4A2B0]" />
+                </div>
+                <span className="md:hidden text-[10px] uppercase tracking-[0.3em] font-semibold text-[#C4A2B0]">Bespoke Bouquets</span>
+              </div>
+              <div className="flex-1">
+                <span className="hidden md:block text-[10px] uppercase tracking-[0.3em] font-semibold text-[#C4A2B0] mb-1.5">Bespoke Bouquets</span>
+                <h2 className="font-['Playfair_Display'] text-xl sm:text-2xl font-medium text-[#2C2C2C] mb-2 leading-tight">
+                  Looking for something specific? We'll create a bouquet around you.
+                </h2>
+                <p className="text-sm font-light text-[#6B7280] leading-relaxed">
+                  Tell us your preferred style, occasion, and pet at home, and we'll shape a seasonal pet-safe bouquet request with your space in mind.
+                </p>
+              </div>
+              <Button
+                onClick={openRequestDialog}
+                className="rounded-full bg-[#C4A2B0] text-white hover:bg-[#C4A2B0]/90 px-7 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105 flex-shrink-0 self-stretch md:self-auto"
+                data-testid="request-bouquet-hero-btn"
+              >
+                Request a bouquet <ArrowRight size={14} className="ml-2" />
+              </Button>
+            </div>
+          </div>
         </div>
 
         {loading ? (
@@ -475,6 +575,169 @@ export default function SubscriptionPage() {
                 Continue to Payment <ArrowRight size={14} className="ml-2" />
               </Button>
             </div>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={requestOpen} onOpenChange={(open) => !requestSubmitting && setRequestOpen(open)}>
+          <DialogContent className="bg-[#FAF9F6] max-w-md max-h-[90vh] overflow-y-auto" data-testid="request-bouquet-dialog">
+            <DialogHeader>
+              <DialogTitle className="font-['Playfair_Display'] text-2xl text-[#2C2C2C] font-medium">
+                Request a bespoke bouquet
+              </DialogTitle>
+              <DialogDescription className="text-sm font-light text-[#6B7280] pt-1">
+                Share the mood, pet, and occasion you have in mind and we'll come back with a seasonal, pet-safe bouquet suggestion.
+              </DialogDescription>
+            </DialogHeader>
+
+            {requestSuccess ? (
+              <div className="text-center py-6 animate-fade-in-up" data-testid="request-bouquet-success">
+                <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#8DA399]/15 mb-4">
+                  <CheckCircle2 size={28} strokeWidth={1.5} className="text-[#8DA399]" />
+                </div>
+                <h3 className="font-['Playfair_Display'] text-xl font-medium text-[#2C2C2C] mb-2">Request received</h3>
+                <p className="text-sm font-light text-[#6B7280] mb-6">
+                  Thanks {requestForm.full_name.split(" ")[0] || "lovely"}, we'll be in touch within 2 working days with something beautifully pet-safe.
+                </p>
+                <Button
+                  onClick={() => setRequestOpen(false)}
+                  className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-8 py-5 text-xs uppercase tracking-widest"
+                  data-testid="request-bouquet-close-btn"
+                >
+                  Close
+                </Button>
+              </div>
+            ) : (
+              <form onSubmit={submitRequest} className="space-y-4 mt-2">
+                <div>
+                  <Label htmlFor="rb-style" className="text-xs uppercase tracking-widest text-[#6B7280]">Bouquet style</Label>
+                  <select
+                    id="rb-style"
+                    value={requestForm.bouquet_style}
+                    onChange={(e) => setRequestForm({ ...requestForm, bouquet_style: e.target.value })}
+                    className="mt-1.5 w-full appearance-none border border-[#E5E0D6] rounded-md px-3 py-2.5 text-sm font-light text-[#2C2C2C] bg-white focus:outline-none focus:ring-1 focus:ring-[#8DA399]"
+                    required
+                    data-testid="request-bouquet-style"
+                  >
+                    <option value="">Select bouquet style...</option>
+                    <option value="Soft and romantic">Soft and romantic</option>
+                    <option value="Bright and joyful">Bright and joyful</option>
+                    <option value="Seasonal surprise">Seasonal surprise</option>
+                    <option value="Minimal and elegant">Minimal and elegant</option>
+                    <option value="Gift bouquet">Gift bouquet</option>
+                  </select>
+                </div>
+
+                <div>
+                  <Label htmlFor="rb-pet-type" className="text-xs uppercase tracking-widest text-[#6B7280]">Pet at home</Label>
+                  <select
+                    id="rb-pet-type"
+                    value={requestForm.pet_type}
+                    onChange={(e) => setRequestForm({ ...requestForm, pet_type: e.target.value })}
+                    className="mt-1.5 w-full appearance-none border border-[#E5E0D6] rounded-md px-3 py-2.5 text-sm font-light text-[#2C2C2C] bg-white focus:outline-none focus:ring-1 focus:ring-[#8DA399]"
+                    required
+                    data-testid="request-bouquet-pet-type"
+                  >
+                    <option value="">Select pet...</option>
+                    <option value="Cat">Cat</option>
+                    <option value="Dog">Dog</option>
+                    <option value="Cat and dog">Cat and dog</option>
+                    <option value="Petless">Petless</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <div>
+                  <Label htmlFor="rb-occasion" className="text-xs uppercase tracking-widest text-[#6B7280]">
+                    Occasion <span className="text-[10px] normal-case tracking-normal text-[#9CA3AF]">(optional)</span>
+                  </Label>
+                  <Input
+                    id="rb-occasion"
+                    value={requestForm.occasion}
+                    onChange={(e) => setRequestForm({ ...requestForm, occasion: e.target.value })}
+                    placeholder="Birthday, new home, just because..."
+                    className="mt-1.5 bg-white border-[#E5E0D6]"
+                    data-testid="request-bouquet-occasion"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="rb-date" className="text-xs uppercase tracking-widest text-[#6B7280]">
+                    Preferred date <span className="text-[10px] normal-case tracking-normal text-[#9CA3AF]">(optional)</span>
+                  </Label>
+                  <Input
+                    id="rb-date"
+                    type="date"
+                    value={requestForm.preferred_date}
+                    onChange={(e) => setRequestForm({ ...requestForm, preferred_date: e.target.value })}
+                    className="mt-1.5 bg-white border-[#E5E0D6]"
+                    data-testid="request-bouquet-date"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <Label htmlFor="rb-name" className="text-xs uppercase tracking-widest text-[#6B7280]">Your name</Label>
+                    <Input
+                      id="rb-name"
+                      value={requestForm.full_name}
+                      onChange={(e) => setRequestForm({ ...requestForm, full_name: e.target.value })}
+                      placeholder="Jane Doe"
+                      className="mt-1.5 bg-white border-[#E5E0D6]"
+                      required
+                      data-testid="request-bouquet-name"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="rb-email" className="text-xs uppercase tracking-widest text-[#6B7280]">Email</Label>
+                    <Input
+                      id="rb-email"
+                      type="email"
+                      value={requestForm.email}
+                      onChange={(e) => setRequestForm({ ...requestForm, email: e.target.value })}
+                      placeholder="you@example.com"
+                      className="mt-1.5 bg-white border-[#E5E0D6]"
+                      required
+                      data-testid="request-bouquet-email"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="rb-notes" className="text-xs uppercase tracking-widest text-[#6B7280]">
+                    Anything else <span className="text-[10px] normal-case tracking-normal text-[#9CA3AF]">(optional)</span>
+                  </Label>
+                  <Textarea
+                    id="rb-notes"
+                    value={requestForm.notes}
+                    onChange={(e) => setRequestForm({ ...requestForm, notes: e.target.value.slice(0, 800) })}
+                    placeholder="Colours, size, stems you love, pets who nibble everything..."
+                    className="mt-1.5 bg-white border-[#E5E0D6] min-h-[80px]"
+                    data-testid="request-bouquet-notes"
+                  />
+                  <p className="text-[10px] text-[#9CA3AF] mt-1 text-right">{requestForm.notes.length}/800</p>
+                </div>
+
+                {requestError && (
+                  <p className="text-sm text-red-500 font-light" data-testid="request-bouquet-error">{requestError}</p>
+                )}
+
+                <Button
+                  type="submit"
+                  disabled={requestSubmitting}
+                  className="w-full rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-8 py-6 text-xs uppercase tracking-widest"
+                  data-testid="request-bouquet-submit"
+                >
+                  {requestSubmitting ? (
+                    <><Loader2 size={14} className="mr-2 animate-spin" /> Sending request...</>
+                  ) : (
+                    <>Send request <ArrowRight size={14} className="ml-2" /></>
+                  )}
+                </Button>
+                <p className="text-[10px] text-[#9CA3AF] text-center font-light">
+                  We'll reply within 2 working days from info@petalandpaw.co.uk.
+                </p>
+              </form>
+            )}
           </DialogContent>
         </Dialog>
       </div>

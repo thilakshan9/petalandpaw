@@ -3,6 +3,7 @@ import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
 
 const GALLERY_IMAGES = [
+  { id: 21, src: "https://lh3.googleusercontent.com/d/1VsWiT5uJLVdAs71Nw8qLyOQlfxjrriFo", name: "Gallery" },
   { id: 1, src: "https://lh3.googleusercontent.com/d/1Ajc_BFBK7BLNzA9kS_Sq4POSj0bSPtuL", name: "Gallery" },
   { id: 2, src: "https://lh3.googleusercontent.com/d/1DHMIRqEqKT82vywOf77C5C_l4Ayj_UNT", name: "Gallery" },
   { id: 3, src: "https://lh3.googleusercontent.com/d/11qMT3JmsGJZCjyHUyiCNG_HnynZNs4SD", name: "Gallery" },
@@ -19,7 +20,6 @@ const GALLERY_IMAGES = [
   { id: 18, src: "https://lh3.googleusercontent.com/d/1mgijBhMeAaTNvqwLtPnpQagfQxGQNCuV", name: "Gallery" },
   { id: 19, src: "https://lh3.googleusercontent.com/d/1etfxf6RlBbP9iDi_anJwT8-_YqxDZM8b", name: "Gallery" },
   { id: 20, src: "https://lh3.googleusercontent.com/d/1UId0PM-fcLfbKhotrrqeS_Culq7LMb4m", name: "Gallery" },
-  { id: 21, src: "https://lh3.googleusercontent.com/d/1VsWiT5uJLVdAs71Nw8qLyOQlfxjrriFo", name: "Gallery" },
 ];
 
 export default function GalleryPage() {
