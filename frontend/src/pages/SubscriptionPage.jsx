@@ -210,9 +210,6 @@ export default function SubscriptionPage() {
           <p className="text-base md:text-xl font-light text-[#2C2C2C] max-w-2xl mx-auto mb-3">
             Luxury pet-safe bouquets delivered to your door. Safe for curious cats and dogs, beautifully arranged and always seasonal
           </p>
-          <p className="text-sm md:text-lg font-light text-[#6B7280] max-w-xl mx-auto">
-            Fresh, pet-safe flowers delivered monthly. Every bouquet is a surprise and changes with the seasons. Cancel anytime.
-          </p>
         </div>
 
         {loading ? (
@@ -328,7 +325,7 @@ export default function SubscriptionPage() {
 
                   {selectedMode === "subscription" ? (
                     <p className="text-xs font-light text-[#6B7280] mb-4" data-testid={`subscription-note-${plan.slug}`}>
-                      Subscriptions are delivered on the same date each month. <span className="text-[#8DA399]">Cancel anytime.</span>
+                      Subscriptions are delivered at the end of every month. <span className="text-[#8DA399]">Cancel anytime.</span>
                     </p>
                   ) : (
                     <div className="mb-4" data-testid={`delivery-date-${plan.slug}`}>
