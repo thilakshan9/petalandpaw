@@ -2089,12 +2089,12 @@ async def seed_data():
              "description": "Our most popular bouquet, handcrafted using seasonal pet-safe flowers and delivered fresh to your door every month.",
              "price": 54.99, "frequency": "monthly", "stock_limit": 60, "pet_toy_price": 8.99,
              "image_url": "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=800",
-             "features": ["Biodegradable packaging", "Free delivery", "Seasonal variety", "Care guide included"]},
+             "features": ["Free delivery", "Biodegradable packaging", "Seasonal variety", "Care guide included"]},
             {"id": str(uuid.uuid4()), "name": "Grand Garden", "slug": "grand-garden",
              "description": "Our extra large monthly arrangement with premium pet-safe flowers.",
              "price": 74.99, "frequency": "monthly",
              "image_url": "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=800",
-             "features": ["Biodegradable packaging", "Free delivery", "More variety and volume", "Signature wrapping upgrade", "Care guide included"], "pet_toy_price": 8.99},
+             "features": ["Free delivery", "Biodegradable packaging", "More variety and volume", "Signature wrapping upgrade", "Care guide included"], "pet_toy_price": 8.99},
         ]
         await db.subscription_plans.insert_many(plans)
         logger.info("Seeded subscription plans")
@@ -2108,7 +2108,7 @@ async def seed_data():
     )
     await db.subscription_plans.update_one(
         {"slug": "classic-bloom"},
-        {"$set": {"features": ["Biodegradable packaging", "Free delivery", "Seasonal variety", "Care guide included"], "stock_limit": 60, "pet_toy_price": 8.99,
+        {"$set": {"features": ["Free delivery", "Biodegradable packaging", "Seasonal variety", "Care guide included"], "stock_limit": 60, "pet_toy_price": 8.99,
                   "price": 54.99,
                   "name": "Signature Selection",
                   "description": "Our most popular bouquet, handcrafted using seasonal pet-safe flowers and delivered fresh to your door every month.",
@@ -2116,7 +2116,7 @@ async def seed_data():
     )
     await db.subscription_plans.update_one(
         {"slug": "grand-garden"},
-        {"$set": {"features": ["Biodegradable packaging", "Free delivery", "More variety and volume", "Signature wrapping upgrade", "Care guide included"], "pet_toy_price": 8.99,
+        {"$set": {"features": ["Free delivery", "Biodegradable packaging", "More variety and volume", "Signature wrapping upgrade", "Care guide included"], "pet_toy_price": 8.99,
                   "price": 74.99,
                   "description": "Our extra large monthly arrangement with premium pet-safe flowers.",
                   "image_url": "https://lh3.googleusercontent.com/d/1xHzmP0017rCugQvuYkdRPVmR7IQVTPKJ=w800"}}

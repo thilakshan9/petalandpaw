@@ -19,6 +19,7 @@ const GALLERY_IMAGES = [
   { id: 18, src: "https://lh3.googleusercontent.com/d/1mgijBhMeAaTNvqwLtPnpQagfQxGQNCuV", name: "Gallery" },
   { id: 19, src: "https://lh3.googleusercontent.com/d/1etfxf6RlBbP9iDi_anJwT8-_YqxDZM8b", name: "Gallery" },
   { id: 20, src: "https://lh3.googleusercontent.com/d/1UId0PM-fcLfbKhotrrqeS_Culq7LMb4m", name: "Gallery" },
+  { id: 21, src: "https://lh3.googleusercontent.com/d/1VsWiT5uJLVdAs71Nw8qLyOQlfxjrriFo", name: "Gallery" },
 ];
 
 export default function GalleryPage() {
@@ -66,7 +67,7 @@ export default function GalleryPage() {
           <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-2 sm:mb-3 block">Inspiration</span>
           <h1 className="font-['Playfair_Display'] text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-medium tracking-tight text-[#2C2C2C]">Gallery</h1>
           <p className="text-sm md:text-lg font-light text-[#6B7280] mt-3 sm:mt-4 max-w-lg">
-            Take a look at some of the bouquets that could potentially be getting shipped to you. Every arrangement is handcrafted and 100% pet-safe.
+            Sneak peek into our pet-safe bouquets, seasonal arrangements, and happy pets enjoying flowers made with curious cats and dogs in mind.
           </p>
         </div>
 
