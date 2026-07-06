@@ -14,7 +14,7 @@ export const WORKSHOPS = [
     ],
     included: ["Your bouquet to take home", "Free Drink", "Dog Treat"],
     accent: "#B8926A",
-    image: "https://lh3.googleusercontent.com/d/1Ajc_BFBK7BLNzA9kS_Sq4POSj0bSPtuL=w800",
+    image: "https://lh3.googleusercontent.com/d/1DHMIRqEqKT82vywOf77C5C_l4Ayj_UNT=w800",
     bookingType: "external",
     bookingUrl: "https://kingsdogdaycare.replit.app/events",
     status: "live",

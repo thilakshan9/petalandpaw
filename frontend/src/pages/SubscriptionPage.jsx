@@ -22,8 +22,8 @@ export default function SubscriptionPage() {
   const [petToy, setPetToy] = useState({});
   const [emailDialog, setEmailDialog] = useState(null);
   const [customerEmail, setCustomerEmail] = useState("");
-  const [preOrderExpanded, setPreOrderExpanded] = useState(null);
   const [orderType, setOrderType] = useState(null);
+  const [purchaseMode, setPurchaseMode] = useState({});
   const [personalizedMessage, setPersonalizedMessage] = useState("");
   const [guestDialog, setGuestDialog] = useState(null);
   const [petType, setPetType] = useState({});
@@ -91,6 +91,10 @@ export default function SubscriptionPage() {
     }
     // Enforce 3-day minimum on preferred delivery date (mobile Safari ignores HTML5 min)
     const dDate = deliveryDate[planId];
+    if (type === "one-time" && !dDate) {
+      toast.error("Please choose your preferred delivery date.");
+      return;
+    }
     if (dDate) {
       const picked = new Date(dDate + "T00:00:00");
       const minDate = new Date();
@@ -154,7 +158,7 @@ export default function SubscriptionPage() {
           personalized_message: personalizedMessage,
           pet_type: petType[planId] || "",
           pet_type_other: petTypeOther[planId] || "",
-          delivery_date: deliveryDate[planId] || "",
+          delivery_date: orderType === "one-time" ? deliveryDate[planId] || "" : "",
         }),
       });
       const data = await res.json();
@@ -164,7 +168,8 @@ export default function SubscriptionPage() {
         if (plan) {
           const toyOn = !!petToy[planId];
           const toyPrice = plan.pet_toy_price || 8.99;
-          const price = toyOn ? plan.price + toyPrice : plan.price;
+          const basePrice = orderType === "subscription" ? plan.price * 0.9 : plan.price;
+          const price = toyOn ? basePrice + toyPrice : basePrice;
           const cartItem = {
             product_id: planId,
             name: plan.name + (toyOn ? " + Pet Toy" : ""),
@@ -202,6 +207,9 @@ export default function SubscriptionPage() {
           <h1 className="font-['Playfair_Display'] text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-medium tracking-tight text-[#2C2C2C] mb-3 sm:mb-4">
             Shop
           </h1>
+          <p className="text-base md:text-xl font-light text-[#2C2C2C] max-w-2xl mx-auto mb-3">
+            Luxury pet-safe bouquets delivered to your door. Safe for curious cats and dogs, beautifully arranged and always seasonal
+          </p>
           <p className="text-sm md:text-lg font-light text-[#6B7280] max-w-xl mx-auto">
             Fresh, pet-safe flowers delivered monthly. Every bouquet is a surprise and changes with the seasons. Cancel anytime.
           </p>
@@ -217,8 +225,16 @@ export default function SubscriptionPage() {
               const isPop = plan.slug === "classic-bloom";
               const toyOn = !!petToy[plan.id];
               const toyPrice = plan.pet_toy_price || 8.99;
-              const displayPrice = toyOn ? plan.price + toyPrice : plan.price;
+              const selectedMode = purchaseMode[plan.id] || "subscription";
+              const oneTimePrice = plan.price;
+              const subscriptionPrice = plan.price * 0.9;
+              const displayBasePrice = selectedMode === "subscription" ? subscriptionPrice : oneTimePrice;
+              const displayPrice = toyOn ? displayBasePrice + toyPrice : displayBasePrice;
               const selectedPet = petType[plan.id] || "";
+              const planName = isPop ? "Signature Selection" : plan.name;
+              const planDescription = isPop
+                ? "Our most popular bouquet, handcrafted using seasonal pet-safe flowers and delivered fresh to your door every month."
+                : plan.description;
               return (
                 <div
                   key={plan.id}
@@ -234,16 +250,20 @@ export default function SubscriptionPage() {
                     </span>
                   )}
                   <div className="aspect-[4/5] rounded-xl overflow-hidden mb-6 bg-[#F2F0EB] relative">
-                    <img src={plan.image_url} alt={plan.name} className="w-full h-full object-cover object-center scale-125" />
+                    <img src={plan.image_url} alt={planName} className="w-full h-full object-cover object-center scale-125" />
                     <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-[10px] uppercase tracking-widest font-semibold text-[#2C2C2C] px-3 py-1 rounded-full">Last Month</span>
                   </div>
-                  <h3 className="font-['Playfair_Display'] text-2xl font-medium text-[#2C2C2C] mb-2">{plan.name}</h3>
-                  <div className="flex items-baseline gap-1 mb-1">
+                  <h3 className="font-['Playfair_Display'] text-2xl font-medium text-[#2C2C2C] mb-2">{planName}</h3>
+                  <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 mb-1">
+                    {selectedMode === "subscription" && (
+                      <span className="text-sm font-light text-[#9CA3AF] line-through">£{(toyOn ? oneTimePrice + toyPrice : oneTimePrice).toFixed(2)}</span>
+                    )}
                     <span className="text-3xl font-light text-[#2C2C2C]">£{displayPrice.toFixed(2)}</span>
-                    <span className="text-sm font-light text-[#6B7280]">/month</span>
+                    <span className="text-sm font-light text-[#6B7280]">{selectedMode === "subscription" ? "/month" : "one-time"}</span>
                   </div>
+                  {selectedMode === "subscription" && <span className="text-xs text-[#8DA399] font-light mb-1">Save 10% with a subscription</span>}
                   {toyOn && <span className="text-xs text-[#8DA399] font-light mb-3">includes pet toy (+£{toyPrice.toFixed(2)})</span>}
-                  <p className="text-sm font-light text-[#6B7280] mb-6">{plan.description}</p>
+                  <p className="text-sm font-light text-[#6B7280] mb-6">{planDescription}</p>
 
                   <ul className="space-y-3 mb-6 flex-1">
                     {plan.features?.map((f) => (
@@ -283,33 +303,61 @@ export default function SubscriptionPage() {
                     )}
                   </div>
 
-                  {/* Delivery Date */}
-                  <div className="mb-4" data-testid={`delivery-date-${plan.slug}`}>
-                    <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Preferred Delivery Date</label>
-                    <input
-                      type="date"
-                      value={deliveryDate[plan.id] || ""}
-                      min={new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        if (!v) { setDeliveryDate({ ...deliveryDate, [plan.id]: "" }); return; }
-                        // Mobile Safari ignores `min`, so re-validate here
-                        const picked = new Date(v + "T00:00:00");
-                        const minDate = new Date();
-                        minDate.setHours(0, 0, 0, 0);
-                        minDate.setDate(minDate.getDate() + 3);
-                        if (picked < minDate) {
-                          toast.error("Please choose a date at least 3 days from today.");
-                          setDeliveryDate({ ...deliveryDate, [plan.id]: "" });
-                          return;
-                        }
-                        setDeliveryDate({ ...deliveryDate, [plan.id]: v });
-                      }}
-                      className="w-full border border-[#E5E0D6] rounded-lg px-3 py-2.5 text-sm font-light text-[#2C2C2C] bg-white focus:outline-none focus:ring-1 focus:ring-[#8DA399]"
-                      data-testid={`delivery-date-input-${plan.slug}`}
-                    />
-                    <p className="text-[10px] text-[#9CA3AF] mt-1">Minimum 3 days notice required</p>
+                  <div className="grid grid-cols-2 gap-1 rounded-full bg-[#F2F0EB] p-1 mb-4" data-testid={`purchase-toggle-${plan.slug}`}>
+                    <button
+                      type="button"
+                      onClick={() => setPurchaseMode({ ...purchaseMode, [plan.id]: "subscription" })}
+                      className={`rounded-full px-3 py-2 text-[10px] sm:text-xs uppercase tracking-widest transition-colors ${
+                        selectedMode === "subscription" ? "bg-white text-[#2C2C2C] shadow-sm" : "text-[#6B7280]"
+                      }`}
+                      data-testid={`mode-subscription-${plan.slug}`}
+                    >
+                      Subscribe
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPurchaseMode({ ...purchaseMode, [plan.id]: "one-time" })}
+                      className={`rounded-full px-3 py-2 text-[10px] sm:text-xs uppercase tracking-widest transition-colors ${
+                        selectedMode === "one-time" ? "bg-white text-[#2C2C2C] shadow-sm" : "text-[#6B7280]"
+                      }`}
+                      data-testid={`mode-one-time-${plan.slug}`}
+                    >
+                      One-Time
+                    </button>
                   </div>
+
+                  {selectedMode === "subscription" ? (
+                    <p className="text-xs font-light text-[#6B7280] mb-4" data-testid={`subscription-note-${plan.slug}`}>
+                      Subscriptions are delivered on the same date each month. <span className="text-[#8DA399]">Cancel anytime.</span>
+                    </p>
+                  ) : (
+                    <div className="mb-4" data-testid={`delivery-date-${plan.slug}`}>
+                      <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Preferred Delivery Date</label>
+                      <input
+                        type="date"
+                        value={deliveryDate[plan.id] || ""}
+                        min={new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          if (!v) { setDeliveryDate({ ...deliveryDate, [plan.id]: "" }); return; }
+                          // Mobile Safari ignores `min`, so re-validate here
+                          const picked = new Date(v + "T00:00:00");
+                          const minDate = new Date();
+                          minDate.setHours(0, 0, 0, 0);
+                          minDate.setDate(minDate.getDate() + 3);
+                          if (picked < minDate) {
+                            toast.error("Please choose a date at least 3 days from today.");
+                            setDeliveryDate({ ...deliveryDate, [plan.id]: "" });
+                            return;
+                          }
+                          setDeliveryDate({ ...deliveryDate, [plan.id]: v });
+                        }}
+                        className="w-full border border-[#E5E0D6] rounded-lg px-3 py-2.5 text-sm font-light text-[#2C2C2C] bg-white focus:outline-none focus:ring-1 focus:ring-[#8DA399]"
+                        data-testid={`delivery-date-input-${plan.slug}`}
+                      />
+                      <p className="text-[10px] text-[#9CA3AF] mt-1">One-time orders are delivered on your chosen date. Minimum 3 days notice required.</p>
+                    </div>
+                  )}
 
                   {/* Pet Toy Add-on */}
                   <div className="flex items-center justify-between bg-[#F2F0EB]/60 rounded-xl px-4 py-3 mb-6" data-testid={`pet-toy-toggle-${plan.slug}`}>
@@ -324,27 +372,14 @@ export default function SubscriptionPage() {
                     />
                   </div>
 
-                  {/* Buttons per plan type */}
-                  {/* Subscribe / One-time buttons */}
-                  <div className="flex flex-col gap-2 w-full">
-                    <Button
-                      onClick={() => handleSubscribeClick(plan.id, "subscription")}
-                      disabled={subscribing === plan.id}
-                      className="rounded-full px-8 py-6 text-sm uppercase tracking-widest transition-all hover:scale-105 w-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90"
-                      data-testid={`subscribe-${plan.slug}`}
-                    >
-                      {subscribing === plan.id ? "Processing..." : "Subscribe"} <ArrowRight size={14} className="ml-2" />
-                    </Button>
-                    <Button
-                      onClick={() => handleSubscribeClick(plan.id, "one-time")}
-                      disabled={subscribing === plan.id}
-                      variant="outline"
-                      className="rounded-full px-8 py-6 text-sm uppercase tracking-widest transition-all hover:scale-105 w-full border-[#8DA399] text-[#8DA399] hover:bg-[#8DA399] hover:text-white"
-                      data-testid={`one-time-${plan.slug}`}
-                    >
-                      {subscribing === plan.id ? "Processing..." : "One-Time Purchase"} <ArrowRight size={14} className="ml-2" />
-                    </Button>
-                  </div>
+                  <Button
+                    onClick={() => handleSubscribeClick(plan.id, selectedMode)}
+                    disabled={subscribing === plan.id}
+                    className="rounded-full px-8 py-6 text-sm uppercase tracking-widest transition-all hover:scale-105 w-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90"
+                    data-testid={selectedMode === "subscription" ? `subscribe-${plan.slug}` : `one-time-${plan.slug}`}
+                  >
+                    {subscribing === plan.id ? "Processing..." : selectedMode === "subscription" ? "Subscribe & Save" : "One-Time Purchase"} <ArrowRight size={14} className="ml-2" />
+                  </Button>
                   <Button
                     onClick={() => {
                       const selectedPet = petType[plan.id] || "";
@@ -352,15 +387,15 @@ export default function SubscriptionPage() {
                       if (selectedPet === "other" && !(petTypeOther[plan.id] || "").trim()) { toast.error("Please enter your pet type"); return; }
                       addToCart({
                         product_id: plan.id,
-                        name: plan.name + (toyOn ? " + Pet Toy" : ""),
-                        price: displayPrice,
+                        name: planName + (toyOn ? " + Pet Toy" : ""),
+                        price: toyOn ? oneTimePrice + toyPrice : oneTimePrice,
                         quantity: 1,
                         image_url: plan.image_url,
                         plan_slug: plan.slug,
                         pet_type: selectedPet === "other" ? petTypeOther[plan.id] : selectedPet,
                         add_pet_toy: toyOn,
                       });
-                      toast.success(`${plan.name} added to basket`);
+                      toast.success(`${planName} added to basket`);
                     }}
                     variant="ghost"
                     className="rounded-full px-6 py-5 text-xs uppercase tracking-widest w-full text-[#6B7280] hover:text-[#2C2C2C] hover:bg-[#F2F0EB] mt-2"
@@ -368,7 +403,9 @@ export default function SubscriptionPage() {
                   >
                     <ShoppingBag size={14} className="mr-2" /> Add to Basket
                   </Button>
-                  <p className="text-xs font-light text-[#6B7280] text-center mt-2" data-testid="order-deadline">Order by the 26th for this month's delivery</p>
+                  <p className="text-xs font-light text-[#6B7280] text-center mt-2" data-testid="order-deadline">
+                    {selectedMode === "subscription" ? "Cancel anytime" : "Order by the 26th for this month's delivery"}
+                  </p>
                 </div>
               );
             })}

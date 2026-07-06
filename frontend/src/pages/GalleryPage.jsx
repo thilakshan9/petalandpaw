@@ -12,13 +12,13 @@ const GALLERY_IMAGES = [
   { id: 7, src: "https://lh3.googleusercontent.com/d/1NtfK2F7T9s1GcGqU0PsK8OcQBtj2eznC", name: "Gallery" },
   { id: 8, src: "https://lh3.googleusercontent.com/d/1sa4gz3Rb6uO8Agc3Y1fwsaGIT9UlekJn", name: "Gallery" },
   { id: 9, src: "https://lh3.googleusercontent.com/d/1E8vfkUVfUfBPJrxtY6SjswnMfrzxY9Tp", name: "Gallery" },
-  { id: 10, src: "https://lh3.googleusercontent.com/d/1pvRya4Mf7MNYn2bZZWXf78Zsl-l31n4y", name: "Gallery" },
-  { id: 11, src: "https://lh3.googleusercontent.com/d/1rn5Vk3psbpdD8IckBL4mkb9gWAT-jVMu", name: "Gallery" },
-  { id: 12, src: "https://lh3.googleusercontent.com/d/1p7NRwL2MISSKI8lmndAg2yHJ_Q1nv09Y", name: "Gallery" },
   { id: 13, src: "https://lh3.googleusercontent.com/d/1Pwy6ZZbUwDnNeoDlcLbOGwVBPfcjwk39", name: "Gallery" },
   { id: 14, src: "https://lh3.googleusercontent.com/d/1gHZ1JMFc4x1_vmoJb27QobEQpfHVNl2P", name: "Gallery" },
-  { id: 15, src: "https://lh3.googleusercontent.com/d/10ZfxvDRc93OzzvXVJrNqnoShsVEDOMB-", name: "Gallery" },
   { id: 16, src: "https://lh3.googleusercontent.com/d/1FoeVcqPJ5-6036Y0JwV4_UhBrEM0EWjL", name: "Gallery" },
+  { id: 17, src: "https://lh3.googleusercontent.com/d/1EkWGa7V1JU7xAbQDpFigeJp54T_JO3qF", name: "Gallery" },
+  { id: 18, src: "https://lh3.googleusercontent.com/d/1mgijBhMeAaTNvqwLtPnpQagfQxGQNCuV", name: "Gallery" },
+  { id: 19, src: "https://lh3.googleusercontent.com/d/1etfxf6RlBbP9iDi_anJwT8-_YqxDZM8b", name: "Gallery" },
+  { id: 20, src: "https://lh3.googleusercontent.com/d/1UId0PM-fcLfbKhotrrqeS_Culq7LMb4m", name: "Gallery" },
 ];
 
 export default function GalleryPage() {

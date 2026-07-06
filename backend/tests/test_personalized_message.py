@@ -18,9 +18,9 @@ class TestSubscriptionCheckoutPersonalizedMessage:
         assert response.status_code == 200, "Failed to fetch subscription plans"
         plans = response.json()
         assert len(plans) > 0, "No subscription plans found"
-        # Use Classic Bloom plan (the one with Pre-Order button)
-        self.classic_bloom_plan = next((p for p in plans if p['slug'] == 'classic-bloom'), plans[0])
-        self.plan_id = self.classic_bloom_plan['id']
+        # Use the signature plan for subscription checkout coverage.
+        self.signature_plan = next((p for p in plans if p['slug'] == 'classic-bloom'), plans[0])
+        self.plan_id = self.signature_plan['id']
     
     def test_subscription_checkout_with_personalized_message(self):
         """Test subscription checkout accepts personalized_message and creates Stripe session"""
@@ -238,10 +238,11 @@ class TestAPIEndpointsHealth:
         assert isinstance(plans, list)
         assert len(plans) >= 3, "Should have at least 3 subscription plans"
         
-        # Verify Classic Bloom exists (the one with Pre-Order)
-        classic_bloom = next((p for p in plans if p['slug'] == 'classic-bloom'), None)
-        assert classic_bloom is not None, "Classic Bloom plan should exist"
-        print(f"SUCCESS: Found {len(plans)} subscription plans including Classic Bloom")
+        # Verify Signature Selection exists.
+        signature_selection = next((p for p in plans if p['slug'] == 'classic-bloom'), None)
+        assert signature_selection is not None, "Signature Selection plan should exist"
+        assert signature_selection["name"] == "Signature Selection"
+        print(f"SUCCESS: Found {len(plans)} subscription plans including Signature Selection")
     
     def test_products_endpoint(self):
         """Verify products endpoint returns data"""

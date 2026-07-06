@@ -772,7 +772,10 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
             raise
         except ValueError:
             raise HTTPException(status_code=400, detail="Invalid delivery date format")
+    is_recurring = req.checkout_mode == "subscription"
     total = float(plan.get("price", 0))
+    if is_recurring:
+        total = round(total * 0.9, 2)
     if total < 0.30:
         logger.error(f"Plan price too low: {plan.get('name')} = £{total}. Plan data: {plan}")
         raise HTTPException(status_code=400, detail=f"Plan price (£{total:.2f}) is below Stripe minimum (£0.30). Please check plan configuration.")
@@ -783,7 +786,6 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
     success_url = f"{req.origin_url}/checkout/success?session_id={{CHECKOUT_SESSION_ID}}"
     cancel_url = f"{req.origin_url}/subscriptions"
     try:
-        is_recurring = req.checkout_mode == "subscription"
         price_data = {
             "currency": "gbp",
             "unit_amount": int(total * 100),
@@ -2083,8 +2085,8 @@ async def seed_data():
              "price": 29.99, "frequency": "monthly",
              "image_url": "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=800",
              "features": ["Letterbox friendly", "Free delivery", "Biodegradable packaging", "Care guide included"], "pet_toy_price": 8.99},
-            {"id": str(uuid.uuid4()), "name": "Classic Bloom", "slug": "classic-bloom",
-             "description": "A large, hand-tied monthly bouquet of curated pet-safe flowers, delivered to your door.",
+            {"id": str(uuid.uuid4()), "name": "Signature Selection", "slug": "classic-bloom",
+             "description": "Our most popular bouquet, handcrafted using seasonal pet-safe flowers and delivered fresh to your door every month.",
              "price": 54.99, "frequency": "monthly", "stock_limit": 60, "pet_toy_price": 8.99,
              "image_url": "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=800",
              "features": ["Biodegradable packaging", "Free delivery", "Seasonal variety", "Care guide included"]},
@@ -2108,7 +2110,8 @@ async def seed_data():
         {"slug": "classic-bloom"},
         {"$set": {"features": ["Biodegradable packaging", "Free delivery", "Seasonal variety", "Care guide included"], "stock_limit": 60, "pet_toy_price": 8.99,
                   "price": 54.99,
-                  "description": "A large, hand-tied monthly bouquet of curated pet-safe flowers, delivered to your door.",
+                  "name": "Signature Selection",
+                  "description": "Our most popular bouquet, handcrafted using seasonal pet-safe flowers and delivered fresh to your door every month.",
                   "image_url": "https://lh3.googleusercontent.com/d/10eVZW0mATKtuTyfynNGdbw7e1j_oGM79=w800"}}
     )
     await db.subscription_plans.update_one(
