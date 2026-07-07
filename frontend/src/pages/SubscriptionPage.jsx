@@ -41,7 +41,6 @@ export default function SubscriptionPage() {
     preferred_date: "",
     full_name: "",
     email: "",
-    notes: "",
   });
   const [requestSubmitting, setRequestSubmitting] = useState(false);
   const [requestError, setRequestError] = useState("");
@@ -217,7 +216,6 @@ export default function SubscriptionPage() {
       preferred_date: "",
       full_name: customer?.name || "",
       email: customer?.email || "",
-      notes: "",
     });
     setRequestError("");
     setRequestSuccess(false);
@@ -227,19 +225,17 @@ export default function SubscriptionPage() {
   const submitRequest = async (e) => {
     e.preventDefault();
     const f = requestForm;
-    if (!f.bouquet_style || !f.pet_type || !f.full_name.trim() || !f.email.trim()) {
+    if (!f.bouquet_style.trim() || !f.pet_type || !f.full_name.trim() || !f.email.trim()) {
       setRequestError("Please fill in the required fields.");
       return;
     }
     setRequestSubmitting(true);
     setRequestError("");
     const message = [
-      `Bouquet style: ${f.bouquet_style}`,
+      `Bouquet style: ${f.bouquet_style.trim()}`,
       `Pet type: ${f.pet_type}`,
       f.occasion.trim() ? `Occasion: ${f.occasion.trim()}` : null,
       f.preferred_date ? `Preferred date: ${f.preferred_date}` : null,
-      "",
-      f.notes ? `Additional notes:\n${f.notes.trim()}` : null,
     ].filter(Boolean).join("\n");
     try {
       const res = await fetch(`${API}/contact`, {
@@ -248,7 +244,7 @@ export default function SubscriptionPage() {
         body: JSON.stringify({
           name: f.full_name.trim(),
           email: f.email.trim(),
-          subject: `Bespoke Bouquet Request - ${f.bouquet_style}`,
+          subject: `Bespoke Bouquet Request - ${f.bouquet_style.trim()}`,
           message,
         }),
       });
@@ -611,25 +607,6 @@ export default function SubscriptionPage() {
             ) : (
               <form onSubmit={submitRequest} className="space-y-4 mt-2">
                 <div>
-                  <Label htmlFor="rb-style" className="text-xs uppercase tracking-widest text-[#6B7280]">Bouquet style</Label>
-                  <select
-                    id="rb-style"
-                    value={requestForm.bouquet_style}
-                    onChange={(e) => setRequestForm({ ...requestForm, bouquet_style: e.target.value })}
-                    className="mt-1.5 w-full appearance-none border border-[#E5E0D6] rounded-md px-3 py-2.5 text-sm font-light text-[#2C2C2C] bg-white focus:outline-none focus:ring-1 focus:ring-[#8DA399]"
-                    required
-                    data-testid="request-bouquet-style"
-                  >
-                    <option value="">Select bouquet style...</option>
-                    <option value="Soft and romantic">Soft and romantic</option>
-                    <option value="Bright and joyful">Bright and joyful</option>
-                    <option value="Seasonal surprise">Seasonal surprise</option>
-                    <option value="Minimal and elegant">Minimal and elegant</option>
-                    <option value="Gift bouquet">Gift bouquet</option>
-                  </select>
-                </div>
-
-                <div>
                   <Label htmlFor="rb-pet-type" className="text-xs uppercase tracking-widest text-[#6B7280]">Pet at home</Label>
                   <select
                     id="rb-pet-type"
@@ -656,7 +633,7 @@ export default function SubscriptionPage() {
                     id="rb-occasion"
                     value={requestForm.occasion}
                     onChange={(e) => setRequestForm({ ...requestForm, occasion: e.target.value })}
-                    placeholder="Birthday, new home, just because..."
+                    placeholder="Bridal, birthday, new home, just because..."
                     className="mt-1.5 bg-white border-[#E5E0D6]"
                     data-testid="request-bouquet-occasion"
                   />
@@ -705,18 +682,17 @@ export default function SubscriptionPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor="rb-notes" className="text-xs uppercase tracking-widest text-[#6B7280]">
-                    Anything else <span className="text-[10px] normal-case tracking-normal text-[#9CA3AF]">(optional)</span>
-                  </Label>
+                  <Label htmlFor="rb-style" className="text-xs uppercase tracking-widest text-[#6B7280]">Bouquet style</Label>
                   <Textarea
-                    id="rb-notes"
-                    value={requestForm.notes}
-                    onChange={(e) => setRequestForm({ ...requestForm, notes: e.target.value.slice(0, 800) })}
+                    id="rb-style"
+                    value={requestForm.bouquet_style}
+                    onChange={(e) => setRequestForm({ ...requestForm, bouquet_style: e.target.value.slice(0, 800) })}
                     placeholder="Colours, size, stems you love, pets who nibble everything..."
                     className="mt-1.5 bg-white border-[#E5E0D6] min-h-[80px]"
-                    data-testid="request-bouquet-notes"
+                    required
+                    data-testid="request-bouquet-style"
                   />
-                  <p className="text-[10px] text-[#9CA3AF] mt-1 text-right">{requestForm.notes.length}/800</p>
+                  <p className="text-[10px] text-[#9CA3AF] mt-1 text-right">{requestForm.bouquet_style.length}/800</p>
                 </div>
 
                 {requestError && (

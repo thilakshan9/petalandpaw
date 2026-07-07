@@ -67,6 +67,7 @@ export default function EventsPage() {
                 <li className="flex items-start gap-2"><span className="text-[#8DA399] mt-0.5">-</span> Bridal and bridesmaid bouquets</li>
                 <li className="flex items-start gap-2"><span className="text-[#8DA399] mt-0.5">-</span> Birthday and celebration flowers</li>
                 <li className="flex items-start gap-2"><span className="text-[#8DA399] mt-0.5">-</span> Corporate event florals</li>
+                <li className="flex items-start gap-2"><span className="text-[#8DA399] mt-0.5">-</span> Private workshops and private flower arranging classes</li>
                 <li className="flex items-start gap-2"><span className="text-[#8DA399] mt-0.5">-</span> Pet-safe options available on request</li>
               </ul>
             </div>
