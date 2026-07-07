@@ -36,7 +36,6 @@ export default function SubscriptionPage() {
   const [requestOpen, setRequestOpen] = useState(false);
   const [requestForm, setRequestForm] = useState({
     bouquet_style: "",
-    pet_type: "",
     occasion: "",
     preferred_date: "",
     full_name: "",
@@ -211,7 +210,6 @@ export default function SubscriptionPage() {
   const openRequestDialog = () => {
     setRequestForm({
       bouquet_style: "",
-      pet_type: "",
       occasion: "",
       preferred_date: "",
       full_name: customer?.name || "",
@@ -225,7 +223,7 @@ export default function SubscriptionPage() {
   const submitRequest = async (e) => {
     e.preventDefault();
     const f = requestForm;
-    if (!f.bouquet_style.trim() || !f.pet_type || !f.full_name.trim() || !f.email.trim()) {
+    if (!f.bouquet_style.trim() || !f.full_name.trim() || !f.email.trim()) {
       setRequestError("Please fill in the required fields.");
       return;
     }
@@ -233,7 +231,6 @@ export default function SubscriptionPage() {
     setRequestError("");
     const message = [
       `Bouquet style: ${f.bouquet_style.trim()}`,
-      `Pet type: ${f.pet_type}`,
       f.occasion.trim() ? `Occasion: ${f.occasion.trim()}` : null,
       f.preferred_date ? `Preferred date: ${f.preferred_date}` : null,
     ].filter(Boolean).join("\n");
@@ -582,9 +579,6 @@ export default function SubscriptionPage() {
               <DialogTitle className="font-['Playfair_Display'] text-2xl text-[#2C2C2C] font-medium">
                 Request a bespoke bouquet
               </DialogTitle>
-              <DialogDescription className="text-sm font-light text-[#6B7280] pt-1">
-                Share the mood, pet, and occasion you have in mind and we'll come back with a seasonal, pet-safe bouquet suggestion.
-              </DialogDescription>
             </DialogHeader>
 
             {requestSuccess ? (
@@ -594,7 +588,7 @@ export default function SubscriptionPage() {
                 </div>
                 <h3 className="font-['Playfair_Display'] text-xl font-medium text-[#2C2C2C] mb-2">Request received</h3>
                 <p className="text-sm font-light text-[#6B7280] mb-6">
-                  Thanks {requestForm.full_name.split(" ")[0] || "lovely"}, we'll be in touch within 2 working days with something beautifully pet-safe.
+                  Thanks {requestForm.full_name.split(" ")[0] || "lovely"}, we'll be in touch within 2 working days with something beautiful.
                 </p>
                 <Button
                   onClick={() => setRequestOpen(false)}
@@ -606,25 +600,6 @@ export default function SubscriptionPage() {
               </div>
             ) : (
               <form onSubmit={submitRequest} className="space-y-4 mt-2">
-                <div>
-                  <Label htmlFor="rb-pet-type" className="text-xs uppercase tracking-widest text-[#6B7280]">Pet at home</Label>
-                  <select
-                    id="rb-pet-type"
-                    value={requestForm.pet_type}
-                    onChange={(e) => setRequestForm({ ...requestForm, pet_type: e.target.value })}
-                    className="mt-1.5 w-full appearance-none border border-[#E5E0D6] rounded-md px-3 py-2.5 text-sm font-light text-[#2C2C2C] bg-white focus:outline-none focus:ring-1 focus:ring-[#8DA399]"
-                    required
-                    data-testid="request-bouquet-pet-type"
-                  >
-                    <option value="">Select pet...</option>
-                    <option value="Cat">Cat</option>
-                    <option value="Dog">Dog</option>
-                    <option value="Cat and dog">Cat and dog</option>
-                    <option value="Petless">Petless</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-
                 <div>
                   <Label htmlFor="rb-occasion" className="text-xs uppercase tracking-widest text-[#6B7280]">
                     Occasion <span className="text-[10px] normal-case tracking-normal text-[#9CA3AF]">(optional)</span>
@@ -687,7 +662,7 @@ export default function SubscriptionPage() {
                     id="rb-style"
                     value={requestForm.bouquet_style}
                     onChange={(e) => setRequestForm({ ...requestForm, bouquet_style: e.target.value.slice(0, 800) })}
-                    placeholder="Colours, size, stems you love, pets who nibble everything..."
+                    placeholder="Colours, size, stems you love, overall style..."
                     className="mt-1.5 bg-white border-[#E5E0D6] min-h-[80px]"
                     required
                     data-testid="request-bouquet-style"
