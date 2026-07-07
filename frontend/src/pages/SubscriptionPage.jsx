@@ -295,10 +295,12 @@ export default function SubscriptionPage() {
               <div className="flex-1">
                 <span className="hidden md:block text-[10px] uppercase tracking-[0.3em] font-semibold text-[#C4A2B0] mb-1.5">Bespoke Bouquets</span>
                 <h2 className="font-['Playfair_Display'] text-xl sm:text-2xl font-medium text-[#2C2C2C] mb-2 leading-tight">
-                  Looking for something specific? We'll create a bouquet around you.
+                  Looking for something truly bespoke?
+                  <br />
+                  We'll create a bouquet just for you.
                 </h2>
                 <p className="text-sm font-light text-[#6B7280] leading-relaxed">
-                  Tell us your preferred style, occasion, and pet at home, and we'll shape a seasonal pet-safe bouquet request with your space in mind.
+                  Tell us your preferred style, colour palette, occasion and any special requests, and we'll create a beautiful seasonal arrangement tailored to you.
                 </p>
               </div>
               <Button
