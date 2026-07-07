@@ -115,6 +115,16 @@ function CustomerLogin() {
   );
 }
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [pathname]);
+
+  return null;
+}
+
 function AppRouter() {
   const location = useLocation();
   // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
@@ -179,6 +189,7 @@ function App() {
         <CustomerAuthProvider>
           <CartProvider>
             <Toaster position="bottom-right" />
+            <ScrollToTop />
             <AppRouter />
           </CartProvider>
         </CustomerAuthProvider>
