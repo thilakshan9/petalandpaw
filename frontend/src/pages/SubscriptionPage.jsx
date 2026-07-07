@@ -579,6 +579,9 @@ export default function SubscriptionPage() {
               <DialogTitle className="font-['Playfair_Display'] text-2xl text-[#2C2C2C] font-medium">
                 Request a bespoke bouquet
               </DialogTitle>
+              <DialogDescription className="text-sm font-light text-[#6B7280] pt-1">
+                Tell us your preferred style, colour palette, occasion and any special requests, and we'll create a beautiful seasonal arrangement tailored to you.
+              </DialogDescription>
             </DialogHeader>
 
             {requestSuccess ? (
