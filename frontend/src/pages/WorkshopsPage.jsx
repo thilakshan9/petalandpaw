@@ -380,7 +380,7 @@ export default function WorkshopsPage() {
                             <tr key={i} className={i < w.upcomingDates.length - 1 ? "border-b border-[#E5E0D6]" : ""}>
                               <td className="px-4 py-3 font-light text-[#2C2C2C]">{d.date}</td>
                               <td className="px-4 py-3 font-light text-[#6B7280]">{d.day}</td>
-                              <td className="px-4 py-3 font-light text-[#6B7280]">{w.time}</td>
+                              <td className="px-4 py-3 font-light text-[#6B7280]">{d.time || w.time}</td>
                             </tr>
                           ))}
                         </tbody>
