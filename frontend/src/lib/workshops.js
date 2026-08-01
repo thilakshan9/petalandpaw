@@ -10,8 +10,8 @@ export const WORKSHOPS = [
     price: 35,
     description: "Relax with dogs and enjoy a creative afternoon of flower arranging. Whether you're a complete beginner or just looking for something different, this laid-back workshop is for you. Bring your furry friend along and make something beautiful together. All levels welcome - come meet like-minded people and leave with a gorgeous bouquet.",
     upcomingDates: [
-      { date: "01 August 2026", day: "Saturday", time: "1pm" },
-      { date: "01 August 2026", day: "Saturday", time: "3:30pm" },
+      { date: "5th September 2026", day: "Saturday", time: "1pm" },
+      { date: "10th October 2026", day: "Saturday", time: "1pm" },
     ],
     included: ["Your bouquet to take home", "Free Drink", "Dog Treat"],
     accent: "#B8926A",
