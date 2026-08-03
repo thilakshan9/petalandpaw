@@ -13,7 +13,7 @@ export const WORKSHOPS = [
       { date: "5th September 2026", day: "Saturday", time: "1pm" },
       { date: "10th October 2026", day: "Saturday", time: "12pm" },
     ],
-    included: ["Your bouquet to take home", "Any drink from café", "Dog treat", "Dog toy", "Puppuccino", "Puppy playtime"],
+    included: ["Your bouquet to take home", "Any drink from café", "Dog treats", "Dog toy", "Puppuccino", "Puppy playtime"],
     accent: "#B8926A",
     image: "https://lh3.googleusercontent.com/d/1DHMIRqEqKT82vywOf77C5C_l4Ayj_UNT=w800",
     bookingType: "external",
