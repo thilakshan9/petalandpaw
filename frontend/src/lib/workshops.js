@@ -58,7 +58,7 @@ export const WORKSHOPS = [
     description: "Spend your afternoon surrounded by blooms and good company. Guided by us and the café dogs, every stem is chosen safe for curious noses and wagging tails.",
     included: ["Drinks from the café", "Surrounded by pugs", "Your bouquet to take home"],
     accent: "#C4A2B0",
-    image: "/cups-pups-cafe-workshop.webp",
+    image: "https://lh3.googleusercontent.com/d/1zgcSbenEBMfjxMqJLzza3fUaZVx0BCFq=w800",
     bookingType: "stripe",
     status: "live",
   },
