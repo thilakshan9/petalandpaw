@@ -43,6 +43,25 @@ export const WORKSHOPS = [
     bookingUrl: "https://www.alfi.ltd/sip-and-bouquet-london#sip-bouquet-tickets",
     status: "live",
   },
+  {
+    id: "cups-pups-cafe-2026-08-23",
+    name: "Flower Arranging Workshop",
+    place: "Cups & Pups Café",
+    address: "Dunton Green",
+    date: "23rd August 2026",
+    upcomingDates: [
+      { date: "23rd August 2026", day: "Sunday", time: "2pm" },
+    ],
+    time: "2pm",
+    duration: "90 mins",
+    price: 45,
+    description: "Spend your afternoon surrounded by blooms and good company. Guided by us and the café dogs, every stem is chosen safe for curious noses and wagging tails.",
+    included: ["Drinks from the café", "Surrounded by pugs", "Your bouquet to take home"],
+    accent: "#C4A2B0",
+    image: "/cups-pups-cafe-workshop.webp",
+    bookingType: "stripe",
+    status: "live",
+  },
 ];
 
 export const upcomingWorkshops = () => WORKSHOPS.filter((w) => w.status !== "past");

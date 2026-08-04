@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useCustomerAuth } from "@/context/CustomerAuthContext";
 import SEOHead from "@/components/SEOHead";
+import { Helmet } from "react-helmet-async";
 import { WORKSHOPS, upcomingWorkshops } from "@/lib/workshops";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -259,6 +260,47 @@ export default function WorkshopsPage() {
   return (
     <div className="py-8 sm:py-12 md:py-20" data-testid="workshops-page">
       <SEOHead title="Workshops" description="Join our flower arranging workshops. Create your own pet-safe bouquet in a fun, relaxed setting." />
+      <Helmet>
+        {upcomingWorkshops()
+          .filter((w) => w.date !== "Monthly")
+          .map((w) => {
+            const dateMap = {
+              "23rd August 2026": "2026-08-23T14:00",
+              "14 August 2026": "2026-08-14T18:30",
+              "11 September 2026": "2026-09-11T18:30",
+              "9 October 2026": "2026-10-09T18:30",
+              "13 November 2026": "2026-11-13T18:30",
+            };
+            const startDate = dateMap[w.date] || "2026-08-23T14:00";
+            return (
+              <script type="application/ld+json" key={w.id}>
+                {JSON.stringify({
+                  "@context": "https://schema.org",
+                  "@type": "Event",
+                  name: w.name,
+                  description: w.description,
+                  startDate,
+                  location: {
+                    "@type": "Place",
+                    name: w.place,
+                    address: {
+                      "@type": "PostalAddress",
+                      addressLocality: w.address,
+                      addressCountry: "GB",
+                    },
+                  },
+                  offers: {
+                    "@type": "Offer",
+                    price: w.price,
+                    priceCurrency: "GBP",
+                    availability: "https://schema.org/InStock",
+                  },
+                  image: w.image,
+                })}
+              </script>
+            );
+          })}
+      </Helmet>
       <div className="container mx-auto px-5 md:px-8 max-w-6xl">
 
         <div className="text-center mb-10 sm:mb-12 animate-fade-in-up">
