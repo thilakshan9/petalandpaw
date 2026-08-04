@@ -3,7 +3,7 @@ export const WORKSHOPS = [
     id: "cups-pups-cafe-2026-08-23",
     name: "Flower Arranging Workshop",
     place: "Cups & Pups Café",
-    address: "Dunton Green",
+    address: "18 London Road, Dunton Green, Sevenoaks, TN13 2UE",
     date: "23rd August 2026",
     upcomingDates: [
       { date: "23rd August 2026", day: "Sunday", time: "2pm" },
