@@ -66,3 +66,7 @@ export const WORKSHOPS = [
 
 export const upcomingWorkshops = () => WORKSHOPS.filter((w) => w.status !== "past");
 export const redeemableWorkshops = () => WORKSHOPS.filter((w) => w.status !== "past");
+
+// Workshops that have at least one October date (used by the Halloween seasonal page).
+export const octoberWorkshops = () =>
+  WORKSHOPS.filter((w) => (w.upcomingDates || []).some((d) => /\boct(ober)?\b/i.test(d.date)));

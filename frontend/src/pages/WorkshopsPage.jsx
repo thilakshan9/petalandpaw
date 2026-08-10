@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Calendar, Clock, MapPin, Gift, ArrowRight, Loader as Loader2, Minus, Plus, Sparkles, CircleCheck as CheckCircle2, Heart, Ticket } from "lucide-react";
+import { Calendar, Clock, MapPin, Gift, ArrowRight, Loader as Loader2, Minus, Plus, Sparkles, CircleCheck as CheckCircle2, Heart, Ticket, Ghost, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,7 @@ import { useCustomerAuth } from "@/context/CustomerAuthContext";
 import SEOHead from "@/components/SEOHead";
 import { Helmet } from "react-helmet-async";
 import { WORKSHOPS, upcomingWorkshops } from "@/lib/workshops";
+import { isHalloweenActive, isOctoberDate, burstBats, HW } from "@/lib/halloween";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -47,6 +48,28 @@ export default function WorkshopsPage() {
   const [raffleForm, setRaffleForm] = useState({ full_name: "", email: "" });
   const [raffleSubmitting, setRaffleSubmitting] = useState(false);
   const [raffleError, setRaffleError] = useState("");
+
+  // Halloween seasonal state
+  const halloween = isHalloweenActive();
+  const [seasonalPopup, setSeasonalPopup] = useState(false);
+
+  // Show the seasonal popup once per session when the theme is active
+  useEffect(() => {
+    if (!halloween) return;
+    if (sessionStorage.getItem("pp_seasonal_popup_shown")) return;
+    const t = setTimeout(() => {
+      setSeasonalPopup(true);
+      sessionStorage.setItem("pp_seasonal_popup_shown", "1");
+      burstBats();
+    }, 1200);
+    return () => clearTimeout(t);
+  }, [halloween]);
+
+  const goSeasonal = () => {
+    setSeasonalPopup(false);
+    burstBats();
+    navigate("/seasonal");
+  };
 
   const getQty = (id) => Math.max(1, Math.min(10, qty[id] || 1));
   const updateQty = (id, delta) => {
@@ -313,6 +336,50 @@ export default function WorkshopsPage() {
           </p>
         </div>
 
+        {/* Halloween seasonal banner */}
+        {halloween && (
+          <div className="mb-10 sm:mb-12 animate-fade-in-up" data-testid="workshops-halloween-banner">
+            <div
+              className="relative overflow-hidden rounded-2xl px-6 py-6 sm:px-9 sm:py-8"
+              style={{ background: `radial-gradient(120% 140% at 15% -20%, ${HW.purple} 0%, ${HW.purpleDeep} 55%, ${HW.night} 100%)` }}
+            >
+              <div className="absolute inset-0 spooky-fog opacity-60 pointer-events-none" />
+              <div className="absolute top-4 right-6 w-12 h-12 rounded-full bg-[#F3E4C8] moon-glow pointer-events-none hidden sm:block" />
+              <div className="relative flex flex-col md:flex-row md:items-center gap-5 justify-between">
+                <div className="flex items-start gap-4">
+                  <span className="text-3xl spooky-float leading-none" aria-hidden="true">🎃</span>
+                  <div>
+                    <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-[#F3E4C8] block mb-1">Spooky Season</span>
+                    <h2 className="font-['Playfair_Display'] text-xl sm:text-2xl font-medium text-[#FAF9F6] mb-1 spooky-flicker">
+                      Halloween has landed at Petal &amp; Paw
+                    </h2>
+                    <p className="text-sm font-light text-[#FAF9F6]/80 max-w-md">
+                      Preorder a pet-safe Halloween bouquet for any day in October, and explore our spooky-season workshops.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
+                  <Button
+                    onClick={() => setSeasonalPopup(true)}
+                    className="rounded-full bg-[#D4956A] text-[#241B2B] hover:bg-[#e0a982] px-6 py-5 text-xs uppercase tracking-widest font-semibold transition-all hover:scale-105"
+                    data-testid="workshops-visit-seasonal-btn"
+                  >
+                    Visit Seasonal <ArrowRight size={14} className="ml-2" />
+                  </Button>
+                  <Button
+                    onClick={() => burstBats()}
+                    variant="outline"
+                    className="rounded-full border-[#FAF9F6]/40 bg-transparent text-[#FAF9F6] hover:bg-[#FAF9F6]/10 px-6 py-5 text-xs uppercase tracking-widest transition-all"
+                    data-testid="workshops-release-bats-btn"
+                  >
+                    <span aria-hidden="true" className="mr-2">🦇</span> Release the bats
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Request Your Own Workshop CTA (hero) */}
         <div className="mb-12 sm:mb-16 animate-fade-in-up delay-50" data-testid="request-workshop-hero">
           <div className="relative bg-white border border-[#E5E0D6] rounded-2xl px-6 py-7 sm:px-10 sm:py-9 overflow-hidden">
@@ -418,13 +485,30 @@ export default function WorkshopsPage() {
                           </tr>
                         </thead>
                         <tbody>
-                          {w.upcomingDates.map((d, i) => (
-                            <tr key={i} className={i < w.upcomingDates.length - 1 ? "border-b border-[#E5E0D6]" : ""}>
-                              <td className="px-4 py-3 font-light text-[#2C2C2C]">{d.date}</td>
-                              <td className="px-4 py-3 font-light text-[#6B7280]">{d.day}</td>
-                              <td className="px-4 py-3 font-light text-[#6B7280]">{d.time || w.time}</td>
-                            </tr>
-                          ))}
+                          {w.upcomingDates.map((d, i) => {
+                            const oct = halloween && isOctoberDate(d.date);
+                            const border = i < w.upcomingDates.length - 1 ? "border-b border-[#E5E0D6]" : "";
+                            return (
+                              <tr
+                                key={i}
+                                className={`${border} ${oct ? "october-row" : ""}`}
+                                onClick={oct ? () => navigate(`/seasonal#ws-${w.id}`) : undefined}
+                                title={oct ? "See this workshop on our Halloween seasonal page" : undefined}
+                                data-testid={oct ? `october-row-${w.id}-${i}` : undefined}
+                              >
+                                <td className="px-4 py-3 font-light" style={{ color: oct ? HW.purpleDeep : "#2C2C2C" }}>
+                                  {oct && <span aria-hidden="true">🎃 </span>}{d.date}
+                                </td>
+                                <td className="px-4 py-3 font-light text-[#6B7280]">{d.day}</td>
+                                <td className="px-4 py-3 font-light" style={{ color: oct ? HW.purple : "#6B7280" }}>
+                                  <span className="inline-flex items-center gap-1.5">
+                                    {d.time || w.time}
+                                    {oct && <ArrowRight size={12} />}
+                                  </span>
+                                </td>
+                              </tr>
+                            );
+                          })}
                         </tbody>
                       </table>
                     </div>
@@ -913,6 +997,49 @@ export default function WorkshopsPage() {
               You'll be redirected to Stripe to complete your £{(raffleQty * 2).toFixed(2)} payment. Your unique raffle ticket number(s) will be included in your receipt.
             </p>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Halloween Seasonal Popup */}
+      <Dialog open={seasonalPopup} onOpenChange={setSeasonalPopup}>
+        <DialogContent
+          className="max-w-md rounded-2xl border-0 overflow-hidden text-center p-0"
+          data-testid="workshops-seasonal-popup"
+        >
+          <div
+            className="relative px-7 py-9"
+            style={{ background: `radial-gradient(120% 120% at 50% -10%, ${HW.purple} 0%, ${HW.purpleDeep} 55%, ${HW.night} 100%)` }}
+          >
+            <div className="absolute inset-0 spooky-fog opacity-60 pointer-events-none" />
+            <div className="relative">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FAF9F6]/10 mb-4">
+                <Ghost size={30} strokeWidth={1.5} className="text-[#F3E4C8] spooky-float" />
+              </div>
+              <DialogTitle className="font-['Playfair_Display'] text-2xl sm:text-3xl font-medium text-[#FAF9F6] mb-2 spooky-flicker">
+                Something spooky this way blooms
+              </DialogTitle>
+              <DialogDescription className="text-sm font-light text-[#FAF9F6]/80 mb-6">
+                Step into our seasonal shop for pet-safe Halloween bouquets and October&apos;s spooky workshops.
+              </DialogDescription>
+              <div className="flex flex-col gap-2">
+                <Button
+                  onClick={goSeasonal}
+                  className="rounded-full bg-[#D4956A] text-[#241B2B] hover:bg-[#e0a982] px-8 py-6 text-xs uppercase tracking-widest font-semibold w-full transition-all hover:scale-[1.02]"
+                  data-testid="seasonal-popup-enter-btn"
+                >
+                  Enter the seasonal shop <ArrowRight size={14} className="ml-2" />
+                </Button>
+                <Button
+                  onClick={() => setSeasonalPopup(false)}
+                  variant="ghost"
+                  className="rounded-full px-6 py-4 text-xs uppercase tracking-widest w-full text-[#FAF9F6]/70 hover:text-[#FAF9F6] hover:bg-[#FAF9F6]/10"
+                  data-testid="seasonal-popup-dismiss-btn"
+                >
+                  Maybe later
+                </Button>
+              </div>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

@@ -157,3 +157,89 @@
   border-radius: 100px;
   font-weight: 600;
 }
+
+/* ============================================================
+   Halloween / Seasonal theme
+   ============================================================ */
+@keyframes bat-fly-across {
+  0%   { transform: translate(0, 0); }
+  15%  { transform: translate(-15vw, -6vh); }
+  30%  { transform: translate(-32vw, 4vh); }
+  45%  { transform: translate(-48vw, -8vh); }
+  60%  { transform: translate(-64vw, 3vh); }
+  78%  { transform: translate(-82vw, -5vh); }
+  100% { transform: translate(-125vw, 4vh); }
+}
+@keyframes bat-flap {
+  0%, 100% { transform: scaleX(1); }
+  50%      { transform: scaleX(0.55); }
+}
+.pp-bats {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 45;
+  overflow: hidden;
+}
+.pp-bat {
+  position: absolute;
+  left: 100vw;
+  will-change: transform;
+  animation-name: bat-fly-across;
+  animation-timing-function: linear;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  color: #241B2B;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.25));
+}
+.pp-bat-inner {
+  display: block;
+  transform-origin: center;
+  animation: bat-flap 0.26s ease-in-out infinite;
+}
+
+@keyframes spooky-flicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% { opacity: 1; }
+  20%, 24%, 55% { opacity: 0.55; }
+}
+.spooky-flicker { animation: spooky-flicker 4.5s linear infinite; }
+
+@keyframes spooky-float {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50%      { transform: translateY(-12px) rotate(4deg); }
+}
+.spooky-float { animation: spooky-float 5s ease-in-out infinite; }
+
+@keyframes fog-drift {
+  from { background-position: 0 0, 0 0; }
+  to   { background-position: 1200px 0, -900px 0; }
+}
+.spooky-fog {
+  background-image:
+    radial-gradient(ellipse at 20% 100%, rgba(107, 78, 113, 0.35), transparent 60%),
+    radial-gradient(ellipse at 80% 100%, rgba(201, 123, 60, 0.22), transparent 60%);
+  background-repeat: repeat-x;
+  background-size: 1200px 100%, 900px 100%;
+  animation: fog-drift 24s linear infinite;
+}
+
+@keyframes moon-glow {
+  0%, 100% { box-shadow: 0 0 40px 8px rgba(212, 149, 106, 0.35), 0 0 80px 20px rgba(107, 78, 113, 0.25); }
+  50%      { box-shadow: 0 0 60px 14px rgba(212, 149, 106, 0.5), 0 0 120px 30px rgba(107, 78, 113, 0.35); }
+}
+.moon-glow { animation: moon-glow 6s ease-in-out infinite; }
+
+/* Highlighted October rows in workshop tables */
+.october-row {
+  background: rgba(107, 78, 113, 0.08);
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+.october-row:hover { background: rgba(107, 78, 113, 0.16); }
+
+@media (prefers-reduced-motion: reduce) {
+  .pp-bat, .pp-bat-inner, .spooky-flicker, .spooky-float, .spooky-fog, .moon-glow {
+    animation: none !important;
+  }
+  .pp-bats { display: none; }
+}

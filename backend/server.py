@@ -82,6 +82,7 @@ class CheckoutRequest(BaseModel):
     referral_code: str = ""
     pet_notes: str = ""
     personalized_message: str = ""
+    special_notes: str = ""
 
 class SubscriptionCheckoutRequest(BaseModel):
     plan_id: str
@@ -936,7 +937,8 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
     try:
         cart_metadata = {"order_id": order_id, "order_type": req.order_type,
                           "item_count": str(len(validated_items)),
-                          "personalized_message": req.personalized_message[:500] if req.personalized_message else ""}
+                          "personalized_message": req.personalized_message[:500] if req.personalized_message else "",
+                          "special_notes": req.special_notes[:490] if req.special_notes else ""}
         pid = {"metadata": cart_metadata}
         if req.customer_email:
             pid["receipt_email"] = req.customer_email
@@ -974,6 +976,7 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
         "customer_email": req.customer_email, "order_type": req.order_type,
         "delivery_date": req.delivery_date, "pet_notes": req.pet_notes,
         "personalized_message": req.personalized_message,
+        "special_notes": req.special_notes,
         "referral_code": req.referral_code, "credit_applied": credit_applied,
         "created_at": datetime.now(timezone.utc).isoformat()
     }
@@ -2077,6 +2080,33 @@ async def seed_data():
         ]
         await db.products.insert_many(products)
         logger.info("Seeded products")
+
+    # Halloween seasonal bouquet products — idempotent upsert with fixed IDs so
+    # the frontend can reference them directly and checkout validates real prices.
+    _hw_img = "https://images.unsplash.com/photo-1457089328109-e5d9bd499191?w=800"
+    halloween_bouquets = [
+        {"id": "halloween-bouquet-small", "name": "Halloween Bouquet – Small", "slug": "halloween-bouquet-small",
+         "description": "A petite, spooktacular arrangement of pet-safe autumnal blooms in moody plums, deep oranges and inky tones.",
+         "price": 24.99, "category": "halloween", "image_url": _hw_img, "images": [],
+         "pet_safe": True, "pet_safe_details": "Every stem is verified non-toxic to cats and dogs.",
+         "in_stock": True, "featured": False, "seasonal": "halloween",
+         "created_at": datetime.now(timezone.utc).isoformat()},
+        {"id": "halloween-bouquet-medium", "name": "Halloween Bouquet – Medium", "slug": "halloween-bouquet-medium",
+         "description": "Our classic-size Halloween arrangement of pet-safe autumnal blooms in moody plums, deep oranges and inky tones.",
+         "price": 54.99, "category": "halloween", "image_url": _hw_img, "images": [],
+         "pet_safe": True, "pet_safe_details": "Every stem is verified non-toxic to cats and dogs.",
+         "in_stock": True, "featured": False, "seasonal": "halloween",
+         "created_at": datetime.now(timezone.utc).isoformat()},
+        {"id": "halloween-bouquet-large", "name": "Halloween Bouquet – Large", "slug": "halloween-bouquet-large",
+         "description": "A grand, dramatic Halloween arrangement of pet-safe autumnal blooms in moody plums, deep oranges and inky tones.",
+         "price": 74.99, "category": "halloween", "image_url": _hw_img, "images": [],
+         "pet_safe": True, "pet_safe_details": "Every stem is verified non-toxic to cats and dogs.",
+         "in_stock": True, "featured": False, "seasonal": "halloween",
+         "created_at": datetime.now(timezone.utc).isoformat()},
+    ]
+    for _hb in halloween_bouquets:
+        await db.products.update_one({"id": _hb["id"]}, {"$set": _hb}, upsert=True)
+    logger.info("Seeded Halloween bouquet products")
 
     if await db.subscription_plans.count_documents({}) == 0:
         plans = [

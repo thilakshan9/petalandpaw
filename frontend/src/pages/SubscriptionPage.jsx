@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { useCustomerAuth } from "@/context/CustomerAuthContext";
 import { useCart } from "@/components/CartProvider";
 import SEOHead from "@/components/SEOHead";
+import { isHalloweenActive, HW } from "@/lib/halloween";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -22,6 +23,8 @@ export default function SubscriptionPage() {
   const [loading, setLoading] = useState(true);
   const [subscribing, setSubscribing] = useState(null);
   const [petToy, setPetToy] = useState({});
+  const [halloweenThemed, setHalloweenThemed] = useState({});
+  const halloween = isHalloweenActive();
   const [emailDialog, setEmailDialog] = useState(null);
   const [customerEmail, setCustomerEmail] = useState("");
   const [orderType, setOrderType] = useState(null);
@@ -158,6 +161,7 @@ export default function SubscriptionPage() {
     const planId = emailDialog;
     setEmailDialog(null);
     setSubscribing(planId);
+    const hwNote = halloweenThemed[planId] ? "🎃 Halloween themed bouquet requested. " : "";
     try {
       const res = await fetch(`${API}/subscriptions/checkout`, {
         method: "POST",
@@ -168,7 +172,7 @@ export default function SubscriptionPage() {
           add_pet_toy: !!petToy[planId],
           customer_email: customerEmail,
           checkout_mode: orderType,
-          personalized_message: personalizedMessage,
+          personalized_message: hwNote + personalizedMessage,
           pet_type: petType[planId] || "",
           pet_type_other: petTypeOther[planId] || "",
           delivery_date: orderType === "one-time" ? deliveryDate[planId] || "" : "",
@@ -185,7 +189,7 @@ export default function SubscriptionPage() {
           const price = toyOn ? basePrice + toyPrice : basePrice;
           const cartItem = {
             product_id: planId,
-            name: plan.name + (toyOn ? " + Pet Toy" : ""),
+            name: plan.name + (toyOn ? " + Pet Toy" : "") + (halloweenThemed[planId] ? " (Halloween themed)" : ""),
             price,
             quantity: 1,
             image_url: plan.image_url,
@@ -193,6 +197,7 @@ export default function SubscriptionPage() {
             order_type: orderType,
             pet_type: (petType[planId] === "other" ? petTypeOther[planId] : petType[planId]) || "",
             add_pet_toy: toyOn,
+            halloween: !!halloweenThemed[planId],
           };
           localStorage.setItem("pp_pending_stripe_item", JSON.stringify(cartItem));
         }
@@ -464,6 +469,28 @@ export default function SubscriptionPage() {
                     />
                   </div>
 
+                  {/* Halloween themed add-on (October only) */}
+                  {halloween && (
+                    <label
+                      className="flex items-center justify-between rounded-xl px-4 py-3 mb-6 cursor-pointer border transition-colors"
+                      style={{ borderColor: HW.purpleBorder, background: halloweenThemed[plan.id] ? "rgba(107,78,113,0.16)" : HW.purpleTint }}
+                      data-testid={`halloween-toggle-${plan.slug}`}
+                    >
+                      <span className="flex items-center gap-2">
+                        <span aria-hidden="true">🎃</span>
+                        <span className="text-sm text-[#2C2C2C]">Make it Halloween themed</span>
+                      </span>
+                      <input
+                        type="checkbox"
+                        checked={!!halloweenThemed[plan.id]}
+                        onChange={(e) => setHalloweenThemed({ ...halloweenThemed, [plan.id]: e.target.checked })}
+                        className="w-4 h-4"
+                        style={{ accentColor: HW.purple }}
+                        data-testid={`halloween-checkbox-${plan.slug}`}
+                      />
+                    </label>
+                  )}
+
                   <Button
                     onClick={() => handleSubscribeClick(plan.id, selectedMode)}
                     disabled={subscribing === plan.id}
@@ -479,13 +506,14 @@ export default function SubscriptionPage() {
                       if (selectedPet === "other" && !(petTypeOther[plan.id] || "").trim()) { toast.error("Please enter your pet type"); return; }
                       addToCart({
                         product_id: plan.id,
-                        name: planName + (toyOn ? " + Pet Toy" : ""),
+                        name: planName + (toyOn ? " + Pet Toy" : "") + (halloweenThemed[plan.id] ? " (Halloween themed)" : ""),
                         price: toyOn ? oneTimePrice + toyPrice : oneTimePrice,
                         quantity: 1,
                         image_url: plan.image_url,
                         plan_slug: plan.slug,
                         pet_type: selectedPet === "other" ? petTypeOther[plan.id] : selectedPet,
                         add_pet_toy: toyOn,
+                        halloween: !!halloweenThemed[plan.id],
                       });
                       toast.success(`${planName} added to basket`);
                     }}

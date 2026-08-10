@@ -349,6 +349,142 @@ class PetalPawTester:
         if success:
             print("   ✅ Auth endpoint correctly returns 401 for unauthenticated requests")
 
+    def test_halloween_feature(self):
+        """Test Halloween seasonal feature"""
+        print("\n" + "="*60)
+        print("TESTING HALLOWEEN SEASONAL FEATURE")
+        print("="*60)
+        
+        # Test 1: GET /api/products - verify 3 Halloween bouquets with exact IDs and prices
+        print("\n📋 Test 1: Verify Halloween bouquet products")
+        success, products = self.run_test(
+            "GET /api/products - All products (checking for Halloween bouquets)",
+            "GET", "/products", 200
+        )
+        
+        if success:
+            # Find Halloween bouquets
+            halloween_products = [p for p in products if p.get('category') == 'halloween']
+            print(f"   📊 Found {len(halloween_products)} Halloween products")
+            
+            # Expected Halloween bouquets with exact IDs and prices
+            expected_halloween = {
+                "halloween-bouquet-small": 24.99,
+                "halloween-bouquet-medium": 54.99,
+                "halloween-bouquet-large": 74.99
+            }
+            
+            found_halloween = {}
+            for product in halloween_products:
+                product_id = product.get('id')
+                price = product.get('price')
+                in_stock = product.get('in_stock')
+                category = product.get('category')
+                
+                if product_id in expected_halloween:
+                    found_halloween[product_id] = price
+                    print(f"   ✅ Found {product_id}: £{price}, in_stock={in_stock}, category={category}")
+                    
+                    # Verify exact price
+                    if price != expected_halloween[product_id]:
+                        print(f"   ❌ PRICE MISMATCH for {product_id}: Expected £{expected_halloween[product_id]}, got £{price}")
+                        self.failed_tests.append(f"Halloween product {product_id} price mismatch: expected £{expected_halloween[product_id]}, got £{price}")
+                    
+                    # Verify in_stock is True
+                    if not in_stock:
+                        print(f"   ❌ {product_id} is not in stock")
+                        self.failed_tests.append(f"Halloween product {product_id} is not in stock")
+                    
+                    # Verify category is halloween
+                    if category != 'halloween':
+                        print(f"   ❌ {product_id} has wrong category: {category}")
+                        self.failed_tests.append(f"Halloween product {product_id} has wrong category: {category}")
+            
+            # Check if all expected products were found
+            missing = set(expected_halloween.keys()) - set(found_halloween.keys())
+            if missing:
+                print(f"   ❌ Missing Halloween products: {missing}")
+                self.failed_tests.append(f"Missing Halloween products: {missing}")
+            else:
+                print(f"   ✅ All 3 Halloween bouquets found with correct IDs and prices")
+        
+        # Test 2: POST /api/orders/checkout with special_notes and delivery_date
+        print("\n📋 Test 2: Checkout with Halloween bouquet (special_notes + delivery_date)")
+        test_checkout_data = {
+            "items": [
+                {
+                    "product_id": "halloween-bouquet-medium",
+                    "name": "Halloween Bouquet - Medium",
+                    "price": 54.99,
+                    "quantity": 1
+                }
+            ],
+            "origin_url": "https://pumpkin-patch-4.preview.emergentagent.com",
+            "order_type": "regular",
+            "delivery_date": "2026-10-15",
+            "personalized_message": "",
+            "special_notes": "Halloween: Halloween Bouquet - Medium (deliver 2026-10-15)"
+        }
+        
+        success, checkout_response = self.run_test(
+            "POST /api/orders/checkout - Halloween bouquet checkout with special_notes",
+            "POST", "/orders/checkout", 200,
+            data=test_checkout_data
+        )
+        
+        if success:
+            # Verify response contains required fields
+            has_url = 'url' in checkout_response
+            has_order_id = 'order_id' in checkout_response
+            
+            print(f"   📊 Response contains 'url': {has_url}")
+            print(f"   📊 Response contains 'order_id': {has_order_id}")
+            
+            if has_url:
+                url = checkout_response.get('url', '')
+                if 'stripe' in url.lower():
+                    print(f"   ✅ Stripe checkout URL returned: {url[:60]}...")
+                else:
+                    print(f"   ⚠️  URL doesn't appear to be a Stripe URL: {url[:60]}...")
+            else:
+                print(f"   ❌ No checkout URL in response")
+                self.failed_tests.append("Halloween checkout: No 'url' in response")
+            
+            if has_order_id:
+                print(f"   ✅ Order ID returned: {checkout_response.get('order_id')}")
+            else:
+                print(f"   ❌ No order_id in response")
+                self.failed_tests.append("Halloween checkout: No 'order_id' in response")
+        else:
+            # Check if it's a 503 (Stripe not configured)
+            print(f"   ⚠️  Checkout failed - checking if Stripe is configured...")
+        
+        # Test 3: Regression - GET /api/subscriptions/plans
+        print("\n📋 Test 3: Regression - Subscription plans endpoint")
+        success, plans = self.run_test(
+            "GET /api/subscriptions/plans - Verify existing endpoint still works",
+            "GET", "/subscriptions/plans", 200
+        )
+        
+        if success:
+            if len(plans) == 3:
+                print(f"   ✅ Subscription plans endpoint working correctly (3 plans found)")
+            else:
+                print(f"   ⚠️  Expected 3 subscription plans, found {len(plans)}")
+        
+        # Test 4: Regression - GET /api/vouchers/validate with invalid code
+        print("\n📋 Test 4: Regression - Voucher validation endpoint")
+        success, _ = self.run_test(
+            "GET /api/vouchers/validate/INVALID-CODE - Should return 4xx not 500",
+            "GET", "/vouchers/validate/INVALID-CODE", 404
+        )
+        
+        if success:
+            print(f"   ✅ Voucher validation endpoint working correctly (returns 404 for invalid code)")
+        else:
+            # Try to see what status code we actually got
+            print(f"   ⚠️  Voucher validation may have returned unexpected status code")
+
     def print_summary(self):
         """Print test summary"""
         print("\n" + "="*60)
@@ -382,6 +518,7 @@ def main():
     tester.test_checkout()
     tester.test_admin_endpoints()
     tester.test_auth_endpoints()
+    tester.test_halloween_feature()  # New Halloween feature tests
     
     # Print summary and return exit code
     success = tester.print_summary()

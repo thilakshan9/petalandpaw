@@ -101,3 +101,70 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Add a Halloween seasonal theme (active only in October, hidden otherwise): a new Seasonal page between Workshops and Vouchers (nav + footer), spooky Seasonal page with flying bats, a preorder Halloween bouquet (Small £24.99 / Medium £54.99 / Large £74.99) buyable for any day in October via normal Stripe checkout, October workshop rows highlighted in purple on the Workshops page that link/scroll to the Seasonal page, a Halloween banner + bat button + popup on the Workshops page, and a 'Make it Halloween themed' tick box in the Shop that adds a note to the order (Stripe metadata)."
+
+backend:
+  - task: "Seed 3 Halloween bouquet products (fixed IDs, prices 24.99/54.99/74.99) via idempotent upsert"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "main"
+        -comment: "Added idempotent upsert in seed_data for halloween-bouquet-small/medium/large. Verified via curl that GET /api/products returns all 3 with correct prices."
+        -working: true
+        -agent: "testing"
+        -comment: "PASSED: GET /api/products returns all 3 Halloween bouquets with exact fixed IDs (halloween-bouquet-small/medium/large) and correct prices (24.99/54.99/74.99). All have category='halloween' and in_stock=true. Idempotent upsert working correctly."
+  - task: "Add special_notes field to CheckoutRequest and pass through to Stripe metadata + order doc"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "main"
+        -comment: "CheckoutRequest now has special_notes; create_checkout adds it to cart_metadata (Stripe) and stores in order_doc. Halloween bouquet items check out via existing /api/orders/checkout using DB price."
+        -working: true
+        -agent: "testing"
+        -comment: "PASSED: POST /api/orders/checkout successfully creates Stripe checkout session with special_notes and delivery_date. Verified: (1) Returns 200 with Stripe URL and order_id, (2) Order document persists both special_notes and delivery_date fields, (3) Backend correctly validates and uses DB price (54.99) instead of client-sent price - security check passed. Regression tests also passed: GET /api/subscriptions/plans returns 3 plans, GET /api/vouchers/validate returns 404 for invalid codes."
+
+frontend:
+  - task: "Halloween theme (October auto-activation + ?spooky=1 preview), Seasonal page, bats, nav/footer link, Workshops banner/popup/October rows, Shop tick box"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/pages/SeasonalPage.jsx, frontend/src/components/Bats.jsx, frontend/src/lib/halloween.js, frontend/src/components/Navbar.jsx, frontend/src/components/Footer.jsx, frontend/src/pages/WorkshopsPage.jsx, frontend/src/pages/SubscriptionPage.jsx, frontend/src/pages/CartPage.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "main"
+        -comment: "Implemented. Verified visually via screenshots: Seasonal page spooky hero, nav/footer Seasonal link, Workshops banner + popup + flying bats + purple October rows. Frontend not yet tested by testing agent (awaiting user permission)."
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Seed 3 Halloween bouquet products (fixed IDs, prices 24.99/54.99/74.99) via idempotent upsert"
+    - "Add special_notes field to CheckoutRequest and pass through to Stripe metadata + order doc"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+    -agent: "main"
+    -message: "Please test the backend only. 1) GET /api/products should include halloween-bouquet-small (24.99), halloween-bouquet-medium (54.99), halloween-bouquet-large (74.99). 2) POST /api/orders/checkout with items=[{product_id:'halloween-bouquet-medium', name:'Halloween Bouquet – Medium', price:54.99, quantity:1}], origin_url, delivery_date='2026-10-15', special_notes='Halloween: test note' should return a Stripe session url (200) and persist an order with special_notes. Also confirm existing checkout endpoints still work (regression). Do NOT test the frontend."
+    -agent: "testing"
+    -message: "PASS. All 3 Halloween products seeded with correct fixed IDs/prices (category=halloween, in_stock). /api/orders/checkout returns 200 with Stripe url + order_id, uses DB price 54.99 (ignores client price — price-manipulation safe), and persists special_notes + delivery_date. Regression OK: /api/subscriptions/plans returns 3 plans; invalid voucher validate returns 404 (not 500). Backend feature is fully functional."
+    -agent: "testing"
+    -message: "✅ Backend testing complete - ALL TESTS PASSED. Halloween feature implementation verified: (1) All 3 Halloween bouquets seeded with correct fixed IDs and prices, (2) Checkout endpoint successfully handles special_notes and delivery_date with proper persistence, (3) Backend validates product prices from DB (security verified), (4) Regression tests passed for subscriptions and vouchers. No issues found. Ready for main agent to summarize and finish."

@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Leaf, Drama as Instagram } from "lucide-react";
+import { isHalloweenActive } from "@/lib/halloween";
 
 function ScrollLink({ to, children, ...props }) {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ function ScrollLink({ to, children, ...props }) {
 }
 
 export default function Footer() {
+  const halloween = isHalloweenActive();
   return (
     <footer className="bg-[#2C2C2C] text-[#FAF9F6] py-12 sm:py-16 md:py-20" data-testid="footer">
       <div className="container mx-auto px-5 md:px-8 max-w-7xl">
@@ -43,6 +45,9 @@ export default function Footer() {
               <ScrollLink to="/gallery" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-shop">Gallery</ScrollLink>
               <ScrollLink to="/subscriptions" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-subscriptions">Shop</ScrollLink>
               <ScrollLink to="/workshops" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-workshops">Workshops</ScrollLink>
+              {halloween && (
+                <ScrollLink to="/seasonal" className="text-sm font-light text-[#C4A2B0] hover:text-[#FAF9F6] transition-colors" data-testid="footer-seasonal">🎃 Seasonal</ScrollLink>
+              )}
               <ScrollLink to="/vouchers" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-vouchers">Vouchers</ScrollLink>
               <ScrollLink to="/hire-us" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-hire">Hire Us</ScrollLink>
             </nav>
