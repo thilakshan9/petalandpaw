@@ -5,7 +5,7 @@ import { useCart } from "@/components/CartProvider";
 import { useCustomerAuth } from "@/context/CustomerAuthContext";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { isHalloweenActive } from "@/lib/halloween";
+import { getActiveSeason, seasonConfig } from "@/lib/halloween";
 
 const baseNavLinks = [
   { href: "/gallery", label: "Gallery" },
@@ -18,7 +18,7 @@ const baseNavLinks = [
 ];
 
 function buildNavLinks() {
-  if (!isHalloweenActive()) return baseNavLinks;
+  if (!getActiveSeason()) return baseNavLinks;
   const links = [...baseNavLinks];
   const idx = links.findIndex((l) => l.href === "/vouchers");
   const insertAt = idx === -1 ? links.length : idx;
@@ -32,6 +32,7 @@ export default function Navbar() {
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const navLinks = buildNavLinks();
+  const cfg = seasonConfig();
   const scrollToTop = () => window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   const handleMobileLinkClick = () => {
     setOpen(false);
@@ -50,11 +51,12 @@ export default function Navbar() {
             <Link key={link.href} to={link.href} onClick={scrollToTop}
               className={`nav-link text-sm font-light tracking-wide transition-colors ${
                 link.seasonal
-                  ? "text-[#6B4E71] font-medium hover:text-[#4A3550]"
+                  ? "font-medium"
                   : location.pathname === link.href ? "text-[#2C2C2C]" : "text-[#6B7280] hover:text-[#2C2C2C]"
               }`}
+              style={link.seasonal ? { color: cfg.linkColor } : undefined}
               data-testid={`nav-${link.label.toLowerCase().replace(/\s/g, '-')}`}
-            >{link.seasonal ? <span aria-hidden="true">🎃 </span> : null}{link.label}</Link>
+            >{link.seasonal ? <span aria-hidden="true">{cfg.emoji} </span> : null}{link.label}</Link>
           ))}
         </div>
 
@@ -77,10 +79,11 @@ export default function Navbar() {
                 {navLinks.map((link) => (
                   <Link key={link.href} to={link.href} onClick={handleMobileLinkClick}
                     className={`text-lg font-light tracking-wide transition-colors ${
-                      link.seasonal ? "text-[#6B4E71] font-medium hover:text-[#4A3550]" : "text-[#2C2C2C] hover:text-[#8DA399]"
+                      link.seasonal ? "font-medium" : "text-[#2C2C2C] hover:text-[#8DA399]"
                     }`}
+                    style={link.seasonal ? { color: cfg.linkColor } : undefined}
                     data-testid={`mobile-nav-${link.label.toLowerCase().replace(/\s/g, '-')}`}
-                  >{link.seasonal ? <span aria-hidden="true">🎃 </span> : null}{link.label}</Link>
+                  >{link.seasonal ? <span aria-hidden="true">{cfg.emoji} </span> : null}{link.label}</Link>
                 ))}
                 <div className="border-t border-[#E5E0D6] pt-6 mt-2 space-y-4">
                   <Link to="/account" onClick={handleMobileLinkClick} className="block text-base font-light text-[#2C2C2C] hover:text-[#8DA399]" data-testid="mobile-nav-account">My Account</Link>

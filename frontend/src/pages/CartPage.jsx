@@ -46,12 +46,13 @@ export default function CartPage() {
 
   const handleCheckout = async () => {
     if (items.length === 0) return;
-    const hwItems = items.filter((i) => i.halloween);
-    const specialNotes = hwItems.length
-      ? "Halloween: " + hwItems.map((i) => (i.hw_delivery_date ? `${i.name} (deliver ${i.hw_delivery_date})` : i.name)).join("; ")
+    const themedItems = items.filter((i) => i.theme);
+    const label = (t) => (t === "christmas" ? "Christmas" : "Halloween");
+    const specialNotes = themedItems.length
+      ? themedItems.map((i) => `${label(i.theme)}: ${i.name}${i.season_date ? ` (deliver ${i.season_date})` : ""}`).join("; ")
       : "";
-    const hwDate = (hwItems.find((i) => i.hw_delivery_date) || {}).hw_delivery_date || "";
-    const finalDeliveryDate = deliveryDate ? deliveryDate.toISOString().split("T")[0] : hwDate;
+    const seasonDate = (themedItems.find((i) => i.season_date) || {}).season_date || "";
+    const finalDeliveryDate = deliveryDate ? deliveryDate.toISOString().split("T")[0] : seasonDate;
     try {
       const res = await fetch(`${API}/orders/checkout`, {
         method: "POST",
@@ -107,9 +108,9 @@ export default function CartPage() {
                 <div className="flex-1 min-w-0">
                   <h3 className="font-['Playfair_Display'] text-lg font-medium text-[#2C2C2C] truncate">{item.name}</h3>
                   <p className="text-sm font-light text-[#6B7280] mt-1">£{item.price.toFixed(2)} each</p>
-                  {item.halloween && (
-                    <span className="inline-flex items-center gap-1 mt-1.5 text-[11px] font-medium px-2 py-0.5 rounded-full" style={{ background: "rgba(107,78,113,0.1)", color: "#4A3550" }} data-testid={`cart-halloween-tag-${item.product_id}`}>
-                      🎃 Halloween{item.hw_delivery_date ? ` · deliver ${item.hw_delivery_date}` : ""}
+                  {item.theme && (
+                    <span className="inline-flex items-center gap-1 mt-1.5 text-[11px] font-medium px-2 py-0.5 rounded-full" style={{ background: item.theme === "christmas" ? "rgba(46,93,63,0.1)" : "rgba(107,78,113,0.1)", color: item.theme === "christmas" ? "#1E3D2A" : "#4A3550" }} data-testid={`cart-halloween-tag-${item.product_id}`}>
+                      {item.theme === "christmas" ? "🎄 Christmas" : "🎃 Halloween"}{item.season_date ? ` · deliver ${item.season_date}` : ""}
                     </span>
                   )}
                   <div className="flex items-center gap-3 mt-3">

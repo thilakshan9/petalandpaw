@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Calendar, Clock, MapPin, Gift, ArrowRight, Loader as Loader2, Minus, Plus, Sparkles, CircleCheck as CheckCircle2, Heart, Ticket, Ghost, Moon } from "lucide-react";
+import { Calendar, Clock, MapPin, Gift, ArrowRight, Loader as Loader2, Minus, Plus, Sparkles, CircleCheck as CheckCircle2, Heart, Ticket, Ghost, Moon, TreePine } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -10,7 +10,7 @@ import { useCustomerAuth } from "@/context/CustomerAuthContext";
 import SEOHead from "@/components/SEOHead";
 import { Helmet } from "react-helmet-async";
 import { WORKSHOPS, upcomingWorkshops } from "@/lib/workshops";
-import { isHalloweenActive, isOctoberDate, burstBats, HW } from "@/lib/halloween";
+import { getActiveSeason, seasonConfig, isSeasonDate, burstBats, flurrySnow, HW, XMAS } from "@/lib/halloween";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -49,25 +49,30 @@ export default function WorkshopsPage() {
   const [raffleSubmitting, setRaffleSubmitting] = useState(false);
   const [raffleError, setRaffleError] = useState("");
 
-  // Halloween seasonal state
-  const halloween = isHalloweenActive();
+  // Seasonal state (Halloween in Oct, Christmas in Dec)
+  const season = getActiveSeason();
+  const cfg = seasonConfig(season);
+  const isXmas = season === "christmas";
+  const seasonActive = !!season;
+  const pal = isXmas ? XMAS : HW;
+  const seasonEffect = () => (isXmas ? flurrySnow() : burstBats());
   const [seasonalPopup, setSeasonalPopup] = useState(false);
 
-  // Show the seasonal popup once per session when the theme is active
+  // Show the seasonal popup once per session when a season is active
   useEffect(() => {
-    if (!halloween) return;
+    if (!seasonActive) return;
     if (sessionStorage.getItem("pp_seasonal_popup_shown")) return;
     const t = setTimeout(() => {
       setSeasonalPopup(true);
       sessionStorage.setItem("pp_seasonal_popup_shown", "1");
-      burstBats();
+      seasonEffect();
     }, 1200);
     return () => clearTimeout(t);
-  }, [halloween]);
+  }, [seasonActive, isXmas]);
 
   const goSeasonal = () => {
     setSeasonalPopup(false);
-    burstBats();
+    seasonEffect();
     navigate("/seasonal");
   };
 
@@ -336,43 +341,46 @@ export default function WorkshopsPage() {
           </p>
         </div>
 
-        {/* Halloween seasonal banner */}
-        {halloween && (
+        {/* Seasonal banner */}
+        {seasonActive && (
           <div className="mb-10 sm:mb-12 animate-fade-in-up" data-testid="workshops-halloween-banner">
             <div
               className="relative overflow-hidden rounded-2xl px-6 py-6 sm:px-9 sm:py-8"
-              style={{ background: `radial-gradient(120% 140% at 15% -20%, ${HW.purple} 0%, ${HW.purpleDeep} 55%, ${HW.night} 100%)` }}
+              style={{ background: isXmas
+                ? `radial-gradient(120% 140% at 15% -20%, ${XMAS.green} 0%, ${XMAS.greenDeep} 55%, ${XMAS.night} 100%)`
+                : `radial-gradient(120% 140% at 15% -20%, ${HW.purple} 0%, ${HW.purpleDeep} 55%, ${HW.night} 100%)` }}
             >
               <div className="absolute inset-0 spooky-fog opacity-60 pointer-events-none" />
-              <div className="absolute top-4 right-6 w-12 h-12 rounded-full bg-[#F3E4C8] moon-glow pointer-events-none hidden sm:block" />
+              <div className="absolute top-4 right-6 w-12 h-12 rounded-full moon-glow pointer-events-none hidden sm:block" style={{ background: isXmas ? "#E3C77E" : "#F3E4C8" }} />
               <div className="relative flex flex-col md:flex-row md:items-center gap-5 justify-between">
                 <div className="flex items-start gap-4">
-                  <span className="text-3xl spooky-float leading-none" aria-hidden="true">🎃</span>
+                  <span className="text-3xl spooky-float leading-none" aria-hidden="true">{cfg.emoji}</span>
                   <div>
-                    <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-[#F3E4C8] block mb-1">Spooky Season</span>
+                    <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-[#F3E4C8] block mb-1">{cfg.bannerKicker}</span>
                     <h2 className="font-['Playfair_Display'] text-xl sm:text-2xl font-medium text-[#FAF9F6] mb-1 spooky-flicker">
-                      Halloween has landed at Petal &amp; Paw
+                      {cfg.bannerTitle}
                     </h2>
                     <p className="text-sm font-light text-[#FAF9F6]/80 max-w-md">
-                      Preorder a pet-safe Halloween bouquet for any day in October, and explore our spooky-season workshops.
+                      {cfg.bannerBlurb}
                     </p>
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
                   <Button
                     onClick={() => setSeasonalPopup(true)}
-                    className="rounded-full bg-[#D4956A] text-[#241B2B] hover:bg-[#e0a982] px-6 py-5 text-xs uppercase tracking-widest font-semibold transition-all hover:scale-105"
+                    className="rounded-full text-[#241B2B] px-6 py-5 text-xs uppercase tracking-widest font-semibold transition-all hover:scale-105"
+                    style={{ background: isXmas ? XMAS.goldSoft : "#D4956A" }}
                     data-testid="workshops-visit-seasonal-btn"
                   >
                     Visit Seasonal <ArrowRight size={14} className="ml-2" />
                   </Button>
                   <Button
-                    onClick={() => burstBats()}
+                    onClick={() => seasonEffect()}
                     variant="outline"
                     className="rounded-full border-[#FAF9F6]/40 bg-transparent text-[#FAF9F6] hover:bg-[#FAF9F6]/10 px-6 py-5 text-xs uppercase tracking-widest transition-all"
                     data-testid="workshops-release-bats-btn"
                   >
-                    <span aria-hidden="true" className="mr-2">🦇</span> Release the bats
+                    <span aria-hidden="true" className="mr-2">{isXmas ? "❄️" : "🦇"}</span> {isXmas ? "Let it snow" : "Release the bats"}
                   </Button>
                 </div>
               </div>
@@ -486,24 +494,27 @@ export default function WorkshopsPage() {
                         </thead>
                         <tbody>
                           {w.upcomingDates.map((d, i) => {
-                            const oct = halloween && isOctoberDate(d.date);
+                            const hit = seasonActive && isSeasonDate(d.date, season);
                             const border = i < w.upcomingDates.length - 1 ? "border-b border-[#E5E0D6]" : "";
+                            const rowClass = hit ? (isXmas ? "december-row" : "october-row") : "";
+                            const rowText = isXmas ? XMAS.greenDeep : HW.purpleDeep;
+                            const rowAccent = isXmas ? XMAS.green : HW.purple;
                             return (
                               <tr
                                 key={i}
-                                className={`${border} ${oct ? "october-row" : ""}`}
-                                onClick={oct ? () => navigate(`/seasonal#ws-${w.id}`) : undefined}
-                                title={oct ? "See this workshop on our Halloween seasonal page" : undefined}
-                                data-testid={oct ? `october-row-${w.id}-${i}` : undefined}
+                                className={`${border} ${rowClass}`}
+                                onClick={hit ? () => navigate(`/seasonal#ws-${w.id}`) : undefined}
+                                title={hit ? "See this workshop on our seasonal page" : undefined}
+                                data-testid={hit ? `${isXmas ? "december" : "october"}-row-${w.id}-${i}` : undefined}
                               >
-                                <td className="px-4 py-3 font-light" style={{ color: oct ? HW.purpleDeep : "#2C2C2C" }}>
-                                  {oct && <span aria-hidden="true">🎃 </span>}{d.date}
+                                <td className="px-4 py-3 font-light" style={{ color: hit ? rowText : "#2C2C2C" }}>
+                                  {hit && <span aria-hidden="true">{cfg.emoji} </span>}{d.date}
                                 </td>
                                 <td className="px-4 py-3 font-light text-[#6B7280]">{d.day}</td>
-                                <td className="px-4 py-3 font-light" style={{ color: oct ? HW.purple : "#6B7280" }}>
+                                <td className="px-4 py-3 font-light" style={{ color: hit ? rowAccent : "#6B7280" }}>
                                   <span className="inline-flex items-center gap-1.5">
                                     {d.time || w.time}
-                                    {oct && <ArrowRight size={12} />}
+                                    {hit && <ArrowRight size={12} />}
                                   </span>
                                 </td>
                               </tr>
@@ -1008,23 +1019,28 @@ export default function WorkshopsPage() {
         >
           <div
             className="relative px-7 py-9"
-            style={{ background: `radial-gradient(120% 120% at 50% -10%, ${HW.purple} 0%, ${HW.purpleDeep} 55%, ${HW.night} 100%)` }}
+            style={{ background: isXmas
+              ? `radial-gradient(120% 120% at 50% -10%, ${XMAS.green} 0%, ${XMAS.greenDeep} 55%, ${XMAS.night} 100%)`
+              : `radial-gradient(120% 120% at 50% -10%, ${HW.purple} 0%, ${HW.purpleDeep} 55%, ${HW.night} 100%)` }}
           >
             <div className="absolute inset-0 spooky-fog opacity-60 pointer-events-none" />
             <div className="relative">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FAF9F6]/10 mb-4">
-                <Ghost size={30} strokeWidth={1.5} className="text-[#F3E4C8] spooky-float" />
+                {isXmas
+                  ? <TreePine size={30} strokeWidth={1.5} className="text-[#E3C77E] spooky-float" />
+                  : <Ghost size={30} strokeWidth={1.5} className="text-[#F3E4C8] spooky-float" />}
               </div>
               <DialogTitle className="font-['Playfair_Display'] text-2xl sm:text-3xl font-medium text-[#FAF9F6] mb-2 spooky-flicker">
-                Something spooky this way blooms
+                {cfg.popupTitle}
               </DialogTitle>
               <DialogDescription className="text-sm font-light text-[#FAF9F6]/80 mb-6">
-                Step into our seasonal shop for pet-safe Halloween bouquets and October&apos;s spooky workshops.
+                {cfg.popupBlurb}
               </DialogDescription>
               <div className="flex flex-col gap-2">
                 <Button
                   onClick={goSeasonal}
-                  className="rounded-full bg-[#D4956A] text-[#241B2B] hover:bg-[#e0a982] px-8 py-6 text-xs uppercase tracking-widest font-semibold w-full transition-all hover:scale-[1.02]"
+                  className="rounded-full text-[#241B2B] px-8 py-6 text-xs uppercase tracking-widest font-semibold w-full transition-all hover:scale-[1.02]"
+                  style={{ background: isXmas ? XMAS.goldSoft : "#D4956A" }}
                   data-testid="seasonal-popup-enter-btn"
                 >
                   Enter the seasonal shop <ArrowRight size={14} className="ml-2" />

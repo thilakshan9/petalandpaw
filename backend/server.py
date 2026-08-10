@@ -2108,6 +2108,31 @@ async def seed_data():
         await db.products.update_one({"id": _hb["id"]}, {"$set": _hb}, upsert=True)
     logger.info("Seeded Halloween bouquet products")
 
+    # Christmas wreath collection — idempotent upsert with fixed IDs.
+    christmas_wreaths = [
+        {"id": "christmas-wreath-classic", "name": "Classic Fir Wreath", "slug": "christmas-wreath-classic",
+         "description": "A timeless fresh evergreen door wreath, hand-tied with fragrant fir and finished with a simple ribbon. Pet-safe foliage.",
+         "price": 39.99, "category": "christmas", "seasonal": "christmas",
+         "image_url": "https://images.unsplash.com/photo-1638644686388-f4cfc968bc02?w=800", "images": [],
+         "pet_safe": True, "pet_safe_details": "Made only with pet-safe evergreen foliage.",
+         "in_stock": True, "featured": False, "created_at": datetime.now(timezone.utc).isoformat()},
+        {"id": "christmas-wreath-luxe", "name": "Golden Pinecone Wreath", "slug": "christmas-wreath-luxe",
+         "description": "A lush evergreen wreath dressed with natural pinecones, dried accents and soft gold detailing. Pet-safe foliage.",
+         "price": 59.99, "category": "christmas", "seasonal": "christmas",
+         "image_url": "https://images.unsplash.com/photo-1639334317586-ced6c3ce407a?w=800", "images": [],
+         "pet_safe": True, "pet_safe_details": "Made only with pet-safe evergreen foliage.",
+         "in_stock": True, "featured": False, "created_at": datetime.now(timezone.utc).isoformat()},
+        {"id": "christmas-wreath-grand", "name": "Grand Winter Wreath", "slug": "christmas-wreath-grand",
+         "description": "Our most generous, statement-making fresh wreath \u2014 abundant evergreen, berries and a hand-finished bow. Pet-safe foliage.",
+         "price": 79.99, "category": "christmas", "seasonal": "christmas",
+         "image_url": "https://images.unsplash.com/photo-1543589077-47d81606c1bf?w=800", "images": [],
+         "pet_safe": True, "pet_safe_details": "Made only with pet-safe evergreen foliage.",
+         "in_stock": True, "featured": False, "created_at": datetime.now(timezone.utc).isoformat()},
+    ]
+    for _cw in christmas_wreaths:
+        await db.products.update_one({"id": _cw["id"]}, {"$set": _cw}, upsert=True)
+    logger.info("Seeded Christmas wreath products")
+
     if await db.subscription_plans.count_documents({}) == 0:
         plans = [
             {"id": str(uuid.uuid4()), "name": "Petite Paws", "slug": "petite-paws",

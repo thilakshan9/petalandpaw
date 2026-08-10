@@ -133,6 +133,20 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "PASSED: POST /api/orders/checkout successfully creates Stripe checkout session with special_notes and delivery_date. Verified: (1) Returns 200 with Stripe URL and order_id, (2) Order document persists both special_notes and delivery_date fields, (3) Backend correctly validates and uses DB price (54.99) instead of client-sent price - security check passed. Regression tests also passed: GET /api/subscriptions/plans returns 3 plans, GET /api/vouchers/validate returns 404 for invalid codes."
+  - task: "Seed 3 Christmas wreath products (fixed IDs, prices 39.99/59.99/79.99) via idempotent upsert"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "main"
+        -comment: "Added idempotent upsert for christmas-wreath-classic (39.99), christmas-wreath-luxe (59.99), christmas-wreath-grand (79.99). Verified via curl. These check out through existing /api/orders/checkout (same path as Halloween bouquets)."
+        -working: true
+        -agent: "testing"
+        -comment: "PASSED: All tests successful. (1) GET /api/products returns all 3 Christmas wreaths with exact fixed IDs (christmas-wreath-classic/luxe/grand) and correct prices (39.99/59.99/79.99). All have category='christmas', seasonal='christmas', and in_stock=true. (2) POST /api/orders/checkout with christmas-wreath-luxe returns 200 with Stripe URL and order_id. (3) Price manipulation test PASSED: Backend correctly validates and uses DB price (59.99) instead of client-sent price (1.00) - verified in database that order total is 59.99, not 1.00. Security check passed. (4) Regression tests PASSED: All 3 Halloween bouquets still exist with correct prices (24.99/54.99/74.99), GET /api/subscriptions/plans returns 3 plans, POST /api/orders/checkout with Halloween bouquet still returns 200. All 5 test cases passed with 100% success rate."
 
 frontend:
   - task: "Halloween theme (October auto-activation + ?spooky=1 preview), Seasonal page, bats, nav/footer link, Workshops banner/popup/October rows, Shop tick box"
@@ -153,12 +167,12 @@ frontend:
 metadata:
   created_by: "main_agent"
   version: "1.0"
-  test_sequence: 1
+  test_sequence: 2
   run_ui: true
 
 test_plan:
   current_focus:
-    - "Halloween theme (October auto-activation + ?spooky=1 preview), Seasonal page, bats, nav/footer link, Workshops banner/popup/October rows, Shop tick box"
+    - "Seed 3 Christmas wreath products (fixed IDs, prices 39.99/59.99/79.99) via idempotent upsert"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -174,3 +188,7 @@ agent_communication:
     -message: "✅ Backend testing complete - ALL TESTS PASSED. Halloween feature implementation verified: (1) All 3 Halloween bouquets seeded with correct fixed IDs and prices, (2) Checkout endpoint successfully handles special_notes and delivery_date with proper persistence, (3) Backend validates product prices from DB (security verified), (4) Regression tests passed for subscriptions and vouchers. No issues found. Ready for main agent to summarize and finish."
     -agent: "testing"
     -message: "✅ Frontend testing complete - ALL TESTS PASSED. Halloween seasonal feature fully functional with ?spooky=1 parameter. Verified: (1) Navigation links positioned correctly between Workshops and Vouchers in both navbar and footer, (2) Seasonal page renders with spooky hero, Halloween bouquet section with accurate pricing for all 3 sizes, functional add to basket, and working bat animation (36 bats spawned), (3) Cart displays Halloween tags on items correctly, (4) Workshops page shows Halloween banner, seasonal popup with proper dismiss/enter functionality, exactly 2 October rows highlighted that navigate to seasonal page with hash scrolling, (5) All 3 subscription plans display Halloween themed checkbox that toggles successfully. No critical issues found. Minor CDN network errors (non-blocking). Feature ready for production."
+    -agent: "main"
+    -message: "Added Christmas wreath products (christmas-wreath-classic £39.99, christmas-wreath-luxe £59.99, christmas-wreath-grand £79.99) via idempotent upsert in seed_data. All have category='christmas', seasonal='christmas', in_stock=true. They check out through existing /api/orders/checkout endpoint (same validation path as Halloween bouquets). Please test: (1) GET /api/products returns all 3 Christmas wreaths with correct IDs/prices, (2) POST /api/orders/checkout with christmas-wreath-luxe item, (3) Price manipulation test (send wrong price, verify backend uses DB price), (4) Regression: Halloween bouquets still exist and checkout still works."
+    -agent: "testing"
+    -message: "✅ Christmas wreath backend testing complete - ALL TESTS PASSED (5/5, 100% success rate). Verified: (1) GET /api/products returns all 3 Christmas wreaths with exact fixed IDs (christmas-wreath-classic/luxe/grand) and correct prices (39.99/59.99/79.99), all have category='christmas', seasonal='christmas', in_stock=true. (2) POST /api/orders/checkout with christmas-wreath-luxe returns 200 with Stripe checkout URL and order_id. (3) CRITICAL SECURITY TEST PASSED: Price manipulation test confirmed backend validates and uses DB price (59.99) instead of client-sent price (1.00) - verified in database that order total is 59.99, not 1.00. (4) Regression tests PASSED: All 3 Halloween bouquets still exist with correct prices (24.99/54.99/74.99). (5) Regression tests PASSED: GET /api/subscriptions/plans returns 3 plans, POST /api/orders/checkout with Halloween bouquet still returns 200. No issues found. Backend implementation is secure and fully functional."

@@ -1,7 +1,7 @@
-// Halloween / seasonal helpers for Petal & Paw
+// Seasonal engine for Petal & Paw (Halloween in October, Christmas in December).
+// The file keeps its original name/exports for backward compatibility.
 
-// Palette that harmonises with the existing muted site colours
-// (soft plum bridging the mauve #C4A2B0, plus the existing tan/pumpkin tones).
+// ---- Palettes (all harmonise with the muted site colours) ----
 export const HW = {
   purple: "#6B4E71",
   purpleDeep: "#4A3550",
@@ -12,49 +12,153 @@ export const HW = {
   night: "#241B2B",
 };
 
-// Preview toggle: append ?spooky=1 to force the theme on (or ?spooky=0 to force it
-// off) so it can be previewed outside October. The choice is remembered for the session.
-function readPreviewFlag() {
+export const XMAS = {
+  green: "#2E5D3F",
+  greenDeep: "#1E3D2A",
+  greenTint: "rgba(46,93,63,0.08)",
+  greenBorder: "rgba(46,93,63,0.35)",
+  gold: "#C9A24B",
+  goldSoft: "#E3C77E",
+  red: "#8C2F2F",
+  night: "#122019",
+};
+
+// ---- Preview toggles ----
+// ?spooky=1 -> halloween, ?festive=1 -> christmas, ?season=halloween|christmas|off,
+// ?spooky=0 / ?festive=0 / ?season=off -> clear. Remembered for the session.
+function readPreview() {
   try {
-    const params = new URLSearchParams(window.location.search);
-    if (params.has("spooky")) {
-      const v = params.get("spooky");
-      if (v === "0" || v === "false") { sessionStorage.removeItem("pp_spooky"); return false; }
-      sessionStorage.setItem("pp_spooky", "1");
-      return true;
+    const p = new URLSearchParams(window.location.search);
+    const off = (v) => v === "0" || v === "false" || v === "off" || v === "none";
+    if (p.has("season")) {
+      const v = (p.get("season") || "").toLowerCase();
+      if (off(v)) { sessionStorage.removeItem("pp_season"); return null; }
+      if (v === "halloween" || v === "spooky") { sessionStorage.setItem("pp_season", "halloween"); return "halloween"; }
+      if (v === "christmas" || v === "xmas" || v === "festive") { sessionStorage.setItem("pp_season", "christmas"); return "christmas"; }
     }
-    return sessionStorage.getItem("pp_spooky") === "1";
-  } catch { return false; }
+    if (p.has("spooky")) {
+      if (off(p.get("spooky"))) { sessionStorage.removeItem("pp_season"); return null; }
+      sessionStorage.setItem("pp_season", "halloween"); return "halloween";
+    }
+    if (p.has("festive")) {
+      if (off(p.get("festive"))) { sessionStorage.removeItem("pp_season"); return null; }
+      sessionStorage.setItem("pp_season", "christmas"); return "christmas";
+    }
+    return sessionStorage.getItem("pp_season") || null;
+  } catch { return null; }
 }
 
-// Active during October (month index 9), or whenever the preview flag is set.
-export function isHalloweenActive() {
-  if (readPreviewFlag()) return true;
-  return new Date().getMonth() === 9;
+// Returns "halloween" | "christmas" | null
+export function getActiveSeason() {
+  const preview = readPreview();
+  if (preview) return preview;
+  const m = new Date().getMonth();
+  if (m === 9) return "halloween"; // October
+  if (m === 11) return "christmas"; // December
+  return null;
 }
 
-// Detect an October date string like "9 October 2026" / "10th October 2026".
-export function isOctoberDate(str = "") {
-  return /\boct(ober)?\b/i.test(str);
+export function isHalloweenActive() { return getActiveSeason() === "halloween"; }
+export function isChristmasActive() { return getActiveSeason() === "christmas"; }
+export function isSeasonActive() { return getActiveSeason() !== null; }
+
+// Per-season display config used across nav, banners, popups.
+export function seasonConfig(season = getActiveSeason()) {
+  if (season === "christmas") {
+    return {
+      season: "christmas",
+      emoji: "🎄",
+      label: "Seasonal",
+      linkColor: "#2E5D3F",
+      palette: XMAS,
+      tagEmoji: "🎄",
+      tagLabel: "Christmas",
+      themeAddLabel: "Make it Christmas themed",
+      bannerKicker: "Festive Season",
+      bannerTitle: "Christmas has arrived at Petal & Paw",
+      bannerBlurb: "Order a fresh, pet-safe Christmas wreath for any day in December, and explore our festive workshops.",
+      heroKicker: "Petal & Paw at Christmas",
+      heroTitle: "A Very Merry, Pet-Safe Christmas",
+      heroBlurb: "Fresh evergreen wreaths and festive blooms, always pet-safe. Order for any day in December and join our Christmas workshops.",
+      popupTitle: "Something festive is in bloom",
+      popupBlurb: "Step into our seasonal shop for pet-safe Christmas wreaths and December's festive workshops.",
+      collectionKicker: "Order Now",
+      collectionTitle: "The Christmas Wreath Collection",
+      collectionBlurb: "Fresh, hand-tied evergreen wreaths for your door or table \u2014 pet-safe foliage throughout. Choose your favourite and the December day you\u2019d like it delivered.",
+    };
+  }
+  // default halloween
+  return {
+    season: "halloween",
+    emoji: "🎃",
+    label: "Seasonal",
+    linkColor: "#6B4E71",
+    palette: HW,
+    tagEmoji: "🎃",
+    tagLabel: "Halloween",
+    themeAddLabel: "Make it Halloween themed",
+    bannerKicker: "Spooky Season",
+    bannerTitle: "Halloween has landed at Petal & Paw",
+    bannerBlurb: "Preorder a pet-safe Halloween bouquet for any day in October, and explore our spooky-season workshops.",
+    heroKicker: "Petal & Paw After Dark",
+    heroTitle: "A Spooky Season in Bloom",
+    heroBlurb: "Deliciously dark, always pet-safe. Preorder a Halloween bouquet for any day in October and join our spooky-season workshops.",
+    popupTitle: "Something spooky this way blooms",
+    popupBlurb: "Step into our seasonal shop for pet-safe Halloween bouquets and October's spooky workshops.",
+    collectionKicker: "Preorder Now",
+    collectionTitle: "The Halloween Bouquet",
+    collectionBlurb: "A moody arrangement of pet-safe autumnal blooms in deep plums, dark oranges and inky tones. Choose your size and the October day you\u2019d like it to arrive.",
+  };
 }
 
-// October window for the current (or upcoming) year, for the bouquet delivery picker.
-export function octoberRange() {
+// ---- Date helpers ----
+export function isOctoberDate(str = "") { return /\boct(ober)?\b/i.test(str); }
+export function isDecemberDate(str = "") { return /\bdec(ember)?\b/i.test(str); }
+export function isSeasonDate(str = "", season = getActiveSeason()) {
+  if (season === "christmas") return isDecemberDate(str);
+  if (season === "halloween") return isOctoberDate(str);
+  return false;
+}
+
+function monthRange(monthIndex) {
   const now = new Date();
   let year = now.getFullYear();
-  if (now.getMonth() > 9) year += 1; // past October -> target next year
-  return { min: `${year}-10-01`, max: `${year}-10-31`, year };
+  if (now.getMonth() > monthIndex) year += 1; // past target month -> next year
+  const mm = String(monthIndex + 1).padStart(2, "0");
+  const lastDay = new Date(year, monthIndex + 1, 0).getDate();
+  return { min: `${year}-${mm}-01`, max: `${year}-${mm}-${lastDay}`, year };
+}
+export function octoberRange() { return monthRange(9); }
+export function decemberRange() { return monthRange(11); }
+export function seasonRange(season = getActiveSeason()) {
+  return season === "christmas" ? decemberRange() : octoberRange();
 }
 
-// Halloween bouquet sizes (prices confirmed by the shop owner).
+// ---- Halloween bouquet (sizes) ----
 export const HW_BOUQUET_IMAGE = "https://images.unsplash.com/photo-1457089328109-e5d9bd499191?w=800";
 export const HW_BOUQUET_SIZES = [
-  { id: "small", label: "Small", price: 24.99, blurb: "A petite posy — 5-7 stems" },
-  { id: "medium", label: "Medium", price: 54.99, blurb: "A classic bunch — 10-12 stems" },
-  { id: "large", label: "Large", price: 74.99, blurb: "A grand statement — 15-20 stems" },
+  { id: "small", label: "Small", price: 24.99, blurb: "A petite posy \u2014 5-7 stems" },
+  { id: "medium", label: "Medium", price: 54.99, blurb: "A classic bunch \u2014 10-12 stems" },
+  { id: "large", label: "Large", price: 74.99, blurb: "A grand statement \u2014 15-20 stems" },
 ];
 
-// Fire a swarm of bats across the screen.
+// ---- Christmas wreath collection (fixed IDs match backend-seeded products) ----
+export const XMAS_WREATHS = [
+  { id: "christmas-wreath-classic", name: "Classic Fir Wreath", price: 39.99,
+    blurb: "Timeless fresh fir, simply finished.",
+    image: "https://images.unsplash.com/photo-1638644686388-f4cfc968bc02?w=800" },
+  { id: "christmas-wreath-luxe", name: "Golden Pinecone Wreath", price: 59.99,
+    blurb: "Lush evergreen with pinecones & soft gold.",
+    image: "https://images.unsplash.com/photo-1639334317586-ced6c3ce407a?w=800" },
+  { id: "christmas-wreath-grand", name: "Grand Winter Wreath", price: 79.99,
+    blurb: "Our most generous statement wreath.",
+    image: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?w=800" },
+];
+
+// ---- Effects ----
 export function burstBats() {
   try { window.dispatchEvent(new Event("pp-bats-burst")); } catch { /* noop */ }
+}
+export function flurrySnow() {
+  try { window.dispatchEvent(new Event("pp-snow-flurry")); } catch { /* noop */ }
 }
