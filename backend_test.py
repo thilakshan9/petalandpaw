@@ -6,7 +6,7 @@ from datetime import datetime
 import json
 
 class PetalPawTester:
-    def __init__(self, base_url="https://event-time-format.preview.emergentagent.com"):
+    def __init__(self, base_url="https://pumpkin-patch-4.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.tests_run = 0

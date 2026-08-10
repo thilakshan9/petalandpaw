@@ -26,7 +26,7 @@ class TestSubscriptionCheckoutPersonalizedMessage:
         """Test subscription checkout accepts personalized_message and creates Stripe session"""
         payload = {
             "plan_id": self.plan_id,
-            "origin_url": "https://event-time-format.preview.emergentagent.com",
+            "origin_url": "https://pumpkin-patch-4.preview.emergentagent.com",
             "customer_email": "test@example.com",
             "add_pet_toy": False,
             "checkout_mode": "subscription",
@@ -49,7 +49,7 @@ class TestSubscriptionCheckoutPersonalizedMessage:
         """Test one-time purchase checkout accepts personalized_message"""
         payload = {
             "plan_id": self.plan_id,
-            "origin_url": "https://event-time-format.preview.emergentagent.com",
+            "origin_url": "https://pumpkin-patch-4.preview.emergentagent.com",
             "customer_email": "test@example.com",
             "add_pet_toy": True,
             "checkout_mode": "one-time",
@@ -68,7 +68,7 @@ class TestSubscriptionCheckoutPersonalizedMessage:
         """Test subscription checkout works with empty personalized_message"""
         payload = {
             "plan_id": self.plan_id,
-            "origin_url": "https://event-time-format.preview.emergentagent.com",
+            "origin_url": "https://pumpkin-patch-4.preview.emergentagent.com",
             "customer_email": "test@example.com",
             "checkout_mode": "subscription",
             "personalized_message": ""
@@ -84,7 +84,7 @@ class TestSubscriptionCheckoutPersonalizedMessage:
         """Test subscription checkout works without personalized_message field (backward compatibility)"""
         payload = {
             "plan_id": self.plan_id,
-            "origin_url": "https://event-time-format.preview.emergentagent.com",
+            "origin_url": "https://pumpkin-patch-4.preview.emergentagent.com",
             "customer_email": "test@example.com",
             "checkout_mode": "subscription"
         }
@@ -100,7 +100,7 @@ class TestSubscriptionCheckoutPersonalizedMessage:
         long_message = "A" * 600  # 600 characters
         payload = {
             "plan_id": self.plan_id,
-            "origin_url": "https://event-time-format.preview.emergentagent.com",
+            "origin_url": "https://pumpkin-patch-4.preview.emergentagent.com",
             "customer_email": "test@example.com",
             "checkout_mode": "subscription",
             "personalized_message": long_message
@@ -136,7 +136,7 @@ class TestOrderCheckoutPersonalizedMessage:
                 "quantity": 1,
                 "image_url": self.product.get('image_url', '')
             }],
-            "origin_url": "https://event-time-format.preview.emergentagent.com",
+            "origin_url": "https://pumpkin-patch-4.preview.emergentagent.com",
             "customer_email": "test@example.com",
             "order_type": "regular",
             "delivery_date": "2026-02-14",
@@ -166,7 +166,7 @@ class TestOrderCheckoutPersonalizedMessage:
                 "quantity": 2,
                 "image_url": ""
             }],
-            "origin_url": "https://event-time-format.preview.emergentagent.com",
+            "origin_url": "https://pumpkin-patch-4.preview.emergentagent.com",
             "customer_email": "test@example.com",
             "order_type": "regular",
             "personalized_message": ""
@@ -189,7 +189,7 @@ class TestOrderCheckoutPersonalizedMessage:
                 "quantity": 1,
                 "image_url": ""
             }],
-            "origin_url": "https://event-time-format.preview.emergentagent.com",
+            "origin_url": "https://pumpkin-patch-4.preview.emergentagent.com",
             "order_type": "regular"
         }
         response = requests.post(f"{BASE_URL}/api/orders/checkout", json=payload)
@@ -213,7 +213,7 @@ class TestOrderCheckoutPersonalizedMessage:
                 "quantity": 1,
                 "image_url": p.get('image_url', '')
             } for p in products],
-            "origin_url": "https://event-time-format.preview.emergentagent.com",
+            "origin_url": "https://pumpkin-patch-4.preview.emergentagent.com",
             "customer_email": "test@example.com",
             "order_type": "regular",
             "personalized_message": "Thank you for being such a wonderful friend!"
