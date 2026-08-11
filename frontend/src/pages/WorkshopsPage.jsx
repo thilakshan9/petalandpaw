@@ -334,14 +334,12 @@ export default function WorkshopsPage() {
                 ? `radial-gradient(120% 140% at 15% -20%, ${XMAS.green} 0%, ${XMAS.greenDeep} 55%, ${XMAS.night} 100%)`
                 : `radial-gradient(120% 140% at 15% -20%, ${HW.purple} 0%, ${HW.purpleDeep} 55%, ${HW.night} 100%)` }}
             >
-              <div className="absolute inset-0 spooky-fog opacity-60 pointer-events-none" />
-              <div className="absolute top-4 right-6 w-12 h-12 rounded-full moon-glow pointer-events-none hidden sm:block" style={{ background: isXmas ? "#E3C77E" : "#F3E4C8" }} />
               <div className="relative flex flex-col md:flex-row md:items-center gap-5 justify-between">
                 <div className="flex items-start gap-4">
                   <span className="text-3xl spooky-float leading-none" aria-hidden="true">{cfg.emoji}</span>
                   <div>
                     <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-[#F3E4C8] block mb-1">{cfg.bannerKicker}</span>
-                    <h2 className="font-['Playfair_Display'] text-xl sm:text-2xl font-medium text-[#FAF9F6] mb-1 spooky-flicker">
+                    <h2 className="font-['Playfair_Display'] text-xl sm:text-2xl font-medium text-[#FAF9F6] mb-1">
                       {cfg.bannerTitle}
                     </h2>
                     <p className="text-sm font-light text-[#FAF9F6]/80 max-w-md">

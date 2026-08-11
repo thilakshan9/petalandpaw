@@ -157,14 +157,6 @@ export default function SeasonalPage() {
       {/* Seasonal hero */}
       <section className="relative overflow-hidden" data-testid="seasonal-hero">
         <div className="relative" style={{ background: heroBg }}>
-          <div className="absolute inset-0 spooky-fog opacity-60 pointer-events-none" />
-
-          {/* glowing orb: moon (halloween) or gold bauble (christmas) */}
-          <div
-            className="absolute top-10 right-8 md:right-24 w-20 h-20 md:w-28 md:h-28 rounded-full moon-glow pointer-events-none"
-            style={{ background: isXmas ? "#E3C77E" : "#F3E4C8" }}
-          />
-
           {/* Halloween-only cobweb corners + candles */}
           {!isXmas && (
             <>
@@ -192,13 +184,13 @@ export default function SeasonalPage() {
               >
                 {isXmas ? "Shop the wreaths" : "Shop the bouquet"} <ArrowRight size={14} className="ml-2 inline" />
               </button>
-              <Link
-                to="/workshops"
+              <button
+                onClick={() => document.getElementById("seasonal-workshops")?.scrollIntoView({ behavior: "smooth", block: "start" })}
                 className="rounded-full border border-[#FAF9F6]/40 text-[#FAF9F6] hover:bg-[#FAF9F6]/10 px-8 py-4 text-xs uppercase tracking-widest font-semibold transition-all inline-flex items-center"
                 data-testid="seasonal-explore-workshops-btn"
               >
                 Explore workshops <ArrowRight size={14} className="ml-2 inline" />
-              </Link>
+              </button>
               <button
                 onClick={() => (isXmas ? flurrySnow() : burstBats())}
                 className="rounded-full border border-[#FAF9F6]/40 text-[#FAF9F6] hover:bg-[#FAF9F6]/10 px-8 py-4 text-xs uppercase tracking-widest transition-all"
@@ -208,15 +200,6 @@ export default function SeasonalPage() {
               </button>
             </div>
           </div>
-
-          {/* candle row (Halloween only) */}
-          {!isXmas && (
-            <div className="relative flex items-end justify-center gap-10 pb-8 pointer-events-none">
-              <Candle />
-              <Candle style={{ transform: "scale(1.25)" }} />
-              <Candle />
-            </div>
-          )}
 
           <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-b from-transparent to-[#FAF9F6] pointer-events-none" />
         </div>
@@ -353,7 +336,7 @@ export default function SeasonalPage() {
         </section>
 
         {/* Seasonal workshops */}
-        <section className="animate-fade-in-up" data-testid="seasonal-workshops-section">
+        <section id="seasonal-workshops" className="scroll-mt-24 animate-fade-in-up" data-testid="seasonal-workshops-section">
           <div className="text-center mb-8 sm:mb-10">
             <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold mb-2 block" style={{ color: isXmas ? XMAS.green : HW.purple }}>
               This {isXmas ? "December" : "October"}
