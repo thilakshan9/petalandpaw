@@ -212,6 +212,13 @@ export default function SeasonalPage() {
               >
                 {isXmas ? "Shop the wreaths" : "Shop the bouquet"} <ArrowRight size={14} className="ml-2 inline" />
               </button>
+              <Link
+                to="/workshops"
+                className="rounded-full border border-[#FAF9F6]/40 text-[#FAF9F6] hover:bg-[#FAF9F6]/10 px-8 py-4 text-xs uppercase tracking-widest font-semibold transition-all inline-flex items-center"
+                data-testid="seasonal-explore-workshops-btn"
+              >
+                Explore workshops <ArrowRight size={14} className="ml-2 inline" />
+              </Link>
               <button
                 onClick={() => (isXmas ? flurrySnow() : burstBats())}
                 className="rounded-full border border-[#FAF9F6]/40 text-[#FAF9F6] hover:bg-[#FAF9F6]/10 px-8 py-4 text-xs uppercase tracking-widest transition-all"
