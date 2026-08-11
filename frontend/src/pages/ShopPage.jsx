@@ -3,6 +3,7 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import ProductCard from "@/components/ProductCard";
 import SEOHead from "@/components/SEOHead";
+import SeasonalPopup from "@/components/SeasonalPopup";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -87,6 +88,7 @@ export default function ShopPage() {
           </div>
         )}
       </div>
+      <SeasonalPopup />
     </div>
   );
 }
