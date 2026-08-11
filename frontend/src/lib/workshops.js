@@ -76,7 +76,7 @@ export const WORKSHOPS = [
     description: "Create your own Halloween themed bouquet surrounded by fresh blooms, friendly faces and curious rescue cats.",
     included: ["Your bouquet to take home", "Drinks from the café", "Surrounded by cats"],
     accent: "#C4A2B0",
-    image: "https://lh3.googleusercontent.com/d/1YMwLFfooScdkWPti7QO_qSrnCqNc_p=w1200",
+    image: "https://lh3.googleusercontent.com/d/1YMwLFfooDcskdkWPti7QO_qSrnCqNc_p=w1200",
     bookingType: "external",
     bookingUrl: "https://ecom.roller.app/purrfectspace/artworkshop/en/product/1315239?date=2026-07-25",
     status: "live",
