@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Snow from "@/components/Snow";
+import Bats from "@/components/Bats";
 import { getActiveSeason } from "@/lib/halloween";
 
 export default function Layout({ children }) {
@@ -8,6 +9,7 @@ export default function Layout({ children }) {
   return (
     <div className="min-h-screen bg-[#FAF9F6] text-[#2C2C2C] flex flex-col">
       <Snow active={season === "christmas"} />
+      <Bats active={season === "halloween"} />
       <Navbar />
       <main className="flex-1">{children}</main>
       <Footer />

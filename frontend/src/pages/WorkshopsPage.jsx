@@ -342,16 +342,6 @@ export default function WorkshopsPage() {
           <p className="text-sm md:text-lg font-light text-[#6B7280] max-w-xl mx-auto">
             Learn to arrange beautiful, pet-safe flowers in a fun and relaxed setting. No experience needed - just come ready to create.
           </p>
-          <div className="mt-5 flex justify-center">
-            <Button
-              onClick={() => seasonEffect()}
-              variant="outline"
-              className="rounded-full border-[#8DA399]/40 bg-transparent text-[#6B7280] hover:bg-[#8DA399]/10 px-5 py-4 text-[10px] uppercase tracking-widest font-semibold transition-all"
-              data-testid="workshops-release-bats-always-btn"
-            >
-              <span aria-hidden="true" className="mr-2">{isXmas ? "❄️" : "🦇"}</span> {isXmas ? "Let it snow" : "Release the bats"}
-            </Button>
-          </div>
         </div>
 
         {/* Seasonal banner */}

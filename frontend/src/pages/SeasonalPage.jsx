@@ -6,7 +6,6 @@ import { toast } from "sonner";
 import { useCart } from "@/components/CartProvider";
 import SEOHead from "@/components/SEOHead";
 import Cobweb from "@/components/Cobweb";
-import Bats from "@/components/Bats";
 import { WORKSHOPS } from "@/lib/workshops";
 import {
   getActiveSeason,
@@ -166,7 +165,6 @@ export default function SeasonalPage() {
 
   return (
     <div data-testid="seasonal-page" data-season={season}>
-      <Bats active={season === "halloween"} />
       <SEOHead
         title={isXmas ? "Christmas Seasonal" : "Halloween Seasonal"}
         description={isXmas
