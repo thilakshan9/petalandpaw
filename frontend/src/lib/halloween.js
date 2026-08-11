@@ -49,9 +49,16 @@ function readPreview() {
 }
 
 // Returns "halloween" | "christmas" | null
+//
+// MANUAL OVERRIDE: set FORCE_SEASON to keep a season permanently on regardless
+// of the month. Set it back to null to restore automatic behaviour
+// (Halloween in October, Christmas in December). Preview params still win.
+const FORCE_SEASON = "halloween"; // "halloween" | "christmas" | null
+
 export function getActiveSeason() {
   const preview = readPreview();
   if (preview) return preview;
+  if (FORCE_SEASON) return FORCE_SEASON;
   const m = new Date().getMonth();
   if (m === 9) return "halloween"; // October
   if (m === 11) return "christmas"; // December

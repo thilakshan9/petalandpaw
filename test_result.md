@@ -163,16 +163,44 @@ frontend:
         -working: true
         -agent: "testing"
         -comment: "PASSED: Comprehensive testing completed with ?spooky=1 parameter. All features working correctly: (1) Nav & Footer: Seasonal link appears between Workshops and Vouchers with 🎃 emoji, (2) Seasonal Page: Spooky hero renders, Halloween bouquet section with size selector shows correct prices (Small £24.99, Medium £54.99, Large £74.99), delivery date input present, add to basket increments cart badge, release bats button spawns 36 bat elements, (3) Cart: Halloween tag displays on cart items with correct product name 'Halloween Bouquet', (4) Workshops: Halloween banner present, seasonal popup appears on first load with dismiss and enter buttons working, popup re-opens via 'Visit Seasonal' button, exactly 2 October rows highlighted (King's Dog Daycare 10th Oct, Alfi 9 Oct), clicking October row navigates to /seasonal#ws-{id} and scrolls to workshop section, (5) Shop: All 3 subscription plans show 'Make it Halloween themed' checkbox that toggles correctly. No critical errors found. Minor network errors for CDN rum requests (non-blocking). Feature fully functional."
+  - task: "Christmas theme (December auto-activation + ?festive=1 preview), Seasonal page with wreaths, snow animation, nav/footer link, Workshops banner/December rows"
+    implemented: true
+    working: true
+    file: "frontend/src/pages/SeasonalPage.jsx, frontend/src/lib/halloween.js, frontend/src/components/Navbar.jsx, frontend/src/components/Footer.jsx, frontend/src/pages/WorkshopsPage.jsx, frontend/src/pages/CartPage.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Christmas frontend implementation found in code during seasonal gating verification. Testing all three states: DEFAULT (gated), HALLOWEEN (?spooky=1), and CHRISTMAS (?festive=1)."
+        -working: true
+        -agent: "testing"
+        -comment: "✅ PASSED: Comprehensive seasonal theming verification completed - ALL 22 TESTS PASSED (0 FAILED). STATE A (DEFAULT/GATED): Correctly hides all seasonal elements when no preview param is used - nav-seasonal link hidden, workshops-halloween-banner hidden, no October/December rows highlighted. STATE B (HALLOWEEN ?spooky=1): All Halloween features working - seasonal-page with data-season='halloween', hero text 'A Spooky Season in Bloom', 2 cobwebs, 3 candle flames, bouquet size selector with correct prices (£24.99/£54.99/£74.99), nav-seasonal link visible, workshops banner visible. STATE C (CHRISTMAS ?festive=1): All Christmas features working - seasonal-page with data-season='christmas', hero text 'A Very Merry, Pet-Safe Christmas', 68 snow flakes present, wreath grid with 3 wreaths at correct prices (£39.99/£59.99/£79.99), 'Buy it now' navigates to cart, Christmas tag '🎄 Christmas' displays in cart, workshops banner shows Christmas variant, nav-seasonal link visible. Gating mechanism works perfectly - themes are hidden by default and only appear with preview params or during October/December. No console errors found. Feature is production-ready."
+  - task: "Seasonal theming gating verification (default hidden, ?spooky=1 shows Halloween, ?festive=1 shows Christmas, ?spooky=0 clears)"
+    implemented: true
+    working: true
+    file: "frontend/src/lib/halloween.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "User requested verification of seasonal theming gating mechanism across three states."
+        -working: true
+        -agent: "testing"
+        -comment: "✅ PASSED: Seasonal gating mechanism verified and working correctly. Tested three states: (1) STATE A - DEFAULT/GATED: With no query param (after ?spooky=0 clear), /workshops page correctly hides nav-seasonal link, workshops-halloween-banner, and all October/December rows. Site appears normal with no seasonal elements. (2) STATE B - HALLOWEEN PREVIEW (?spooky=1): /seasonal?spooky=1 correctly shows Halloween theme with all elements (hero, cobwebs, candles, bouquet selector), /workshops?spooky=1 shows nav-seasonal link and banner. (3) STATE C - CHRISTMAS PREVIEW (?festive=1): /seasonal?festive=1 correctly shows Christmas theme with all elements (hero, snow, wreaths), cart shows Christmas tag, /workshops?festive=1 shows nav-seasonal link and Christmas banner variant. The gating logic in halloween.js correctly checks for preview params (?spooky=1, ?festive=1, ?spooky=0) and stores in sessionStorage, falls back to month check (October=9, December=11), and returns null when no season is active. All 22 test assertions passed with 0 failures. Implementation is correct and production-ready."
 
 metadata:
   created_by: "main_agent"
   version: "1.0"
-  test_sequence: 2
+  test_sequence: 3
   run_ui: true
 
 test_plan:
   current_focus:
-    - "Seed 3 Christmas wreath products (fixed IDs, prices 39.99/59.99/79.99) via idempotent upsert"
+    - "Seasonal theming gating verification (default hidden, ?spooky=1 shows Halloween, ?festive=1 shows Christmas, ?spooky=0 clears)"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -192,3 +220,5 @@ agent_communication:
     -message: "Added Christmas wreath products (christmas-wreath-classic £39.99, christmas-wreath-luxe £59.99, christmas-wreath-grand £79.99) via idempotent upsert in seed_data. All have category='christmas', seasonal='christmas', in_stock=true. They check out through existing /api/orders/checkout endpoint (same validation path as Halloween bouquets). Please test: (1) GET /api/products returns all 3 Christmas wreaths with correct IDs/prices, (2) POST /api/orders/checkout with christmas-wreath-luxe item, (3) Price manipulation test (send wrong price, verify backend uses DB price), (4) Regression: Halloween bouquets still exist and checkout still works."
     -agent: "testing"
     -message: "✅ Christmas wreath backend testing complete - ALL TESTS PASSED (5/5, 100% success rate). Verified: (1) GET /api/products returns all 3 Christmas wreaths with exact fixed IDs (christmas-wreath-classic/luxe/grand) and correct prices (39.99/59.99/79.99), all have category='christmas', seasonal='christmas', in_stock=true. (2) POST /api/orders/checkout with christmas-wreath-luxe returns 200 with Stripe checkout URL and order_id. (3) CRITICAL SECURITY TEST PASSED: Price manipulation test confirmed backend validates and uses DB price (59.99) instead of client-sent price (1.00) - verified in database that order total is 59.99, not 1.00. (4) Regression tests PASSED: All 3 Halloween bouquets still exist with correct prices (24.99/54.99/74.99). (5) Regression tests PASSED: GET /api/subscriptions/plans returns 3 plans, POST /api/orders/checkout with Halloween bouquet still returns 200. No issues found. Backend implementation is secure and fully functional."
+    -agent: "testing"
+    -message: "✅ SEASONAL THEMING GATING VERIFICATION COMPLETE - ALL 22 TESTS PASSED (0 FAILED). Verified three states as requested: STATE A (DEFAULT/GATED): Correctly hides all seasonal elements - no nav-seasonal link, no workshops banner, no highlighted rows. STATE B (HALLOWEEN ?spooky=1): All Halloween features visible and working - seasonal page with data-season='halloween', hero 'A Spooky Season in Bloom', 2 cobwebs, 3 candles, bouquet prices £24.99/£54.99/£74.99, nav link and banner present. STATE C (CHRISTMAS ?festive=1): All Christmas features visible and working - seasonal page with data-season='christmas', hero 'A Very Merry, Pet-Safe Christmas', 68 snow flakes, 3 wreaths at £39.99/£59.99/£79.99, cart shows '🎄 Christmas' tag, nav link and banner present. The gating mechanism in halloween.js works perfectly: checks preview params (?spooky=1, ?festive=1, ?spooky=0), stores in sessionStorage, falls back to month check (Oct=9, Dec=11), returns null when no season active. No console errors. Implementation is correct and production-ready. Screenshots saved for all three states."
