@@ -20,7 +20,7 @@ let _batId = 0;
 // Global, decorative bat animation layer. Renders nothing unless `active`.
 // Ambient: 1-2 bats drift across every several seconds.
 // Burst: dispatch a `pp-bats-burst` window event to send a swarm across.
-export default function Bats({ active = false }) {
+export default function Bats({ active = false, ambient = false }) {
   const [bats, setBats] = useState([]);
   const timerRef = useRef(null);
 
@@ -51,10 +51,10 @@ export default function Bats({ active = false }) {
     if (!active) { setBats([]); return; }
 
     const tick = () => {
-      spawn(1 + Math.floor(Math.random() * 2)); // 1-2 ambient bats
+      spawn(1 + Math.floor(Math.random() * 2));
       timerRef.current = setTimeout(tick, 7000 + Math.random() * 7000);
     };
-    timerRef.current = setTimeout(tick, 2800);
+    if (ambient) timerRef.current = setTimeout(tick, 2800);
 
     const onBurst = () => spawn(6, { spread: 1.3 });
     window.addEventListener("pp-bats-burst", onBurst);
@@ -63,7 +63,7 @@ export default function Bats({ active = false }) {
       clearTimeout(timerRef.current);
       window.removeEventListener("pp-bats-burst", onBurst);
     };
-  }, [active, spawn]);
+  }, [active, ambient, spawn]);
 
   if (!active) return null;
 

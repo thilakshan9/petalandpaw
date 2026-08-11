@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Calendar, Clock, MapPin, Gift, ArrowRight, Loader as Loader2, Minus, Plus, Sparkles, CircleCheck as CheckCircle2, Heart, Ticket } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ import { useCustomerAuth } from "@/context/CustomerAuthContext";
 import SEOHead from "@/components/SEOHead";
 import { Helmet } from "react-helmet-async";
 import { WORKSHOPS, upcomingWorkshops } from "@/lib/workshops";
-import { getActiveSeason, seasonConfig, isSeasonDate, HW, XMAS } from "@/lib/halloween";
+import { getActiveSeason, seasonConfig, isSeasonDate, burstBats, flurrySnow, HW, XMAS } from "@/lib/halloween";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -55,6 +55,11 @@ export default function WorkshopsPage() {
   const isXmas = season === "christmas";
   const seasonActive = !!season;
   const pal = isXmas ? XMAS : HW;
+  const seasonEffect = useCallback(() => (isXmas ? flurrySnow() : burstBats()), [isXmas]);
+  const goSeasonal = () => {
+    seasonEffect();
+    navigate("/seasonal");
+  };
   const getQty = (id) => Math.max(1, Math.min(10, qty[id] || 1));
   const updateQty = (id, delta) => {
     setQty((q) => ({ ...q, [id]: Math.max(1, Math.min(10, (q[id] || 1) + delta)) }));
