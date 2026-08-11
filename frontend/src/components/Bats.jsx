@@ -56,7 +56,7 @@ export default function Bats({ active = false }) {
     };
     timerRef.current = setTimeout(tick, 2800);
 
-    const onBurst = () => spawn(14, { spread: 1.3 });
+    const onBurst = () => spawn(6, { spread: 1.3 });
     window.addEventListener("pp-bats-burst", onBurst);
 
     return () => {
