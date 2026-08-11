@@ -22,6 +22,24 @@ import {
   XMAS_WREATHS,
 } from "@/lib/halloween";
 
+// Truncates long text with a Read more / Read less toggle.
+function ReadMore({ text, lines = 3 }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div>
+      <p className={`text-sm font-light text-[#6B7280] mb-2 ${open ? "" : `line-clamp-${lines}`}`}>{text}</p>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="text-xs uppercase tracking-widest font-semibold hover:underline"
+        style={{ color: HW.purple }}
+      >
+        {open ? "Read less" : "Read more"}
+      </button>
+    </div>
+  );
+}
+
 // Small flickering candle used to warm up the Halloween hero.
 function Candle({ className = "", style = {} }) {
   return (
@@ -331,7 +349,7 @@ export default function SeasonalPage() {
                     style={{ background: HW.pumpkinSoft }}
                     data-testid="hw-buy-now-btn"
                   >
-                    Buy it now &mdash; &pound;{selectedSize.price.toFixed(2)} <ArrowRight size={14} className="ml-2" />
+                    Buy it now &middot; &pound;{selectedSize.price.toFixed(2)} <ArrowRight size={14} className="ml-2" />
                   </Button>
                   <Button
                     onClick={() => addBouquet(false)}
@@ -365,7 +383,7 @@ export default function SeasonalPage() {
 
           {seasonWs.length === 0 ? (
             <p className="text-center text-sm font-light text-[#6B7280]">
-              More {isXmas ? "December" : "October"} dates coming soon &mdash; see all our <Link to="/workshops" className="underline hover:no-underline" style={{ color: isXmas ? XMAS.green : HW.purple }}>workshops</Link>.
+              More {isXmas ? "December" : "October"} dates coming soon. See all our <Link to="/workshops" className="underline hover:no-underline" style={{ color: isXmas ? XMAS.green : HW.purple }}>workshops</Link>.
             </p>
           ) : (
             <div className="space-y-6">
@@ -397,7 +415,7 @@ export default function SeasonalPage() {
                           </span>
                         ))}
                       </div>
-                      <p className="text-sm font-light text-[#6B7280] mb-5 line-clamp-3">{w.description}</p>
+                      <div className="mb-5"><ReadMore text={w.description} lines={3} /></div>
                       <div className="mt-auto flex items-center justify-between gap-3">
                         <span className="text-lg font-light text-[#2C2C2C]">&pound;{w.price}<span className="text-xs text-[#6B7280]">/person</span></span>
                         {w.bookingType === "external" && w.bookingUrl ? (

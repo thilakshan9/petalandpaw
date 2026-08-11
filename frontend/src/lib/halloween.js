@@ -91,7 +91,7 @@ export function seasonConfig(season = getActiveSeason()) {
       popupBlurb: "Step into our seasonal shop for pet-safe Christmas wreaths and December's festive workshops.",
       collectionKicker: "Order Now",
       collectionTitle: "The Christmas Wreath Collection",
-      collectionBlurb: "Fresh, hand-tied evergreen wreaths for your door or table \u2014 pet-safe foliage throughout. Choose your favourite and the December day you\u2019d like it delivered.",
+      collectionBlurb: "Fresh, hand-tied evergreen wreaths for your door or table, with pet-safe foliage throughout. Choose your favourite and the December day you\u2019d like it delivered.",
     };
   }
   // default halloween
@@ -144,9 +144,9 @@ export function seasonRange(season = getActiveSeason()) {
 // ---- Halloween bouquet (sizes) ----
 export const HW_BOUQUET_IMAGE = "https://images.unsplash.com/photo-1457089328109-e5d9bd499191?w=800";
 export const HW_BOUQUET_SIZES = [
-  { id: "small", label: "Petite Paws", price: 24.99, blurb: "A petite posy \u2014 5-7 stems" },
-  { id: "medium", label: "Signature Selection", price: 54.99, blurb: "A classic bunch \u2014 10-12 stems" },
-  { id: "large", label: "Grand Garden", price: 74.99, blurb: "A grand statement \u2014 15-20 stems" },
+  { id: "small", label: "Petite Paws", price: 24.99, blurb: "A petite posy, 5-7 stems" },
+  { id: "medium", label: "Signature Selection", price: 54.99, blurb: "A classic bunch, 10-12 stems" },
+  { id: "large", label: "Grand Garden", price: 74.99, blurb: "A grand statement, 15-20 stems" },
 ];
 
 // ---- Christmas wreath collection (fixed IDs match backend-seeded products) ----
