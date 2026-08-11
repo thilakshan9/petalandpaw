@@ -58,13 +58,16 @@ export default function WorkshopsPage() {
   const seasonEffect = useCallback(() => (isXmas ? flurrySnow() : burstBats()), [isXmas]);
   const [seasonalPopup, setSeasonalPopup] = useState(false);
 
-  // Show the seasonal popup once per session when a season is active
+  // Show the seasonal popup when a season is active, with a 15-minute cooldown
   useEffect(() => {
     if (!seasonActive) return;
-    if (sessionStorage.getItem("pp_seasonal_popup_shown")) return;
+    const key = "pp_seasonal_popup_ts";
+    const last = localStorage.getItem(key);
+    const now = Date.now();
+    if (last && now - parseInt(last, 10) < 15 * 60 * 1000) return;
     const t = setTimeout(() => {
       setSeasonalPopup(true);
-      sessionStorage.setItem("pp_seasonal_popup_shown", "1");
+      localStorage.setItem(key, String(Date.now()));
       seasonEffect();
     }, 1200);
     return () => clearTimeout(t);
@@ -367,7 +370,7 @@ export default function WorkshopsPage() {
                 </div>
                 <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
                   <Button
-                    onClick={() => setSeasonalPopup(true)}
+                    onClick={goSeasonal}
                     className="rounded-full text-[#241B2B] px-6 py-5 text-xs uppercase tracking-widest font-semibold transition-all hover:scale-105"
                     style={{ background: isXmas ? XMAS.goldSoft : "#D4956A" }}
                     data-testid="workshops-visit-seasonal-btn"
