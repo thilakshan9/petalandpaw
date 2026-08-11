@@ -21,24 +21,6 @@ import {
   XMAS_WREATHS,
 } from "@/lib/halloween";
 
-// Truncates long text with a Read more / Read less toggle.
-function ReadMore({ text, lines = 3 }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div>
-      <p className={`text-sm font-light text-[#6B7280] mb-2 ${open ? "" : `line-clamp-${lines}`}`}>{text}</p>
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        className="text-xs uppercase tracking-widest font-semibold hover:underline"
-        style={{ color: HW.purple }}
-      >
-        {open ? "Read less" : "Read more"}
-      </button>
-    </div>
-  );
-}
-
 // Small flickering candle used to warm up the Halloween hero.
 function Candle({ className = "", style = {} }) {
   return (
@@ -420,7 +402,7 @@ export default function SeasonalPage() {
                           </span>
                         ))}
                       </div>
-                      <div className="mb-5"><ReadMore text={w.description} lines={3} /></div>
+                      <p className="text-sm font-light text-[#6B7280] mb-5">{w.description}</p>
                       <div className="mt-auto flex items-center justify-between gap-3">
                         <span className="text-lg font-light text-[#2C2C2C]">&pound;{w.price}<span className="text-xs text-[#6B7280]">/person</span></span>
                         {w.bookingType === "external" && w.bookingUrl ? (
