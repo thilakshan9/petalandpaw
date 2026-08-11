@@ -144,9 +144,9 @@ export function seasonRange(season = getActiveSeason()) {
 // ---- Halloween bouquet (sizes) ----
 export const HW_BOUQUET_IMAGE = "https://images.unsplash.com/photo-1457089328109-e5d9bd499191?w=800";
 export const HW_BOUQUET_SIZES = [
-  { id: "small", label: "Small", price: 24.99, blurb: "A petite posy \u2014 5-7 stems" },
-  { id: "medium", label: "Medium", price: 54.99, blurb: "A classic bunch \u2014 10-12 stems" },
-  { id: "large", label: "Large", price: 74.99, blurb: "A grand statement \u2014 15-20 stems" },
+  { id: "small", label: "Petite Paws", price: 24.99, blurb: "A petite posy \u2014 5-7 stems" },
+  { id: "medium", label: "Signature Selection", price: 54.99, blurb: "A classic bunch \u2014 10-12 stems" },
+  { id: "large", label: "Grand Garden", price: 74.99, blurb: "A grand statement \u2014 15-20 stems" },
 ];
 
 // ---- Christmas wreath collection (fixed IDs match backend-seeded products) ----
