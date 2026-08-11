@@ -127,7 +127,7 @@ export default function SeasonalPage() {
       name: w.name,
       price: w.price,
       quantity: 1,
-      image_url: w.image,
+      image_url: w.seasonalImage || w.image,
       theme: "christmas",
       season_date: date || "",
     });
@@ -284,7 +284,7 @@ export default function SeasonalPage() {
               {XMAS_WREATHS.map((w) => (
                 <div key={w.id} className="bg-white border rounded-2xl overflow-hidden flex flex-col transition-all hover:-translate-y-1" style={{ borderColor: XMAS.greenBorder }} data-testid={`wreath-${w.id}`}>
                   <div className="relative aspect-square bg-[#122019] overflow-hidden">
-                    <img src={w.image} alt={w.name} className="absolute inset-0 w-full h-full object-cover" />
+                    <img src={w.seasonalImage || w.image} alt={w.name} className="absolute inset-0 w-full h-full object-cover" />
                     <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 bg-[#122019]/80 backdrop-blur text-[#E3C77E] text-[10px] uppercase tracking-widest font-semibold px-3 py-1.5 rounded-full">
                       <Leaf size={12} /> Pet Safe
                     </span>
@@ -406,7 +406,7 @@ export default function SeasonalPage() {
                     data-testid={`seasonal-workshop-${w.id}`}
                   >
                     <div className="relative aspect-[4/3] sm:aspect-auto sm:min-h-[200px] bg-[#122019] overflow-hidden">
-                      <img src={w.image} alt={w.place} className="absolute inset-0 w-full h-full object-cover" />
+                      <img src={w.seasonalImage || w.image} alt={w.place} className="absolute inset-0 w-full h-full object-cover" />
                       <span className="absolute top-3 left-3 text-lg spooky-float">{isXmas ? "\u2744\uFE0F" : "\uD83C\uDF83"}</span>
                     </div>
                     <div className="p-5 sm:p-7 sm:col-span-2 flex flex-col">
