@@ -179,7 +179,7 @@ export default function SeasonalPage() {
             <span className="inline-flex items-center gap-2 text-[10px] sm:text-xs uppercase tracking-[0.35em] font-semibold text-[#E9D8C3] mb-4">
               {isXmas ? <TreePine size={14} /> : <Ghost size={14} />} {cfg.heroKicker}
             </span>
-            <h1 className="font-['Playfair_Display'] text-4xl sm:text-6xl md:text-7xl font-medium tracking-tight text-[#FAF9F6] mb-5 spooky-flicker">
+            <h1 className="font-['Playfair_Display'] text-4xl sm:text-6xl md:text-7xl font-medium tracking-tight text-[#FAF9F6] mb-5">
               {cfg.heroTitle}
             </h1>
             <p className="text-sm md:text-lg font-light text-[#FAF9F6]/80 max-w-xl mx-auto mb-8">
