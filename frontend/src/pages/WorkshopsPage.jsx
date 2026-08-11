@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Calendar, Clock, MapPin, Gift, ArrowRight, Loader as Loader2, Minus, Plus, Sparkles, CircleCheck as CheckCircle2, Heart, Ticket, Ghost, Moon, TreePine } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -55,7 +55,7 @@ export default function WorkshopsPage() {
   const isXmas = season === "christmas";
   const seasonActive = !!season;
   const pal = isXmas ? XMAS : HW;
-  const seasonEffect = () => (isXmas ? flurrySnow() : burstBats());
+  const seasonEffect = useCallback(() => (isXmas ? flurrySnow() : burstBats()), [isXmas]);
   const [seasonalPopup, setSeasonalPopup] = useState(false);
 
   // Show the seasonal popup once per session when a season is active
@@ -68,7 +68,7 @@ export default function WorkshopsPage() {
       seasonEffect();
     }, 1200);
     return () => clearTimeout(t);
-  }, [seasonActive, isXmas]);
+  }, [seasonActive, seasonEffect]);
 
   const goSeasonal = () => {
     setSeasonalPopup(false);
