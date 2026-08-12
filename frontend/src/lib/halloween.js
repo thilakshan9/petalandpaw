@@ -114,7 +114,7 @@ export function seasonConfig(season = getActiveSeason()) {
     popupBlurb: "Step into our seasonal shop for pet-safe Halloween bouquets and October's spooky workshops.",
     collectionKicker: "Preorder Now",
     collectionTitle: "The Halloween Bouquet",
-    collectionBlurb: "A moody arrangement of pet-safe autumnal blooms in deep plums, dark oranges and inky tones. Choose your size and the October day you\u2019d like it to arrive.",
+    collectionBlurb: "A haunting arrangement of pet-safe autumnal blooms in deep plums, burnt oranges and inky tones, delicately tangled with spooky spiderwebs for a beautifully eerie finish. Choose your size and the October day you’d like your Halloween bouquet to arrive.",
   };
 }
 
