@@ -277,13 +277,13 @@ export default function WorkshopsPage() {
           .filter((w) => w.date !== "Monthly")
           .map((w) => {
             const dateMap = {
-              "23rd August 2026": "2026-08-23T14:00",
+              "20th September 2026": "2026-09-20T14:00",
               "14 August 2026": "2026-08-14T18:30",
               "11 September 2026": "2026-09-11T18:30",
               "9 October 2026": "2026-10-09T18:30",
               "13 November 2026": "2026-11-13T18:30",
             };
-            const startDate = dateMap[w.date] || "2026-08-23T14:00";
+            const startDate = dateMap[w.date] || "2026-09-20T14:00";
             return (
               <script type="application/ld+json" key={w.id}>
                 {JSON.stringify({
