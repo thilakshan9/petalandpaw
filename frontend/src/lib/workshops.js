@@ -49,7 +49,6 @@ export const WORKSHOPS = [
     upcomingDates: [
       { date: "11 September 2026", day: "Friday", time: "18:30pm" },
       { date: "9 October 2026", day: "Friday", time: "6:30pm" },
-      { date: "13 November 2026", day: "Friday", time: "6:30pm" },
     ],
     time: "18:30pm",
     duration: "60 mins",
