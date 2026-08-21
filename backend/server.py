@@ -2135,17 +2135,17 @@ async def seed_data():
 
     if await db.subscription_plans.count_documents({}) == 0:
         plans = [
-            {"id": str(uuid.uuid4()), "name": "Petite Phantom Paws", "slug": "petite-paws",
+            {"id": str(uuid.uuid4()), "name": "Petite Paws", "slug": "petite-paws",
              "description": "A compact, letterbox-friendly arrangement of pet-safe blooms delivered monthly.",
              "price": 29.99, "frequency": "monthly",
              "image_url": "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=800",
              "features": ["Letterbox friendly", "Free delivery", "Biodegradable packaging", "Care guide included"], "pet_toy_price": 8.99},
-            {"id": str(uuid.uuid4()), "name": "Signature Spell Selection", "slug": "classic-bloom",
+            {"id": str(uuid.uuid4()), "name": "Signature Selection", "slug": "classic-bloom",
              "description": "Our most popular bouquet, handcrafted using seasonal pet-safe flowers and delivered fresh to your door every month.",
              "price": 54.99, "frequency": "monthly", "stock_limit": 60, "pet_toy_price": 8.99,
              "image_url": "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=800",
              "features": ["Free delivery", "Biodegradable packaging", "Seasonal variety", "Care guide included"]},
-            {"id": str(uuid.uuid4()), "name": "Grand Ghost Garden", "slug": "grand-garden",
+            {"id": str(uuid.uuid4()), "name": "Grand Garden", "slug": "grand-garden",
              "description": "Our extra large monthly arrangement with premium pet-safe flowers.",
              "price": 74.99, "frequency": "monthly",
              "image_url": "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=800",
@@ -2165,7 +2165,7 @@ async def seed_data():
         {"slug": "classic-bloom"},
         {"$set": {"features": ["Free delivery", "Biodegradable packaging", "Seasonal variety", "Care guide included"], "stock_limit": 60, "pet_toy_price": 8.99,
                   "price": 54.99,
-                  "name": "Signature Spell Selection",
+                  "name": "Signature Selection",
                   "description": "Our most popular bouquet, handcrafted using seasonal pet-safe flowers and delivered fresh to your door every month.",
                   "image_url": "https://lh3.googleusercontent.com/d/10eVZW0mATKtuTyfynNGdbw7e1j_oGM79=w800"}}
     )

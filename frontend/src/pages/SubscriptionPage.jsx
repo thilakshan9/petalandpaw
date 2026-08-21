@@ -331,7 +331,7 @@ export default function SubscriptionPage() {
               const displayBasePrice = selectedMode === "subscription" ? subscriptionPrice : oneTimePrice;
               const displayPrice = toyOn ? displayBasePrice + toyPrice : displayBasePrice;
               const selectedPet = petType[plan.id] || "";
-              const planName = isPop ? "Signature Spell Selection" : plan.name;
+              const planName = isPop ? "Signature Selection" : plan.name;
               const planDescription = isPop
                 ? "Our most popular bouquet, handcrafted using seasonal pet-safe flowers and delivered fresh to your door every month."
                 : plan.description;
