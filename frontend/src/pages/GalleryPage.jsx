@@ -26,6 +26,7 @@ const GALLERY_IMAGES = [
   { id: 25, src: "https://lh3.googleusercontent.com/d/1o0rQa9znPmNJhVXf1oQifzjl5ott0yvW", name: "Gallery" },
   { id: 26, src: "https://lh3.googleusercontent.com/d/1B8sUW06Mj4V-Z_8oPiS2OtV46v5ueVkU", name: "Gallery" },
   { id: 27, src: "https://lh3.googleusercontent.com/d/1F7bbp0KZvp7B0wTjpV0lqF1yyiRuk3Bx", name: "Gallery" },
+  { id: 28, src: "https://lh3.googleusercontent.com/d/1usqd7UmuZJzaXieT42RAlOJO1PpXFDLs", name: "Gallery" },
 ];
 
 export default function GalleryPage() {
