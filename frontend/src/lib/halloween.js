@@ -144,9 +144,9 @@ export function seasonRange(season = getActiveSeason()) {
 // ---- Halloween bouquet (sizes) ----
 export const HW_BOUQUET_IMAGE = "https://images.unsplash.com/photo-1457089328109-e5d9bd499191?w=800";
 export const HW_BOUQUET_SIZES = [
-  { id: "small", label: "Pocket Potion Posy", price: 24.99, blurb: "A petite posy, 5-7 stems" },
-  { id: "medium", label: "Haunted Harvest Bunch", price: 54.99, blurb: "A classic bunch, 10-12 stems" },
-  { id: "large", label: "Coven's Crown Bouquet", price: 74.99, blurb: "A grand statement, 15-20 stems" },
+  { id: "small", label: "Petite Phantom Paws", price: 24.99, blurb: "A petite posy, 5-7 stems" },
+  { id: "medium", label: "Signature Spell Selection", price: 54.99, blurb: "A classic bunch, 10-12 stems" },
+  { id: "large", label: "Grand Ghost Garden", price: 74.99, blurb: "A grand statement, 15-20 stems" },
 ];
 
 // ---- Christmas wreath collection (fixed IDs match backend-seeded products) ----
