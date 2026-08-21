@@ -27,7 +27,7 @@ export default function Footer() {
             <div className="flex items-center gap-4 mt-4">
               <div className="flex items-center gap-2 text-[#8DA399]">
                 <Leaf size={14} strokeWidth={1.5} />
-                <span className="text-xs uppercase tracking-widest font-semibold">100% Pet Safe</span>
+                <span className="text-xs uppercase tracking-widest font-semibold">Pet Safe</span>
               </div>
             </div>
             <a href="https://instagram.com/petalandpawflorist" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-4 text-[#FAF9F6]/60 hover:text-[#FAF9F6] transition-colors" data-testid="footer-instagram">

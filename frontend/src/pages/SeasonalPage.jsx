@@ -53,7 +53,13 @@ export default function SeasonalPage() {
   const { min, max } = seasonRange(season || "halloween");
 
   const selectedSize = HW_BOUQUET_SIZES.find((s) => s.id === size) || HW_BOUQUET_SIZES[1];
-  const seasonWs = WORKSHOPS.filter((w) => (w.upcomingDates || []).some((d) => isSeasonDate(d.date, season)));
+  const seasonWs = WORKSHOPS
+    .filter((w) => (w.upcomingDates || []).some((d) => isSeasonDate(d.date, season)))
+    .sort((a, b) => {
+      const ad = (a.upcomingDates || []).find((d) => isSeasonDate(d.date, season));
+      const bd = (b.upcomingDates || []).find((d) => isSeasonDate(d.date, season));
+      return new Date(ad.date) - new Date(bd.date);
+    });
 
   // Trigger the season effect on load + when scrolling back to the top.
   const lastBurst = useRef(0);
@@ -284,10 +290,11 @@ export default function SeasonalPage() {
               <div className="relative aspect-square md:aspect-auto md:min-h-[460px] bg-[#241B2B] overflow-hidden" data-testid="hw-bouquet-image">
                 <img src={HW_BOUQUET_IMAGE} alt="Halloween pet-safe bouquet" className="absolute inset-0 w-full h-full object-cover" />
                 <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 bg-[#241B2B]/80 backdrop-blur text-[#F3E4C8] text-[10px] uppercase tracking-widest font-semibold px-3 py-1.5 rounded-full">
-                  <Leaf size={12} /> 100% Pet Safe
+                  <Leaf size={12} /> Pet Safe
                 </span>
               </div>
-              <div className="p-6 sm:p-8 lg:p-10 flex flex-col">
+              <div className="p-6 sm:p-8 lg:p-10 flex flex-col relative">
+                <Cobweb size={90} style={{ top: 4, right: 4, position: "absolute", opacity: 0.5 }} />
                 <h3 className="font-['Playfair_Display'] text-2xl font-medium text-[#2C2C2C] mb-1">Halloween Bouquet</h3>
                 <p className="text-sm font-light text-[#6B7280] mb-6">Hand-tied fresh &middot; delivered across October</p>
 

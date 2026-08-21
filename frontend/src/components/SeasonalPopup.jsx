@@ -49,7 +49,6 @@ export default function SeasonalPopup() {
             ? `radial-gradient(120% 120% at 50% -10%, ${XMAS.green} 0%, ${XMAS.greenDeep} 55%, ${XMAS.night} 100%)`
             : `radial-gradient(120% 120% at 50% -10%, ${HW.purple} 0%, ${HW.purpleDeep} 55%, ${HW.night} 100%)` }}
         >
-          <div className="absolute inset-0 spooky-fog opacity-60 pointer-events-none" />
           <div className="relative">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FAF9F6]/10 mb-4">
               {isXmas

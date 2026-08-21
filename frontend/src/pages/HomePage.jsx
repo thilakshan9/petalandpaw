@@ -42,7 +42,7 @@ export default function HomePage() {
         <div className="container mx-auto px-5 md:px-8 max-w-7xl">
           <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-8 md:gap-16">
             {[
-              { icon: ShieldCheck, text: "100% Pet Safe" },
+              { icon: ShieldCheck, text: "Pet Safe" },
               { icon: Leaf, text: "Sustainably Sourced" },
               { icon: Truck, text: "Free UK Delivery" },
             ].map(({ icon: Icon, text }) => (
