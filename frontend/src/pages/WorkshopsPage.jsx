@@ -281,6 +281,7 @@ export default function WorkshopsPage() {
               "14 August 2026": "2026-08-14T18:30",
               "11 September 2026": "2026-09-11T18:30",
               "9 October 2026": "2026-10-09T18:30",
+              "16th October 2026": "2026-10-16T18:00",
               "13 November 2026": "2026-11-13T18:30",
             };
             const startDate = dateMap[w.date] || "2026-09-20T14:00";
