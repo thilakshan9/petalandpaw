@@ -75,7 +75,7 @@ export const WORKSHOPS = [
     duration: "90 mins",
     price: 45,
     description: "Create your own Halloween themed bouquet surrounded by fresh blooms, friendly faces and curious rescue cats.",
-    included: ["Your bouquet to take home", "Drinks from the café", "Surrounded by cats"],
+    included: ["Your bouquet to take home", "Drink from café", "Surrounded by cats"],
     accent: "#C4A2B0",
     image: "https://lh3.googleusercontent.com/d/1A2H4ayaTTM6nxU7bIhO6GNNnsWvkDZsz=w800",
     seasonalImage: "https://lh3.googleusercontent.com/d/1A2H4ayaTTM6nxU7bIhO6GNNnsWvkDZsz=w800",

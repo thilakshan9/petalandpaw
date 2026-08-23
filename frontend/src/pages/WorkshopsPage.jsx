@@ -581,28 +581,7 @@ export default function WorkshopsPage() {
                     </div>
                   )}
 
-                  {/* CTA */}
-                  <div className="mt-auto">
-                    {w.bookingType === "external" && w.bookingUrl ? (
-                      <a href={w.bookingUrl} target="_blank" rel="noopener noreferrer">
-                        <Button className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-8 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105" data-testid={`book-workshop-${w.id}`}>
-                          Book Now <ArrowRight size={14} className="ml-2" />
-                        </Button>
-                      </a>
-                    ) : w.bookingType === "stripe" ? (
-                      <Button
-                        onClick={() => handleBookClick(w)}
-                        className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-8 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105"
-                        data-testid={`book-workshop-${w.id}`}
-                      >
-                        Book Now <ArrowRight size={14} className="ml-2" />
-                      </Button>
-                    ) : (
-                      <Button disabled className="rounded-full bg-[#E8E4D9] text-[#6B7280] px-8 py-6 text-xs uppercase tracking-widest cursor-not-allowed opacity-70" data-testid={`book-workshop-${w.id}`}>
-                        Booking Coming Soon
-                      </Button>
-                    )}
-                  </div>
+
                 </div>
               </div>
             );
