@@ -473,6 +473,7 @@ export default function WorkshopsPage() {
                             <th className="text-left px-4 py-2.5 text-[10px] uppercase tracking-widest font-semibold text-[#9CA3AF]">Date</th>
                             <th className="text-left px-4 py-2.5 text-[10px] uppercase tracking-widest font-semibold text-[#9CA3AF]">Day</th>
                             <th className="text-left px-4 py-2.5 text-[10px] uppercase tracking-widest font-semibold text-[#9CA3AF]">Time</th>
+                            <th className="text-right px-4 py-2.5 text-[10px] uppercase tracking-widest font-semibold text-[#9CA3AF]">Book</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -499,6 +500,35 @@ export default function WorkshopsPage() {
                                     {d.time || w.time}
                                     {hit && <ArrowRight size={12} />}
                                   </span>
+                                </td>
+                                <td className="px-4 py-3 text-right">
+                                  {w.bookingType === "external" && (d.bookingUrl || w.bookingUrl) ? (
+                                    <a
+                                      href={d.bookingUrl || w.bookingUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      <Button
+                                        size="sm"
+                                        className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-4 py-2 text-[10px] uppercase tracking-widest transition-all hover:scale-105"
+                                        data-testid={`book-date-${w.id}-${i}`}
+                                      >
+                                        Book <ArrowRight size={10} className="ml-1" />
+                                      </Button>
+                                    </a>
+                                  ) : w.bookingType === "stripe" ? (
+                                    <Button
+                                      size="sm"
+                                      onClick={(e) => { e.stopPropagation(); handleBookClick(w); }}
+                                      className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-4 py-2 text-[10px] uppercase tracking-widest transition-all hover:scale-105"
+                                      data-testid={`book-date-${w.id}-${i}`}
+                                    >
+                                      Book <ArrowRight size={10} className="ml-1" />
+                                    </Button>
+                                  ) : (
+                                    <span className="text-[10px] text-[#9CA3AF] font-light">Soon</span>
+                                  )}
                                 </td>
                               </tr>
                             );

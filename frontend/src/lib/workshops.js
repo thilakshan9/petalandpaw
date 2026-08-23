@@ -10,8 +10,8 @@ export const WORKSHOPS = [
     price: 45,
     description: "Relax with dogs and enjoy a creative afternoon of flower arranging. Whether you're a complete beginner or just looking for something different, this laid-back workshop is for you. Bring your furry friend along and make something beautiful together. All levels welcome - come meet like-minded people and leave with a gorgeous bouquet.",
     upcomingDates: [
-      { date: "5th September 2026", day: "Saturday", time: "1pm" },
-      { date: "10th October 2026", day: "Saturday", time: "12pm" },
+      { date: "5th September 2026", day: "Saturday", time: "1pm", bookingUrl: "https://kingsdogdaycare.replit.app/events/4" },
+      { date: "10th October 2026", day: "Saturday", time: "12pm", bookingUrl: "https://kingsdogdaycare.replit.app/events/5" },
     ],
     included: ["Your bouquet to take home", "Any drink from café", "Dog treats", "Dog toy", "Puppuccino", "Puppy playtime"],
     accent: "#B8926A",
@@ -28,8 +28,8 @@ export const WORKSHOPS = [
     address: "3 Crispin Place, London E1 6DW",
     date: "Monthly",
     upcomingDates: [
-      { date: "11 September 2026", day: "Friday", time: "18:30pm" },
-      { date: "9 October 2026", day: "Friday", time: "6:30pm" },
+      { date: "11 September 2026", day: "Friday", time: "18:30pm", bookingUrl: "https://www.alfi.ltd/sip-and-bouquet-london#sip-bouquet-tickets" },
+      { date: "9 October 2026", day: "Friday", time: "6:30pm", bookingUrl: "https://www.alfi.ltd/sip-and-bouquet-london#sip-bouquet-tickets" },
     ],
     time: "18:30pm",
     duration: "60 mins",
@@ -50,7 +50,7 @@ export const WORKSHOPS = [
     address: "18 London Road, Dunton Green, Sevenoaks, TN13 2UE",
     date: "20th September 2026",
     upcomingDates: [
-      { date: "20th September 2026", day: "Sunday", time: "2pm" },
+      { date: "20th September 2026", day: "Sunday", time: "2pm", bookingUrl: null },
     ],
     time: "2pm",
     duration: "90 mins",
@@ -69,7 +69,7 @@ export const WORKSHOPS = [
     address: "Tonbridge, Kent, TN9 1TJ",
     date: "16th October 2026",
     upcomingDates: [
-      { date: "16th October 2026", day: "Friday", time: "6pm" },
+      { date: "16th October 2026", day: "Friday", time: "6pm", bookingUrl: "https://pawscatcafe.resova.co.uk/items/view/41" },
     ],
     time: "6pm",
     duration: "90 mins",
@@ -90,7 +90,7 @@ export const WORKSHOPS = [
     address: "11, Imperial Arcade, Brighton and Hove, Brighton BN1 3EA",
     date: "30th October 2026",
     upcomingDates: [
-      { date: "30th October 2026", day: "Friday", time: "6:30pm" },
+      { date: "30th October 2026", day: "Friday", time: "6:30pm", bookingUrl: "https://ecom.roller.app/purrfectspace/artworkshop/en/product/1315239?date=2026-07-25" },
     ],
     time: "6:30pm",
     duration: "120 mins",

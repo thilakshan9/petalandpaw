@@ -385,12 +385,25 @@ export default function SeasonalPage() {
                       </div>
                       <h3 className="font-['Playfair_Display'] text-xl font-medium text-[#2C2C2C] mb-3">{w.name}</h3>
                       <div className="flex flex-wrap gap-2 mb-4">
-                        {dates.map((d, i) => (
-                          <span key={i} className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium" style={{ background: isXmas ? XMAS.greenTint : HW.purpleTint, color: isXmas ? XMAS.greenDeep : HW.purpleDeep }}>
-                            <Calendar size={12} /> {d.date}
-                            <Clock size={12} className="ml-1" /> {d.time || w.time}
-                          </span>
-                        ))}
+                        {dates.map((d, i) => {
+                          const url = d.bookingUrl || w.bookingUrl;
+                          const pillStyle = { background: isXmas ? XMAS.greenTint : HW.purpleTint, color: isXmas ? XMAS.greenDeep : HW.purpleDeep };
+                          if (w.bookingType === "external" && url) {
+                            return (
+                              <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all hover:scale-105" style={pillStyle} data-testid={`seasonal-book-date-${w.id}-${i}`}>
+                                <Calendar size={12} /> {d.date}
+                                <Clock size={12} className="ml-1" /> {d.time || w.time}
+                                <ArrowRight size={12} className="ml-1" />
+                              </a>
+                            );
+                          }
+                          return (
+                            <span key={i} className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium" style={pillStyle}>
+                              <Calendar size={12} /> {d.date}
+                              <Clock size={12} className="ml-1" /> {d.time || w.time}
+                            </span>
+                          );
+                        })}
                       </div>
                       <p className="text-sm font-light text-[#6B7280] mb-5">{w.description}</p>
                       <div className="mt-auto flex items-center justify-between gap-3">
