@@ -75,7 +75,7 @@ export const WORKSHOPS = [
     time: "6pm",
     duration: "90 mins",
     price: 45,
-    description: "Get into the spooky spirit at Paws Cat Café in Tonbridge. Craft a Halloween-themed bouquet surrounded by fresh blooms, friendly faces and curious rescue cats who may just inspect your work. All materials, guidance and feline supervision included — no experience needed.",
+    description: "Get into the spooky spirit at Paws Cat Café in Tonbridge. Craft a Halloween themed bouquet surrounded by fresh blooms, friendly faces and curious rescue cats who may just inspect your work. All materials, guidance and feline supervision included, no experience needed.",
     included: ["Your bouquet to take home", "Drinks from cafe", "Surrounded by rescue cats"],
     accent: "#C4A2B0",
     image: "https://lh3.googleusercontent.com/d/1A2H4ayaTTM6nxU7bIhO6GNNnsWvkDZsz=w800",
