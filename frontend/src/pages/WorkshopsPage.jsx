@@ -467,7 +467,8 @@ export default function WorkshopsPage() {
                       <div className="bg-[#F2F0EB] px-4 py-2.5">
                         <h3 className="text-xs uppercase tracking-widest font-semibold text-[#6B7280]">Upcoming Dates</h3>
                       </div>
-                      <table className="w-full text-sm">
+                      {/* Desktop: table layout */}
+                      <table className="hidden sm:table w-full text-sm">
                         <thead>
                           <tr className="border-b border-[#E5E0D6]">
                             <th className="text-left px-4 py-2.5 text-[10px] uppercase tracking-widest font-semibold text-[#9CA3AF]">Date</th>
@@ -535,6 +536,66 @@ export default function WorkshopsPage() {
                           })}
                         </tbody>
                       </table>
+                      {/* Mobile: stacked card layout */}
+                      <div className="sm:hidden divide-y divide-[#E5E0D6]">
+                        {w.upcomingDates.map((d, i) => {
+                          const hit = seasonActive && isSeasonDate(d.date, season);
+                          const rowClass = hit ? (isXmas ? "december-row" : "october-row") : "";
+                          const rowText = isXmas ? XMAS.greenDeep : HW.purpleDeep;
+                          const rowAccent = isXmas ? XMAS.green : HW.purple;
+                          return (
+                            <div
+                              key={i}
+                              className={`px-4 py-3 ${rowClass}`}
+                              onClick={hit ? () => navigate(`/seasonal#ws-${w.id}`) : undefined}
+                              title={hit ? "See this workshop on our seasonal page" : undefined}
+                              data-testid={hit ? `${isXmas ? "december" : "october"}-row-${w.id}-${i}` : undefined}
+                            >
+                              <div className="flex items-center justify-between gap-2 mb-2">
+                                <span className="font-light text-sm" style={{ color: hit ? rowText : "#2C2C2C" }}>
+                                  {hit && <span aria-hidden="true">{cfg.emoji} </span>}{d.date}
+                                </span>
+                                <span className="font-light text-xs text-[#6B7280]">{d.day}</span>
+                              </div>
+                              <div className="flex items-center justify-between gap-2">
+                                <span className="font-light text-sm" style={{ color: hit ? rowAccent : "#6B7280" }}>
+                                  <span className="inline-flex items-center gap-1.5">
+                                    {d.time || w.time}
+                                    {hit && <ArrowRight size={12} />}
+                                  </span>
+                                </span>
+                                {w.bookingType === "external" && (d.bookingUrl || w.bookingUrl) ? (
+                                  <a
+                                    href={d.bookingUrl || w.bookingUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <Button
+                                      size="sm"
+                                      className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-5 py-2.5 text-[10px] uppercase tracking-widest transition-all hover:scale-105"
+                                      data-testid={`book-date-${w.id}-${i}`}
+                                    >
+                                      Book <ArrowRight size={10} className="ml-1" />
+                                    </Button>
+                                  </a>
+                                ) : w.bookingType === "stripe" ? (
+                                  <Button
+                                    size="sm"
+                                    onClick={(e) => { e.stopPropagation(); handleBookClick(w); }}
+                                    className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-5 py-2.5 text-[10px] uppercase tracking-widest transition-all hover:scale-105"
+                                    data-testid={`book-date-${w.id}-${i}`}
+                                  >
+                                    Book <ArrowRight size={10} className="ml-1" />
+                                  </Button>
+                                ) : (
+                                  <span className="text-[10px] text-[#9CA3AF] font-light">Soon</span>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   )}
 

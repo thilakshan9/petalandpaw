@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import { ArrowRight, Calendar, Clock, MapPin, ShoppingBag, Ghost, Moon, Sparkles, Leaf, TreePine, Snowflake } from "lucide-react";
+import { ArrowRight, Calendar, Clock, MapPin, ShoppingBag, Ghost, Moon, Sparkles, Leaf, TreePine, Snowflake, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useCart } from "@/components/CartProvider";
@@ -406,6 +406,18 @@ export default function SeasonalPage() {
                         })}
                       </div>
                       <p className="text-sm font-light text-[#6B7280] mb-5">{w.description}</p>
+                      {w.included && w.included.length > 0 && (
+                        <div className="bg-[#F2F0EB]/60 rounded-xl p-4 mb-5">
+                          <h4 className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-2.5">What's Included</h4>
+                          <ul className="space-y-1.5">
+                            {w.included.map((item, idx) => (
+                              <li key={idx} className="flex items-start gap-2 text-sm font-light text-[#4B5563]">
+                                <Gift size={14} className="mt-0.5 flex-shrink-0" style={{ color: isXmas ? XMAS.green : HW.purple }} /> {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                       <div className="mt-auto flex items-center justify-between gap-3">
                         <span className="text-lg font-light text-[#2C2C2C]">&pound;{w.price}<span className="text-xs text-[#6B7280]">/person</span></span>
                         {w.bookingType === "external" && w.bookingUrl ? (
