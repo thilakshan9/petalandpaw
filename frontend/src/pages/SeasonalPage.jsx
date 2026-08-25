@@ -405,7 +405,7 @@ export default function SeasonalPage() {
                           );
                         })}
                       </div>
-                      <p className="text-sm font-light text-[#6B7280] mb-5">{w.description}</p>
+                      <p className="text-sm font-light text-[#6B7280] mb-5">{w.seasonalDescription || w.description}</p>
                       {w.included && w.included.length > 0 && (
                         <div className="bg-[#F2F0EB]/60 rounded-xl p-4 mb-5">
                           <h4 className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-2.5">What's Included</h4>
