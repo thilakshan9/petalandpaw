@@ -30,7 +30,7 @@ export const WORKSHOPS = [
     date: "Monthly",
     upcomingDates: [
       { date: "11 September 2026", day: "Friday", time: "18:30pm", bookingUrl: "https://www.alfi.ltd/sip-and-bouquet-london#sip-bouquet-tickets" },
-      { date: "9 October 2026", day: "Friday", time: "6:30pm", bookingUrl: "https://www.alfi.ltd/sip-and-bouquet-london#sip-bouquet-tickets" },
+      { date: "18th October 2026", day: "Sunday", time: "2:30pm", bookingUrl: "https://www.alfi.ltd/sip-and-bouquet-london#sip-bouquet-tickets" },
     ],
     time: "18:30pm",
     duration: "60 mins",
