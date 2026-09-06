@@ -11,7 +11,6 @@ export const WORKSHOPS = [
     description: "Relax with dogs and enjoy a creative afternoon of flower arranging. Whether you're a complete beginner or just looking for something different, this laid-back workshop is for you. Bring your furry friend along and make something beautiful together. All levels welcome - come meet like-minded people and leave with a gorgeous bouquet.",
     seasonalDescription: "Spend a crisp October Saturday surrounded by wagging tails and autumnal blooms. Arrange seasonal stems in the company of the daycare dogs, sip a warm drink from the café, and craft a bouquet with just the right touch of spooky charm. A laid-back afternoon for beginners and seasoned arrangers alike.",
     upcomingDates: [
-      { date: "5th September 2026", day: "Saturday", time: "1pm", bookingUrl: "https://kingsdogdaycare.replit.app/events/4" },
       { date: "10th October 2026", day: "Saturday", time: "12pm", bookingUrl: "https://kingsdogdaycare.replit.app/events/5" },
     ],
     included: ["Your bouquet to take home", "Any drink from café", "Dog treats", "Dog toy", "Puppuccino", "Puppy playtime"],
