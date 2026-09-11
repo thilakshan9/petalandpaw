@@ -282,6 +282,7 @@ export default function WorkshopsPage() {
               "11 September 2026": "2026-09-11T18:30",
               "18th October 2026": "2026-10-18T14:30",
               "16th October 2026": "2026-10-16T18:00",
+              "25th October 2026": "2026-10-25T11:00",
               "13 November 2026": "2026-11-13T18:30",
             };
             const startDate = dateMap[w.date] || "2026-09-20T14:00";
@@ -428,7 +429,14 @@ export default function WorkshopsPage() {
                   {/* Header */}
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-5">
                     <div>
-                      <h2 className="font-['Playfair_Display'] text-xl sm:text-2xl font-medium text-[#2C2C2C] mb-1">{w.name}</h2>
+                      <h2 className="font-['Playfair_Display'] text-xl sm:text-2xl font-medium text-[#2C2C2C] mb-1">
+                        {w.kids && (
+                          <span className="inline-block bg-[#E89149] text-white text-[10px] uppercase tracking-widest font-bold px-2.5 py-1 rounded-full mr-2 align-middle">
+                            Kids
+                          </span>
+                        )}
+                        {w.name}
+                      </h2>
                       <div className="flex items-center gap-1.5 text-sm font-light" style={{ color: w.accent }}>
                         <MapPin size={14} />
                         <span>{w.place}</span>
@@ -456,6 +464,11 @@ export default function WorkshopsPage() {
                     <div className="flex items-center gap-2 bg-[#F2F0EB] rounded-full px-4 py-2">
                       <span className="text-sm font-light text-[#2C2C2C]">Duration: {w.duration}</span>
                     </div>
+                    {w.kids && (
+                      <div className="flex items-center gap-1.5 bg-[#E89149]/10 rounded-full px-4 py-2 border border-[#E89149]/30">
+                        <span className="text-[10px] uppercase tracking-widest font-bold text-[#E89149]">Kids Only</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Description */}
