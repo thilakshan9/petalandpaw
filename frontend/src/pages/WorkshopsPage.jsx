@@ -429,14 +429,7 @@ export default function WorkshopsPage() {
                   {/* Header */}
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-5">
                     <div>
-                      <h2 className="font-['Playfair_Display'] text-xl sm:text-2xl font-medium text-[#2C2C2C] mb-1">
-                        {w.kids && (
-                          <span className="inline-block bg-[#E89149] text-white text-[10px] uppercase tracking-widest font-bold px-2.5 py-1 rounded-full mr-2 align-middle">
-                            Kids
-                          </span>
-                        )}
-                        {w.name}
-                      </h2>
+                      <h2 className="font-['Playfair_Display'] text-xl sm:text-2xl font-medium text-[#2C2C2C] mb-1">{w.name}</h2>
                       <div className="flex items-center gap-1.5 text-sm font-light" style={{ color: w.accent }}>
                         <MapPin size={14} />
                         <span>{w.place}</span>
@@ -464,11 +457,6 @@ export default function WorkshopsPage() {
                     <div className="flex items-center gap-2 bg-[#F2F0EB] rounded-full px-4 py-2">
                       <span className="text-sm font-light text-[#2C2C2C]">Duration: {w.duration}</span>
                     </div>
-                    {w.kids && (
-                      <div className="flex items-center gap-1.5 bg-[#E89149]/10 rounded-full px-4 py-2 border border-[#E89149]/30">
-                        <span className="text-[10px] uppercase tracking-widest font-bold text-[#E89149]">Kids Only</span>
-                      </div>
-                    )}
                   </div>
 
                   {/* Description */}
@@ -507,6 +495,9 @@ export default function WorkshopsPage() {
                               >
                                 <td className="px-4 py-3 font-light" style={{ color: hit ? rowText : "#2C2C2C" }}>
                                   {hit && <span aria-hidden="true">{cfg.emoji} </span>}{d.date}
+                                  {d.kids && (
+                                    <span className="inline-block bg-[#E89149] text-white text-[9px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full ml-2 align-middle">Kids</span>
+                                  )}
                                 </td>
                                 <td className="px-4 py-3 font-light text-[#6B7280]">{d.day}</td>
                                 <td className="px-4 py-3 font-light" style={{ color: hit ? rowAccent : "#6B7280" }}>
@@ -567,6 +558,9 @@ export default function WorkshopsPage() {
                               <div className="flex items-center justify-between gap-2 mb-2">
                                 <span className="font-light text-sm" style={{ color: hit ? rowText : "#2C2C2C" }}>
                                   {hit && <span aria-hidden="true">{cfg.emoji} </span>}{d.date}
+                                  {d.kids && (
+                                    <span className="inline-block bg-[#E89149] text-white text-[9px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full ml-2 align-middle">Kids</span>
+                                  )}
                                 </span>
                                 <span className="font-light text-xs text-[#6B7280]">{d.day}</span>
                               </div>
