@@ -12,7 +12,6 @@ export const WORKSHOPS = [
     seasonalDescription: "Spend a crisp October Saturday surrounded by wagging tails and autumnal blooms. Arrange seasonal stems in the company of the daycare dogs, sip a warm drink from the café, and craft a bouquet with just the right touch of spooky charm. A laid-back afternoon for beginners and seasoned arrangers alike.",
     upcomingDates: [
       { date: "10th October 2026", day: "Saturday", time: "12pm", bookingUrl: "https://kingsdogdaycare.replit.app/events/5" },
-      { date: "25th October 2026", day: "Sunday", time: "11am", bookingUrl: "https://www.kings.london/events/7", kids: true, kidsName: "Kids Halloween Pumpkin Bouquet Class" },
     ],
     included: ["Your bouquet to take home", "Any drink from café", "Dog treats", "Dog toy", "Puppuccino", "Puppy playtime"],
     accent: "#B8926A",
