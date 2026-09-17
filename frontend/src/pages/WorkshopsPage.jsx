@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useCustomerAuth } from "@/context/CustomerAuthContext";
 import SEOHead from "@/components/SEOHead";
 import { Helmet } from "react-helmet-async";
-import { WORKSHOPS, upcomingWorkshops } from "@/lib/workshops";
+import { WORKSHOPS, upcomingWorkshops, upcomingDates } from "@/lib/workshops";
 import { getActiveSeason, seasonConfig, isSeasonDate, burstBats, flurrySnow, HW, XMAS } from "@/lib/halloween";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -277,12 +277,9 @@ export default function WorkshopsPage() {
           .filter((w) => w.date !== "Monthly")
           .map((w) => {
             const dateMap = {
-              "20th September 2026": "2026-09-20T14:00",
-              "14 August 2026": "2026-08-14T18:30",
-              "11 September 2026": "2026-09-11T18:30",
               "18th October 2026": "2026-10-18T14:30",
               "16th October 2026": "2026-10-16T18:00",
-              "13 November 2026": "2026-11-13T18:30",
+              "30th October 2026": "2026-10-30T18:30",
             };
             const startDate = dateMap[w.date] || "2026-09-20T14:00";
             return (
@@ -407,6 +404,7 @@ export default function WorkshopsPage() {
           {upcomingWorkshops().map((w) => {
             const quantity = getQty(w.id);
             const lineTotal = (w.price * quantity).toFixed(2);
+            const dates = upcomingDates(w);
             return (
               <div
                 key={w.id}
@@ -462,7 +460,7 @@ export default function WorkshopsPage() {
                   <p className="text-sm sm:text-base font-light leading-[1.8] text-[#6B7280] mb-6">{w.description}</p>
 
                   {/* Upcoming Dates Table */}
-                  {w.upcomingDates && w.upcomingDates.length > 0 && (
+                  {dates.length > 0 && (
                     <div className="mb-6 border border-[#E5E0D6] rounded-xl overflow-hidden">
                       <div className="bg-[#F2F0EB] px-4 py-2.5">
                         <h3 className="text-xs uppercase tracking-widest font-semibold text-[#6B7280]">Upcoming Dates</h3>
@@ -478,9 +476,9 @@ export default function WorkshopsPage() {
                           </tr>
                         </thead>
                         <tbody>
-                          {w.upcomingDates.map((d, i) => {
+                          {dates.map((d, i) => {
                             const hit = seasonActive && isSeasonDate(d.date, season);
-                            const border = i < w.upcomingDates.length - 1 ? "border-b border-[#E5E0D6]" : "";
+                            const border = i < dates.length - 1 ? "border-b border-[#E5E0D6]" : "";
                             const rowClass = hit ? (isXmas ? "december-row" : "october-row") : "";
                             const rowText = isXmas ? XMAS.greenDeep : HW.purpleDeep;
                             const rowAccent = isXmas ? XMAS.green : HW.purple;
@@ -541,7 +539,7 @@ export default function WorkshopsPage() {
                       </table>
                       {/* Mobile: stacked card layout */}
                       <div className="sm:hidden divide-y divide-[#E5E0D6]">
-                        {w.upcomingDates.map((d, i) => {
+                        {dates.map((d, i) => {
                           const hit = seasonActive && isSeasonDate(d.date, season);
                           const rowClass = hit ? (isXmas ? "december-row" : "october-row") : "";
                           const rowText = isXmas ? XMAS.greenDeep : HW.purpleDeep;

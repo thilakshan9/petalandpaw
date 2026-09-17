@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { useCart } from "@/components/CartProvider";
 import SEOHead from "@/components/SEOHead";
 import Cobweb from "@/components/Cobweb";
-import { WORKSHOPS } from "@/lib/workshops";
+import { WORKSHOPS, upcomingDates } from "@/lib/workshops";
 import {
   getActiveSeason,
   seasonConfig,
@@ -54,10 +54,10 @@ export default function SeasonalPage() {
 
   const selectedSize = HW_BOUQUET_SIZES.find((s) => s.id === size) || HW_BOUQUET_SIZES[1];
   const seasonWs = WORKSHOPS
-    .filter((w) => (w.upcomingDates || []).some((d) => isSeasonDate(d.date, season)))
+    .filter((w) => upcomingDates(w).some((d) => isSeasonDate(d.date, season)))
     .sort((a, b) => {
-      const ad = (a.upcomingDates || []).find((d) => isSeasonDate(d.date, season));
-      const bd = (b.upcomingDates || []).find((d) => isSeasonDate(d.date, season));
+      const ad = upcomingDates(a).find((d) => isSeasonDate(d.date, season));
+      const bd = upcomingDates(b).find((d) => isSeasonDate(d.date, season));
       return new Date(ad.date) - new Date(bd.date);
     });
 
@@ -366,7 +366,7 @@ export default function SeasonalPage() {
             <div className="space-y-6">
               {seasonWs.map((w) => {
                 const accent = isXmas ? XMAS : HW;
-                const dates = (w.upcomingDates || []).filter((d) => isSeasonDate(d.date, season));
+                const dates = upcomingDates(w).filter((d) => isSeasonDate(d.date, season));
                 return (
                   <div
                     key={w.id}

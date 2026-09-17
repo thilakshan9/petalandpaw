@@ -28,7 +28,6 @@ export const WORKSHOPS = [
     address: "3 Crispin Place, London E1 6DW",
     date: "Monthly",
     upcomingDates: [
-      { date: "11 September 2026", day: "Friday", time: "18:30pm", bookingUrl: "https://www.alfi.ltd/sip-and-bouquet-london#sip-bouquet-tickets" },
       { date: "18th October 2026", day: "Sunday", time: "2:30pm", bookingUrl: "https://www.alfi.ltd/sip-and-bouquet-london#sip-bouquet-tickets" },
     ],
     time: "18:30pm",
@@ -49,10 +48,8 @@ export const WORKSHOPS = [
     name: "Flower Arranging Workshop",
     place: "Cups & Pups Café",
     address: "18 London Road, Dunton Green, Sevenoaks, TN13 2UE",
-    date: "20th September 2026",
-    upcomingDates: [
-      { date: "20th September 2026", day: "Sunday", time: "2pm", bookingUrl: null },
-    ],
+    date: "Monthly",
+    upcomingDates: [],
     time: "2pm",
     duration: "90 mins",
     price: 45,
@@ -109,8 +106,32 @@ export const WORKSHOPS = [
   },
 ];
 
-export const upcomingWorkshops = () => WORKSHOPS.filter((w) => w.status !== "past");
-export const redeemableWorkshops = () => WORKSHOPS.filter((w) => w.status !== "past");
+// Parse a workshop date string like "10th October 2026" or "11 September 2026" into a Date.
+function parseWorkshopDate(str) {
+  const cleaned = String(str).replace(/(\d+)(st|nd|rd|th)\b/i, "$1");
+  const d = new Date(cleaned);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+// A date is "past" if the full day has ended (midnight of the next day).
+export function isDatePast(dateStr) {
+  const d = parseWorkshopDate(dateStr);
+  if (!d) return false;
+  const endOfDay = new Date(d);
+  endOfDay.setHours(0, 0, 0, 0);
+  endOfDay.setDate(endOfDay.getDate() + 1);
+  return new Date() >= endOfDay;
+}
+
+// Return only the upcoming (non-past) date rows for a workshop.
+export function upcomingDates(workshop) {
+  return (workshop.upcomingDates || []).filter((d) => !isDatePast(d.date));
+}
+
+export const upcomingWorkshops = () =>
+  WORKSHOPS.filter((w) => w.status !== "past" && upcomingDates(w).length > 0);
+export const redeemableWorkshops = () =>
+  WORKSHOPS.filter((w) => w.status !== "past" && upcomingDates(w).length > 0);
 
 // Workshops that have at least one October date (used by the Halloween seasonal page).
 export const octoberWorkshops = () =>
