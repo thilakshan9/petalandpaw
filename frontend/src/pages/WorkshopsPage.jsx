@@ -441,6 +441,13 @@ export default function WorkshopsPage() {
                     </div>
                   </div>
 
+                  {/* Duration */}
+                  <div className="flex flex-wrap gap-2 mb-5">
+                    <div className="flex items-center gap-2 bg-[#F2F0EB] rounded-full px-4 py-2">
+                      <span className="text-sm font-light text-[#2C2C2C]">Duration: {w.duration}</span>
+                    </div>
+                  </div>
+
                   {/* Description */}
                   <p className="text-sm sm:text-base font-light leading-[1.8] text-[#6B7280] mb-6">{w.description}</p>
 
