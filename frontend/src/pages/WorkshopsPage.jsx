@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Calendar, Clock, MapPin, Gift, ArrowRight, Loader as Loader2, Minus, Plus, Sparkles, CircleCheck as CheckCircle2, Heart, Ticket } from "lucide-react";
+import { MapPin, Gift, ArrowRight, Loader as Loader2, Minus, Plus, Sparkles, CircleCheck as CheckCircle2, Heart, Ticket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -438,21 +438,6 @@ export default function WorkshopsPage() {
                     <div className="flex-shrink-0 text-right">
                       <span className="text-2xl font-light text-[#2C2C2C]">£{w.price}</span>
                       <span className="text-sm font-light text-[#6B7280]">/person</span>
-                    </div>
-                  </div>
-
-                  {/* Date & Time Cards */}
-                  <div className="flex flex-wrap gap-2 mb-5">
-                    <div className="flex items-center gap-2 bg-[#F2F0EB] rounded-full px-4 py-2">
-                      <Calendar size={14} className="text-[#8DA399]" />
-                      <span className="text-sm font-light text-[#2C2C2C]">{w.date}</span>
-                    </div>
-                    <div className="flex items-center gap-2 bg-[#F2F0EB] rounded-full px-4 py-2">
-                      <Clock size={14} className="text-[#8DA399]" />
-                      <span className="text-sm font-light text-[#2C2C2C]">{w.time}</span>
-                    </div>
-                    <div className="flex items-center gap-2 bg-[#F2F0EB] rounded-full px-4 py-2">
-                      <span className="text-sm font-light text-[#2C2C2C]">Duration: {w.duration}</span>
                     </div>
                   </div>
 
