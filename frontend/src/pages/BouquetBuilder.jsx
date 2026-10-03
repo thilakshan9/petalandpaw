@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { ArrowLeft, ArrowRight, ShoppingBag, AlertTriangle, PawPrint, Check } from "lucide-react";
+import { ArrowLeft, ArrowRight, ShoppingBag, TriangleAlert as AlertTriangle, PawPrint, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
@@ -276,8 +276,8 @@ function BouquetBuilderFull() {
                 <div className="flex items-center gap-3">
                   <PawPrint size={16} className="text-[#8DA399]" />
                   <div>
-                    <p className="text-sm font-medium text-[#2C2C2C]">Add a pet toy</p>
-                    <p className="text-xs font-light text-[#6B7280]">A safe plush toy for your furry friend (+£8.99)</p>
+                    <p className="text-sm font-medium text-[#2C2C2C]">Add a pet toy/treat</p>
+                    <p className="text-xs font-light text-[#6B7280]">A safe plush toy or tasty treat for your furry friend (+£8.99)</p>
                   </div>
                 </div>
                 <Switch checked={addPetToy} onCheckedChange={setAddPetToy} />
@@ -285,7 +285,7 @@ function BouquetBuilderFull() {
 
               {addPetToy && (
                 <div className="flex justify-between text-sm mb-4">
-                  <span className="text-[#6B7280]">Pet toy</span>
+                  <span className="text-[#6B7280]">Pet toy/treat</span>
                   <span className="text-[#2C2C2C]">£8.99</span>
                 </div>
               )}

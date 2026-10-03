@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Package, ShoppingCart, FileText, BarChart3, LogOut, Plus, Pencil, Trash2, Leaf, CheckCircle2, Clock, Eye } from "lucide-react";
+import { Package, ShoppingCart, FileText, ChartBar as BarChart3, LogOut, Plus, Pencil, Trash as Trash2, Leaf, CircleCheck as CheckCircle2, Clock, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -388,7 +388,7 @@ export default function AdminDashboard() {
                     <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-[#6B7280]">
                       {tx.metadata?.plan_name && <span>Plan: <strong className="text-[#2C2C2C]">{tx.metadata.plan_name}</strong></span>}
                       {tx.metadata?.pet_type && <span>Pet: <strong className="text-[#2C2C2C]">{tx.metadata.pet_type}</strong></span>}
-                      <span>Pet Toy: <strong className={tx.metadata?.add_pet_toy === "True" ? "text-[#8DA399]" : "text-[#6B7280]"}>{tx.metadata?.add_pet_toy === "True" ? "Yes" : "No"}</strong></span>
+                      <span>Pet Toy/Treat: <strong className={tx.metadata?.add_pet_toy === "True" ? "text-[#8DA399]" : "text-[#6B7280]"}>{tx.metadata?.add_pet_toy === "True" ? "Yes" : "No"}</strong></span>
                       {tx.metadata?.personalized_message && <span>Gift Note: <strong className="text-[#2C2C2C]">{tx.metadata.personalized_message.slice(0, 50)}{tx.metadata.personalized_message.length > 50 ? "..." : ""}</strong></span>}
                       {tx.customer_email && <span>Email: {tx.customer_email}</span>}
                     </div>

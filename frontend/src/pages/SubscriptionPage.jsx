@@ -192,7 +192,7 @@ export default function SubscriptionPage() {
           const price = toyOn ? basePrice + toyPrice : basePrice;
           const cartItem = {
             product_id: planId,
-            name: plan.name + (toyOn ? " + Pet Toy" : "") + (halloweenThemed[planId] ? ` (${cfg.tagLabel} themed)` : ""),
+            name: plan.name + (toyOn ? " + Pet Toy/Treat" : "") + (halloweenThemed[planId] ? ` (${cfg.tagLabel} themed)` : ""),
             price,
             quantity: 1,
             image_url: plan.image_url,
@@ -270,7 +270,7 @@ export default function SubscriptionPage() {
 
   return (
     <div className="py-8 sm:py-12 md:py-20" data-testid="subscription-page">
-      <SEOHead title="Subscriptions" description="Monthly pet-safe flower subscriptions. Three plans with optional pet toy add-on." keywords="flower subscription, monthly flowers, pet safe subscription" />
+      <SEOHead title="Subscriptions" description="Monthly pet-safe flower subscriptions. Three plans with optional pet toy/treat add-on." keywords="flower subscription, monthly flowers, pet safe subscription" />
       <div className="container mx-auto px-5 md:px-8 max-w-7xl">
         <div className="text-center mb-10 sm:mb-16 animate-fade-in-up">
           <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-2 sm:mb-3 block">Shop</span>
@@ -362,7 +362,7 @@ export default function SubscriptionPage() {
                     <span className="text-sm font-light text-[#6B7280]">{selectedMode === "subscription" ? "/month" : "one-time"}</span>
                   </div>
                   {selectedMode === "subscription" && <span className="text-xs text-[#8DA399] font-light mb-1">Save 10% with a subscription</span>}
-                  {toyOn && <span className="text-xs text-[#8DA399] font-light mb-3">includes pet toy (+£{toyPrice.toFixed(2)})</span>}
+                  {toyOn && <span className="text-xs text-[#8DA399] font-light mb-3">includes pet toy/treat (+£{toyPrice.toFixed(2)})</span>}
                   <p className="text-sm font-light text-[#6B7280] mb-6">{planDescription}</p>
 
                   <ul className="space-y-3 mb-6 flex-1">
@@ -463,7 +463,7 @@ export default function SubscriptionPage() {
                   <div className="flex items-center justify-between bg-[#F2F0EB]/60 rounded-xl px-4 py-3 mb-6" data-testid={`pet-toy-toggle-${plan.slug}`}>
                     <div className="flex items-center gap-2">
                       <PawPrint size={14} className="text-[#8DA399]" />
-                      <span className="text-sm text-[#2C2C2C]">Add pet toy</span>
+                      <span className="text-sm text-[#2C2C2C]">Add pet toy/treat</span>
                       <span className="text-xs text-[#6B7280]">+£{toyPrice.toFixed(2)}</span>
                     </div>
                     <Switch
@@ -514,7 +514,7 @@ export default function SubscriptionPage() {
                       if (selectedPet === "other" && !(petTypeOther[plan.id] || "").trim()) { toast.error("Please enter your pet type"); return; }
                       addToCart({
                         product_id: plan.id,
-                        name: planName + (toyOn ? " + Pet Toy" : "") + (halloweenThemed[plan.id] ? ` (${cfg.tagLabel} themed)` : ""),
+                        name: planName + (toyOn ? " + Pet Toy/Treat" : "") + (halloweenThemed[plan.id] ? ` (${cfg.tagLabel} themed)` : ""),
                         price: toyOn ? oneTimePrice + toyPrice : oneTimePrice,
                         quantity: 1,
                         image_url: plan.image_url,

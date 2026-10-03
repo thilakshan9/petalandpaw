@@ -212,7 +212,7 @@ export default function CustomerDashboard() {
                   </div>
                   <div className="flex flex-wrap gap-x-4 text-xs text-[#6B7280]">
                     {order.metadata?.pet_type && <span>Pet: {order.metadata.pet_type}</span>}
-                    {order.metadata?.add_pet_toy === "True" && <span className="text-[#8DA399]">Pet toy included</span>}
+                    {order.metadata?.add_pet_toy === "True" && <span className="text-[#8DA399]">Pet toy/treat included</span>}
                     {order.metadata?.personalized_message && <span>Gift note attached</span>}
                   </div>
                   <p className="text-[10px] text-[#9CA3AF] mt-1">{order.created_at ? new Date(order.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : ""}</p>
