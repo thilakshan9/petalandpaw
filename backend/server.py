@@ -72,6 +72,7 @@ class OrderItem(BaseModel):
     price: float
     quantity: int
     image_url: str = ""
+    add_pet_toy: bool = False
 
 class CheckoutRequest(BaseModel):
     items: List[OrderItem]
@@ -935,8 +936,11 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
     cancel_url = f"{req.origin_url}/cart"
     order_id = str(uuid.uuid4())
     try:
+        pet_toy_items = [i for i in req.items if i.add_pet_toy]
         cart_metadata = {"order_id": order_id, "order_type": req.order_type,
                           "item_count": str(len(validated_items)),
+                          "add_pet_toy": str(any(i.add_pet_toy for i in req.items)),
+                          "pet_toy_count": str(len(pet_toy_items)),
                           "personalized_message": req.personalized_message[:500] if req.personalized_message else "",
                           "special_notes": req.special_notes[:490] if req.special_notes else ""}
         pid = {"metadata": cart_metadata}
@@ -985,7 +989,8 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
         "id": str(uuid.uuid4()), "session_id": session.id,
         "amount": float(total), "currency": "gbp",
         "status": "initiated", "payment_status": "pending", "order_id": order_id,
-        "metadata": {"order_type": req.order_type, "item_count": str(len(validated_items))},
+        "metadata": {"order_type": req.order_type, "item_count": str(len(validated_items)),
+                     "add_pet_toy": str(any(i.add_pet_toy for i in req.items))},
         "created_at": datetime.now(timezone.utc).isoformat()
     })
     return {"url": session.url, "session_id": session.id, "order_id": order_id}

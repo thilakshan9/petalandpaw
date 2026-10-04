@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Minus, Plus, Trash2, ArrowRight, ShoppingBag, CalendarDays, Tag } from "lucide-react";
+import { Minus, Plus, Trash as Trash2, ArrowRight, ShoppingBag, CalendarDays, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
@@ -61,6 +61,7 @@ export default function CartPage() {
           items: items.map((i) => ({
             product_id: i.product_id, name: i.name, price: i.price,
             quantity: i.quantity, image_url: i.image_url || "",
+            add_pet_toy: i.add_pet_toy || false,
           })),
           origin_url: window.location.origin, order_type: "regular",
           delivery_date: finalDeliveryDate,
@@ -111,6 +112,11 @@ export default function CartPage() {
                   {item.theme && (
                     <span className="inline-flex items-center gap-1 mt-1.5 text-[11px] font-medium px-2 py-0.5 rounded-full" style={{ background: item.theme === "christmas" ? "rgba(46,93,63,0.1)" : "rgba(107,78,113,0.1)", color: item.theme === "christmas" ? "#1E3D2A" : "#4A3550" }} data-testid={`cart-halloween-tag-${item.product_id}`}>
                       {item.theme === "christmas" ? "🎄 Christmas" : "🎃 Halloween"}{item.season_date ? ` · deliver ${item.season_date}` : ""}
+                    </span>
+                  )}
+                  {item.add_pet_toy && (
+                    <span className="inline-flex items-center gap-1 mt-1.5 text-[11px] font-medium px-2 py-0.5 rounded-full bg-[#8DA399]/10 text-[#5A7264]" data-testid={`cart-pet-toy-tag-${item.product_id}`}>
+                      Pet toy/treat included
                     </span>
                   )}
                   <div className="flex items-center gap-3 mt-3">
