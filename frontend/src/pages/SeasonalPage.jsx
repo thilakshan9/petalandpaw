@@ -341,9 +341,9 @@ export default function SeasonalPage() {
                       data-testid="hw-pet-type-select"
                     >
                       <option value="">Select pet...</option>
-                      <option value="cat">Cat</option>
                       <option value="dog">Dog</option>
-                      <option value="n/a">Petless</option>
+                      <option value="cat">Cat</option>
+                      <option value="rabbit">Rabbit</option>
                       <option value="other">Other</option>
                     </select>
                     <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280] pointer-events-none" />
@@ -351,7 +351,7 @@ export default function SeasonalPage() {
                   {petType === "other" && (
                     <input
                       type="text"
-                      placeholder="Please specify..."
+                      placeholder="e.g., Hamster, Bird, Guinea Pig"
                       value={petTypeOther}
                       onChange={(e) => setPetTypeOther(e.target.value)}
                       className="mt-2 w-full border border-[#E5E0D6] rounded-lg px-3 py-2.5 text-sm font-light text-[#2C2C2C] bg-white focus:outline-none focus:ring-1"
@@ -359,6 +359,14 @@ export default function SeasonalPage() {
                       data-testid="hw-pet-type-other-input"
                     />
                   )}
+                </div>
+
+                {/* Safety Notice */}
+                <div className="mt-2 mb-6 p-4 bg-[#FFF8E7] border border-[#E8D9A8] rounded-xl flex items-start gap-3" data-testid="hw-safety-notice">
+                  <Leaf size={16} className="text-[#8DA399] mt-0.5 flex-shrink-0" />
+                  <p className="text-xs font-light text-[#7A6A0A] leading-relaxed">
+                    Your Halloween bouquet may not look exactly like the image shown. Flowers may vary based on availability and will be adapted to ensure they are safe for your pet.
+                  </p>
                 </div>
 
                 {/* Pet Toy/Treat Add-on */}
