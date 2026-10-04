@@ -62,6 +62,7 @@ export default function CartPage() {
             product_id: i.product_id, name: i.name, price: i.price,
             quantity: i.quantity, image_url: i.image_url || "",
             add_pet_toy: i.add_pet_toy || false,
+            pet_type: i.pet_type || "",
           })),
           origin_url: window.location.origin, order_type: "regular",
           delivery_date: finalDeliveryDate,
@@ -117,6 +118,11 @@ export default function CartPage() {
                   {item.add_pet_toy && (
                     <span className="inline-flex items-center gap-1 mt-1.5 text-[11px] font-medium px-2 py-0.5 rounded-full bg-[#8DA399]/10 text-[#5A7264]" data-testid={`cart-pet-toy-tag-${item.product_id}`}>
                       Pet toy/treat included
+                    </span>
+                  )}
+                  {item.pet_type && (
+                    <span className="inline-flex items-center gap-1 mt-1.5 text-[11px] font-medium px-2 py-0.5 rounded-full bg-[#E5E0D6]/60 text-[#6B7280]" data-testid={`cart-pet-type-tag-${item.product_id}`}>
+                      Pet: {item.pet_type}
                     </span>
                   )}
                   <div className="flex items-center gap-3 mt-3">

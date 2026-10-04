@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import { ArrowRight, Calendar, Clock, MapPin, ShoppingBag, Ghost, Moon, Sparkles, Leaf, TreePine, Snowflake, Gift, PawPrint } from "lucide-react";
+import { ArrowRight, Calendar, Clock, MapPin, ShoppingBag, Ghost, Moon, Sparkles, Leaf, TreePine, Snowflake, Gift, PawPrint, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
@@ -50,6 +50,8 @@ export default function SeasonalPage() {
   // Halloween bouquet state
   const [size, setSize] = useState("medium");
   const [addPetToy, setAddPetToy] = useState(false);
+  const [petType, setPetType] = useState("");
+  const [petTypeOther, setPetTypeOther] = useState("");
   const PET_TOY_PRICE = 8.99;
   // Shared seasonal delivery date (October or December)
   const [date, setDate] = useState("");
@@ -97,6 +99,8 @@ export default function SeasonalPage() {
 
   const addBouquet = (goToCart) => {
     if (!validDate()) { toast.error("Please choose a delivery date in October."); return; }
+    if (!petType) { toast.error("Please select your pet type."); return; }
+    if (petType === "other" && !petTypeOther.trim()) { toast.error("Please enter your pet type."); return; }
     const toyPrice = addPetToy ? PET_TOY_PRICE : 0;
     addToCart({
       product_id: `halloween-bouquet-${size}${addPetToy ? "-toy" : ""}`,
@@ -107,6 +111,7 @@ export default function SeasonalPage() {
       theme: "halloween",
       season_date: date || "",
       add_pet_toy: addPetToy,
+      pet_type: petType === "other" ? petTypeOther.trim() : petType,
     });
     toast.success(`Halloween Bouquet (${selectedSize.label}) added to your basket`);
     if (goToCart) navigate("/cart");
@@ -323,6 +328,38 @@ export default function SeasonalPage() {
                   })}
                 </div>
                 <p className="text-[11px] text-[#9CA3AF] mb-6">{selectedSize.blurb}</p>
+
+                {/* Pet Type Selector */}
+                <div className="mb-4" data-testid="hw-pet-type-section">
+                  <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Your Pet</label>
+                  <div className="relative">
+                    <select
+                      value={petType}
+                      onChange={(e) => setPetType(e.target.value)}
+                      className="w-full appearance-none border border-[#E5E0D6] rounded-lg px-3 py-2.5 text-sm font-light text-[#2C2C2C] bg-white focus:outline-none focus:ring-1 pr-8"
+                      style={{ ["--tw-ring-color"]: HW.purple }}
+                      data-testid="hw-pet-type-select"
+                    >
+                      <option value="">Select pet...</option>
+                      <option value="cat">Cat</option>
+                      <option value="dog">Dog</option>
+                      <option value="n/a">Petless</option>
+                      <option value="other">Other</option>
+                    </select>
+                    <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280] pointer-events-none" />
+                  </div>
+                  {petType === "other" && (
+                    <input
+                      type="text"
+                      placeholder="Please specify..."
+                      value={petTypeOther}
+                      onChange={(e) => setPetTypeOther(e.target.value)}
+                      className="mt-2 w-full border border-[#E5E0D6] rounded-lg px-3 py-2.5 text-sm font-light text-[#2C2C2C] bg-white focus:outline-none focus:ring-1"
+                      style={{ ["--tw-ring-color"]: HW.purple }}
+                      data-testid="hw-pet-type-other-input"
+                    />
+                  )}
+                </div>
 
                 {/* Pet Toy/Treat Add-on */}
                 <div className="flex items-center justify-between bg-[#F2F0EB]/60 rounded-xl px-5 py-4 mb-6" data-testid="hw-pet-toy-addon">
