@@ -7,7 +7,7 @@ const DOG_ONLY = ["Scabiosa"];
 const CAT_ONLY = ["Trachelium"];
 const BOTH = [
   "Astilbe", "Erica", "Freesia", "Gerbera Daisies", "Greenbell", "Lisianthus", "Limonium",
-  "Olive", "Pitto", "Pussy Willow", "Rosemary", "Roses", "Snapdragons", "Statice",
+  "Olive", "Pitto", "Rosemary", "Roses", "Snapdragons", "Statice",
   "Stock", "Veronica", "Sunflowers", "Waxflower"
 ];
 
