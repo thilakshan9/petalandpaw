@@ -167,7 +167,7 @@ export default function SeasonalPage() {
         title={isXmas ? "Christmas Seasonal" : "Halloween Seasonal"}
         description={isXmas
           ? "Pet-safe Christmas wreaths and festive flower workshops from Petal & Paw. Order now for any day in December."
-          : "Pet-safe Halloween bouquets and spooky-season flower workshops from Petal & Paw. Preorder now for any day in October."}
+          : "Pet-safe Halloween bouquets and spooky-season flower workshops from Petal & Paw. Buy now for any day in October."}
       />
 
       {/* Seasonal hero */}
