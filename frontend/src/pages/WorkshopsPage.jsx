@@ -405,6 +405,7 @@ export default function WorkshopsPage() {
             const quantity = getQty(w.id);
             const lineTotal = (w.price * quantity).toFixed(2);
             const dates = upcomingDates(w);
+            const isSeasonal = seasonActive && dates.some((d) => isSeasonDate(d.date, season));
             return (
               <div
                 key={w.id}
@@ -412,13 +413,18 @@ export default function WorkshopsPage() {
                 data-testid={`workshop-${w.id}`}
               >
                 {/* Image */}
-                <div className="relative aspect-[4/3] md:aspect-auto md:min-h-[420px] bg-[#F2F0EB] overflow-hidden">
+                <div
+                  className={`relative aspect-[4/3] md:aspect-auto overflow-hidden ${isSeasonal ? "md:min-h-[200px] bg-[#122019]" : "md:min-h-[420px] bg-[#F2F0EB]"}`}
+                >
                   <img
-                    src={w.image}
+                    src={isSeasonal && w.seasonalImage ? w.seasonalImage : w.image}
                     alt={`${w.name} at ${w.place}`}
                     className="absolute inset-0 w-full h-full object-cover"
                     data-testid={`workshop-image-${w.id}`}
                   />
+                  {isSeasonal && (
+                    <span className="absolute top-3 left-3 text-lg spooky-float" aria-hidden="true">{isXmas ? "\u2744\uFE0F" : "\uD83C\uDF83"}</span>
+                  )}
                 </div>
 
                 {/* Details */}
@@ -449,7 +455,7 @@ export default function WorkshopsPage() {
                   </div>
 
                   {/* Description */}
-                  <p className="text-sm sm:text-base font-light leading-[1.8] text-[#6B7280] mb-6">{w.description}</p>
+                  <p className="text-sm sm:text-base font-light leading-[1.8] text-[#6B7280] mb-6">{isSeasonal && w.seasonalDescription ? w.seasonalDescription : w.description}</p>
 
                   {/* Upcoming Dates Table */}
                   {dates.length > 0 && (
@@ -478,8 +484,6 @@ export default function WorkshopsPage() {
                               <tr
                                 key={i}
                                 className={`${border} ${rowClass}`}
-                                onClick={hit ? () => navigate(`/seasonal#ws-${w.id}`) : undefined}
-                                title={hit ? "See this workshop on our seasonal page" : undefined}
                                 data-testid={hit ? `${isXmas ? "december" : "october"}-row-${w.id}-${i}` : undefined}
                               >
                                 <td className="px-4 py-3 font-light" style={{ color: hit ? rowText : "#2C2C2C" }}>
@@ -492,7 +496,6 @@ export default function WorkshopsPage() {
                                 <td className="px-4 py-3 font-light" style={{ color: hit ? rowAccent : "#6B7280" }}>
                                   <span className="inline-flex items-center gap-1.5">
                                     {d.time || w.time}
-                                    {hit && <ArrowRight size={12} />}
                                   </span>
                                 </td>
                                 <td className="px-4 py-3 text-right">
@@ -540,8 +543,6 @@ export default function WorkshopsPage() {
                             <div
                               key={i}
                               className={`px-4 py-3 ${rowClass}`}
-                              onClick={hit ? () => navigate(`/seasonal#ws-${w.id}`) : undefined}
-                              title={hit ? "See this workshop on our seasonal page" : undefined}
                               data-testid={hit ? `${isXmas ? "december" : "october"}-row-${w.id}-${i}` : undefined}
                             >
                               <div className="flex items-center justify-between gap-2 mb-2">
@@ -557,7 +558,6 @@ export default function WorkshopsPage() {
                                 <span className="font-light text-sm" style={{ color: hit ? rowAccent : "#6B7280" }}>
                                   <span className="inline-flex items-center gap-1.5">
                                     {d.time || w.time}
-                                    {hit && <ArrowRight size={12} />}
                                   </span>
                                 </span>
                                 {w.bookingType === "external" && (d.bookingUrl || w.bookingUrl) ? (

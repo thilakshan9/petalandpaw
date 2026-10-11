@@ -1,17 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import { ArrowRight, Calendar, Clock, MapPin, ShoppingBag, Ghost, Moon, Sparkles, Leaf, TreePine, Snowflake, Gift, PawPrint, ChevronDown } from "lucide-react";
+import { ArrowRight, ShoppingBag, Ghost, Sparkles, Leaf, TreePine, Snowflake, PawPrint, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { useCart } from "@/components/CartProvider";
 import SEOHead from "@/components/SEOHead";
 import Cobweb from "@/components/Cobweb";
-import { WORKSHOPS, upcomingDates } from "@/lib/workshops";
 import {
   getActiveSeason,
   seasonConfig,
-  isSeasonDate,
   seasonRange,
   burstBats,
   flurrySnow,
@@ -58,13 +56,6 @@ export default function SeasonalPage() {
   const { min, max } = seasonRange(season || "halloween");
 
   const selectedSize = HW_BOUQUET_SIZES.find((s) => s.id === size) || HW_BOUQUET_SIZES[1];
-  const seasonWs = WORKSHOPS
-    .filter((w) => upcomingDates(w).some((d) => isSeasonDate(d.date, season)))
-    .sort((a, b) => {
-      const ad = upcomingDates(a).find((d) => isSeasonDate(d.date, season));
-      const bd = upcomingDates(b).find((d) => isSeasonDate(d.date, season));
-      return new Date(ad.date) - new Date(bd.date);
-    });
 
   // Trigger the season effect on load + when scrolling back to the top.
   const lastBurst = useRef(0);
@@ -166,7 +157,7 @@ export default function SeasonalPage() {
       <SEOHead
         title={isXmas ? "Christmas Seasonal" : "Halloween Seasonal"}
         description={isXmas
-          ? "Pet-safe Christmas wreaths and festive flower workshops from Petal & Paw. Order now for any day in December."
+          ? "Pet-safe Christmas wreaths and festive flower workshops from Petal & Paw. Buy now for any day in December."
           : "Pet-safe Halloween bouquets and spooky-season flower workshops from Petal & Paw. Buy now for any day in October."}
       />
 
@@ -199,13 +190,6 @@ export default function SeasonalPage() {
                 data-testid="seasonal-shop-collection-btn"
               >
                 {isXmas ? "Shop the wreaths" : "Shop the bouquet"} <ArrowRight size={14} className="ml-2 inline" />
-              </button>
-              <button
-                onClick={() => document.getElementById("seasonal-workshops")?.scrollIntoView({ behavior: "smooth", block: "start" })}
-                className="rounded-full border border-[#FAF9F6]/40 text-[#FAF9F6] hover:bg-[#FAF9F6]/10 px-8 py-4 text-xs uppercase tracking-widest font-semibold transition-all inline-flex items-center"
-                data-testid="seasonal-explore-workshops-btn"
-              >
-                Explore workshops <ArrowRight size={14} className="ml-2 inline" />
               </button>
               <button
                 onClick={() => (isXmas ? flurrySnow() : burstBats())}
@@ -402,110 +386,6 @@ export default function SeasonalPage() {
               </div>
             </div>
           )}
-        </section>
-
-        {/* Seasonal workshops */}
-        <section id="seasonal-workshops" className="scroll-mt-24 animate-fade-in-up" data-testid="seasonal-workshops-section">
-          <div className="text-center mb-8 sm:mb-10">
-            <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold mb-2 block" style={{ color: isXmas ? XMAS.green : HW.purple }}>
-              This {isXmas ? "December" : "October"}
-            </span>
-            <h2 className="font-['Playfair_Display'] text-3xl sm:text-5xl font-medium tracking-tight text-[#2C2C2C] mb-3">
-              {isXmas ? "Festive Workshops" : "Spooky-Season Workshops"}
-            </h2>
-            <p className="text-sm md:text-base font-light text-[#6B7280] max-w-xl mx-auto">
-              {isXmas
-                ? "Gather your friends and make your own pet-safe festive arrangements. Here are the sessions running this December."
-                : "Gather your coven and arrange your own pet-safe blooms. Here are the sessions running this October."}
-            </p>
-          </div>
-
-          {seasonWs.length === 0 ? (
-            <p className="text-center text-sm font-light text-[#6B7280]">
-              More {isXmas ? "December" : "October"} dates coming soon. See all our <Link to="/workshops" className="underline hover:no-underline" style={{ color: isXmas ? XMAS.green : HW.purple }}>workshops</Link>.
-            </p>
-          ) : (
-            <div className="space-y-6">
-              {seasonWs.map((w) => {
-                const accent = isXmas ? XMAS : HW;
-                const dates = upcomingDates(w).filter((d) => isSeasonDate(d.date, season));
-                return (
-                  <div
-                    key={w.id}
-                    id={`ws-${w.id}`}
-                    className="scroll-mt-24 bg-white border rounded-2xl overflow-hidden grid grid-cols-1 sm:grid-cols-3 transition-all"
-                    style={{ borderColor: isXmas ? XMAS.greenBorder : HW.purpleBorder }}
-                    data-testid={`seasonal-workshop-${w.id}`}
-                  >
-                    <div className="relative aspect-[4/3] sm:aspect-auto sm:min-h-[200px] bg-[#122019] overflow-hidden">
-                      <img src={w.seasonalImage || w.image} alt={w.place} className="absolute inset-0 w-full h-full object-cover" />
-                      <span className="absolute top-3 left-3 text-lg spooky-float">{isXmas ? "\u2744\uFE0F" : "\uD83C\uDF83"}</span>
-                    </div>
-                    <div className="p-5 sm:p-7 sm:col-span-2 flex flex-col">
-                      <div className="flex items-center gap-1.5 text-xs font-light mb-1" style={{ color: accent.green || accent.purple }}>
-                        <MapPin size={12} /> <span>{w.place}</span>
-                      </div>
-                      <h3 className="font-['Playfair_Display'] text-xl font-medium text-[#2C2C2C] mb-3">{w.name}</h3>
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {dates.map((d, i) => {
-                          const url = d.bookingUrl || w.bookingUrl;
-                          const pillStyle = { background: isXmas ? XMAS.greenTint : HW.purpleTint, color: isXmas ? XMAS.greenDeep : HW.purpleDeep };
-                          if (w.bookingType === "external" && url) {
-                            return (
-                              <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all hover:scale-105" style={pillStyle} data-testid={`seasonal-book-date-${w.id}-${i}`}>
-                                <Calendar size={12} /> {d.date}
-                                <Clock size={12} className="ml-1" /> {d.time || w.time}
-                                <ArrowRight size={12} className="ml-1" />
-                              </a>
-                            );
-                          }
-                          return (
-                            <span key={i} className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium" style={pillStyle}>
-                              <Calendar size={12} /> {d.date}
-                              <Clock size={12} className="ml-1" /> {d.time || w.time}
-                            </span>
-                          );
-                        })}
-                      </div>
-                      <p className="text-sm font-light text-[#6B7280] mb-5">{w.seasonalDescription || w.description}</p>
-                      {w.included && w.included.length > 0 && (
-                        <div className="bg-[#F2F0EB]/60 rounded-xl p-4 mb-5">
-                          <h4 className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-2.5">What's Included</h4>
-                          <ul className="space-y-1.5">
-                            {w.included.map((item, idx) => (
-                              <li key={idx} className="flex items-start gap-2 text-sm font-light text-[#4B5563]">
-                                <Gift size={14} className="mt-0.5 flex-shrink-0" style={{ color: isXmas ? XMAS.green : HW.purple }} /> {item}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                      <div className="mt-auto flex items-center justify-between gap-3">
-                        <span className="text-lg font-light text-[#2C2C2C]">&pound;{w.price}<span className="text-xs text-[#6B7280]">/person</span></span>
-                        {w.bookingType === "external" && w.bookingUrl ? (
-                          <a href={w.bookingUrl} target="_blank" rel="noopener noreferrer">
-                            <Button className="rounded-full px-7 py-5 text-xs uppercase tracking-widest text-white transition-all hover:scale-105" style={{ background: isXmas ? XMAS.green : HW.purple }} data-testid={`seasonal-book-${w.id}`}>
-                              Book now <ArrowRight size={14} className="ml-2" />
-                            </Button>
-                          </a>
-                        ) : (
-                          <Button onClick={() => navigate("/workshops")} className="rounded-full px-7 py-5 text-xs uppercase tracking-widest text-white transition-all hover:scale-105" style={{ background: isXmas ? XMAS.green : HW.purple }} data-testid={`seasonal-book-${w.id}`}>
-                            Book now <ArrowRight size={14} className="ml-2" />
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
-          <div className="text-center mt-10">
-            <Link to="/workshops" className="text-xs uppercase tracking-widest font-semibold transition-colors" style={{ color: isXmas ? XMAS.green : HW.purple }}>
-              See all workshops <ArrowRight size={14} className="ml-1 inline" />
-            </Link>
-          </div>
         </section>
       </div>
     </div>
