@@ -334,7 +334,7 @@ export default function SeasonalPage() {
                       <option value="">Select pet...</option>
                       <option value="dog">Dog</option>
                       <option value="cat">Cat</option>
-                      <option value="rabbit">Rabbit</option>
+                      <option value="no-pet">No Pet</option>
                       <option value="other">Other</option>
                     </select>
                     <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280] pointer-events-none" />

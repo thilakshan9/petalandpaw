@@ -20,7 +20,7 @@ const SIZES = [
 const PET_TYPES = [
   { value: "dog", label: "Dog" },
   { value: "cat", label: "Cat" },
-  { value: "rabbit", label: "Rabbit" },
+  { value: "no-pet", label: "No Pet" },
   { value: "other", label: "Other" },
 ];
 
