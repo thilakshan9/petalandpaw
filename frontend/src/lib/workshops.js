@@ -64,7 +64,7 @@ export const WORKSHOPS = [
     id: "paws-cat-cafe-2026-10-16",
     name: "Halloween Flower Arranging Class",
     place: "Paws Cat Café",
-    address: "Tonbridge, Kent, TN9 1TJ",
+    address: "Tonbridge, TN9 1TJ",
     date: "16th October 2026",
     upcomingDates: [
       { date: "16th October 2026", day: "Friday", time: "6pm", bookingUrl: "https://pawscatcafe.resova.co.uk/items/view/41" },
