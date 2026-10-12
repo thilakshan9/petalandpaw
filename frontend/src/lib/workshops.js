@@ -7,7 +7,7 @@ export const WORKSHOPS = [
     date: "Monthly",
     time: "1pm",
     duration: "60-90 mins",
-    price: 45,
+    price: 70,
     description: "Relax with dogs and enjoy a creative afternoon of flower arranging. Whether you're a complete beginner or just looking for something different, this laid-back workshop is for you. Bring your furry friend along and make something beautiful together. All levels welcome - come meet like-minded people and leave with a gorgeous bouquet.",
     seasonalDescription: "Spend a crisp October Saturday surrounded by wagging tails and autumnal blooms. Arrange seasonal stems in the company of the daycare dogs, sip a warm drink from the café, and craft a bouquet with just the right touch of spooky charm. A laid-back afternoon for beginners and seasoned arrangers alike.",
     upcomingDates: [
