@@ -484,6 +484,8 @@ export default function WorkshopsPage() {
                               <tr
                                 key={i}
                                 className={`${border} ${rowClass}`}
+                                onClick={hit ? () => navigate(`/seasonal#ws-${w.id}`) : undefined}
+                                title={hit ? "See this workshop on our seasonal page" : undefined}
                                 data-testid={hit ? `${isXmas ? "december" : "october"}-row-${w.id}-${i}` : undefined}
                               >
                                 <td className="px-4 py-3 font-light" style={{ color: hit ? rowText : "#2C2C2C" }}>
@@ -496,6 +498,7 @@ export default function WorkshopsPage() {
                                 <td className="px-4 py-3 font-light" style={{ color: hit ? rowAccent : "#6B7280" }}>
                                   <span className="inline-flex items-center gap-1.5">
                                     {d.time || w.time}
+                                    {hit && <ArrowRight size={12} />}
                                   </span>
                                 </td>
                                 <td className="px-4 py-3 text-right">
@@ -543,6 +546,8 @@ export default function WorkshopsPage() {
                             <div
                               key={i}
                               className={`px-4 py-3 ${rowClass}`}
+                              onClick={hit ? () => navigate(`/seasonal#ws-${w.id}`) : undefined}
+                              title={hit ? "See this workshop on our seasonal page" : undefined}
                               data-testid={hit ? `${isXmas ? "december" : "october"}-row-${w.id}-${i}` : undefined}
                             >
                               <div className="flex items-center justify-between gap-2 mb-2">
@@ -558,6 +563,7 @@ export default function WorkshopsPage() {
                                 <span className="font-light text-sm" style={{ color: hit ? rowAccent : "#6B7280" }}>
                                   <span className="inline-flex items-center gap-1.5">
                                     {d.time || w.time}
+                                    {hit && <ArrowRight size={12} />}
                                   </span>
                                 </span>
                                 {w.bookingType === "external" && (d.bookingUrl || w.bookingUrl) ? (

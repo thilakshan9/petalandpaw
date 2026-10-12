@@ -11,6 +11,7 @@ import {
   getActiveSeason,
   seasonConfig,
   seasonRange,
+  isSeasonDate,
   burstBats,
   flurrySnow,
   HW,
@@ -19,6 +20,8 @@ import {
   HW_BOUQUET_SIZES,
   XMAS_WREATHS,
 } from "@/lib/halloween";
+import { WORKSHOPS, upcomingDates } from "@/lib/workshops";
+import { MapPin, Gift, ArrowRight as ArrowRightIcon } from "lucide-react";
 
 // Small flickering candle used to warm up the Halloween hero.
 function Candle({ className = "", style = {} }) {
@@ -87,6 +90,10 @@ export default function SeasonalPage() {
   }, [location.hash]);
 
   const validDate = () => !date || (date >= min && date <= max);
+
+  const seasonalWorkshops = WORKSHOPS.filter(
+    (w) => w.status !== "past" && upcomingDates(w).some((d) => isSeasonDate(d.date, season))
+  );
 
   const addBouquet = (goToCart) => {
     if (!validDate()) { toast.error("Please choose a delivery date in October."); return; }
@@ -387,6 +394,172 @@ export default function SeasonalPage() {
             </div>
           )}
         </section>
+
+        {/* Seasonal Workshops */}
+        {seasonalWorkshops.length > 0 && (
+          <section id="season-workshops" className="scroll-mt-24 animate-fade-in-up" data-testid="season-workshops-section">
+            <div className="text-center mb-8 sm:mb-10">
+              <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold mb-2 block" style={{ color: isXmas ? XMAS.green : HW.purple }}>
+                {isXmas ? "Festive Workshops" : "Spooky-Season Workshops"}
+              </span>
+              <h2 className="font-['Playfair_Display'] text-3xl sm:text-5xl font-medium tracking-tight text-[#2C2C2C] mb-3">
+                {isXmas ? "Join a Christmas Workshop" : "Join a Halloween Workshop"}
+              </h2>
+              <p className="text-sm md:text-base font-light text-[#6B7280] max-w-xl mx-auto">
+                {isXmas
+                  ? "Get hands-on with festive blooms at our December workshops. All materials included, all levels welcome."
+                  : "Get hands-on with spooky seasonal stems at our October workshops. All materials included, all levels welcome."}
+              </p>
+            </div>
+
+            <div className="space-y-8">
+              {seasonalWorkshops.map((w) => {
+                const dates = upcomingDates(w).filter((d) => isSeasonDate(d.date, season));
+                return (
+                  <div
+                    key={w.id}
+                    id={`ws-${w.id}`}
+                    className="bg-white border rounded-2xl overflow-hidden grid grid-cols-1 md:grid-cols-[1fr_1.4fr] scroll-mt-24"
+                    style={{ borderColor: isXmas ? XMAS.greenBorder : HW.purpleBorder }}
+                    data-testid={`season-workshop-${w.id}`}
+                  >
+                    {/* Image */}
+                    <div className="relative aspect-[4/3] md:aspect-auto md:min-h-[200px] overflow-hidden bg-[#122019]">
+                      <img
+                        src={w.seasonalImage || w.image}
+                        alt={`${w.name} at ${w.place}`}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                      <span className="absolute top-3 left-3 text-lg spooky-float" aria-hidden="true">
+                        {isXmas ? "\u2744\uFE0F" : "\uD83C\uDF83"}
+                      </span>
+                    </div>
+
+                    {/* Details */}
+                    <div className="p-6 sm:p-8 flex flex-col">
+                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
+                        <div>
+                          <h3 className="font-['Playfair_Display'] text-xl sm:text-2xl font-medium text-[#2C2C2C] mb-1">{w.name}</h3>
+                          <div className="flex items-center gap-1.5 text-sm font-light" style={{ color: w.accent }}>
+                            <MapPin size={14} />
+                            <span>{w.place}</span>
+                          </div>
+                          {w.address && (
+                            <p className="text-xs font-light text-[#9CA3AF] mt-0.5 ml-[22px]">{w.address}</p>
+                          )}
+                        </div>
+                        <div className="flex-shrink-0 text-right">
+                          <span className="text-2xl font-light text-[#2C2C2C]">&pound;{w.price}</span>
+                          <span className="text-sm font-light text-[#6B7280]">/person</span>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        <div className="flex items-center gap-2 bg-[#F2F0EB] rounded-full px-4 py-2">
+                          <span className="text-sm font-light text-[#2C2C2C]">Duration: {w.duration}</span>
+                        </div>
+                      </div>
+
+                      <p className="text-sm sm:text-base font-light leading-[1.8] text-[#6B7280] mb-5">
+                        {w.seasonalDescription || w.description}
+                      </p>
+
+                      {dates.length > 0 && (
+                        <div className="mb-5 border border-[#E5E0D6] rounded-xl overflow-hidden">
+                          <div className="bg-[#F2F0EB] px-4 py-2.5">
+                            <h4 className="text-xs uppercase tracking-widest font-semibold text-[#6B7280]">Upcoming Dates</h4>
+                          </div>
+                          <div className="sm:hidden divide-y divide-[#E5E0D6]">
+                            {dates.map((d, i) => (
+                              <div key={i} className="px-4 py-3 flex items-center justify-between gap-2">
+                                <div>
+                                  <span className="font-light text-sm text-[#2C2C2C] block">
+                                    {d.date} &middot; {d.day}
+                                  </span>
+                                  <span className="font-light text-xs" style={{ color: isXmas ? XMAS.green : HW.purple }}>
+                                    {d.time || w.time}
+                                  </span>
+                                </div>
+                                {w.bookingType === "external" && (d.bookingUrl || w.bookingUrl) ? (
+                                  <a href={d.bookingUrl || w.bookingUrl} target="_blank" rel="noopener noreferrer">
+                                    <Button size="sm" className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-4 py-2 text-[10px] uppercase tracking-widest transition-all hover:scale-105">
+                                      Book <ArrowRightIcon size={10} className="ml-1" />
+                                    </Button>
+                                  </a>
+                                ) : w.bookingType === "stripe" ? (
+                                  <Button size="sm" className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-4 py-2 text-[10px] uppercase tracking-widest transition-all hover:scale-105">
+                                    Book <ArrowRightIcon size={10} className="ml-1" />
+                                  </Button>
+                                ) : (
+                                  <span className="text-[10px] text-[#9CA3AF] font-light">Soon</span>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                          <table className="hidden sm:table w-full text-sm">
+                            <thead>
+                              <tr className="border-b border-[#E5E0D6]">
+                                <th className="text-left px-4 py-2.5 text-[10px] uppercase tracking-widest font-semibold text-[#9CA3AF]">Date</th>
+                                <th className="text-left px-4 py-2.5 text-[10px] uppercase tracking-widest font-semibold text-[#9CA3AF]">Day</th>
+                                <th className="text-left px-4 py-2.5 text-[10px] uppercase tracking-widest font-semibold text-[#9CA3AF]">Time</th>
+                                <th className="text-right px-4 py-2.5 text-[10px] uppercase tracking-widest font-semibold text-[#9CA3AF]">Book</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {dates.map((d, i) => {
+                                const border = i < dates.length - 1 ? "border-b border-[#E5E0D6]" : "";
+                                return (
+                                  <tr key={i} className={border}>
+                                    <td className="px-4 py-3 font-light text-[#2C2C2C]">
+                                      {d.date}
+                                      {d.kids && (
+                                        <span className="inline-block bg-[#E89149] text-white text-[9px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full ml-2 align-middle">Kids</span>
+                                      )}
+                                    </td>
+                                    <td className="px-4 py-3 font-light text-[#6B7280]">{d.day}</td>
+                                    <td className="px-4 py-3 font-light" style={{ color: isXmas ? XMAS.green : HW.purple }}>
+                                      {d.time || w.time}
+                                    </td>
+                                    <td className="px-4 py-3 text-right">
+                                      {w.bookingType === "external" && (d.bookingUrl || w.bookingUrl) ? (
+                                        <a href={d.bookingUrl || w.bookingUrl} target="_blank" rel="noopener noreferrer">
+                                          <Button size="sm" className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-4 py-2 text-[10px] uppercase tracking-widest transition-all hover:scale-105">
+                                            Book <ArrowRightIcon size={10} className="ml-1" />
+                                          </Button>
+                                        </a>
+                                      ) : w.bookingType === "stripe" ? (
+                                        <Button size="sm" className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-4 py-2 text-[10px] uppercase tracking-widest transition-all hover:scale-105">
+                                          Book <ArrowRightIcon size={10} className="ml-1" />
+                                        </Button>
+                                      ) : (
+                                        <span className="text-[10px] text-[#9CA3AF] font-light">Soon</span>
+                                      )}
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+
+                      <div className="bg-[#F2F0EB]/60 rounded-xl p-5 mt-auto">
+                        <h4 className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-3">What's Included</h4>
+                        <ul className="space-y-2">
+                          {w.included.map((item, i) => (
+                            <li key={i} className="flex items-start gap-2 text-sm font-light text-[#4B5563]">
+                              <Gift size={14} className="text-[#8DA399] mt-0.5 flex-shrink-0" /> {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );
