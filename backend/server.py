@@ -85,6 +85,7 @@ class CheckoutRequest(BaseModel):
     pet_notes: str = ""
     personalized_message: str = ""
     special_notes: str = ""
+    phone_number: str = ""
 
 class SubscriptionCheckoutRequest(BaseModel):
     plan_id: str
@@ -96,6 +97,7 @@ class SubscriptionCheckoutRequest(BaseModel):
     pet_type: str = ""
     pet_type_other: str = ""
     delivery_date: str = ""
+    phone_number: str = ""
 
 class StepBouquetRequest(BaseModel):
     size: str  # small, medium, large
@@ -803,6 +805,7 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
             "personalized_message": req.personalized_message[:500] if req.personalized_message else "",
             "pet_type": req.pet_type_other if req.pet_type == "other" else req.pet_type,
             "preferred_delivery_date": req.delivery_date or "",
+            "phone_number": req.phone_number[:48] if req.phone_number else "",
         }
 
         checkout_params = {
@@ -847,7 +850,8 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
                      "plan_name": plan["name"], "add_pet_toy": str(req.add_pet_toy),
                      "personalized_message": req.personalized_message[:500] if req.personalized_message else "",
                      "pet_type": req.pet_type_other if req.pet_type == "other" else req.pet_type,
-                     "preferred_delivery_date": req.delivery_date or ""},
+                     "preferred_delivery_date": req.delivery_date or "",
+                     "phone_number": req.phone_number[:48] if req.phone_number else ""},
         "created_at": datetime.now(timezone.utc).isoformat()
     })
     return {"url": session.url, "session_id": session.id}
@@ -945,7 +949,8 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
                           "pet_toy_count": str(len(pet_toy_items)),
                           "pet_types": ", ".join(pet_types)[:480] if pet_types else "",
                           "personalized_message": req.personalized_message[:500] if req.personalized_message else "",
-                          "special_notes": req.special_notes[:490] if req.special_notes else ""}
+                          "special_notes": req.special_notes[:490] if req.special_notes else "",
+                          "phone_number": req.phone_number[:48] if req.phone_number else ""}
         pid = {"metadata": cart_metadata}
         if req.customer_email:
             pid["receipt_email"] = req.customer_email
@@ -984,6 +989,7 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
         "delivery_date": req.delivery_date, "pet_notes": req.pet_notes,
         "personalized_message": req.personalized_message,
         "special_notes": req.special_notes,
+        "phone_number": req.phone_number,
         "referral_code": req.referral_code, "credit_applied": credit_applied,
         "created_at": datetime.now(timezone.utc).isoformat()
     }
@@ -994,7 +1000,8 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
         "status": "initiated", "payment_status": "pending", "order_id": order_id,
         "metadata": {"order_type": req.order_type, "item_count": str(len(validated_items)),
                      "add_pet_toy": str(any(i.add_pet_toy for i in req.items)),
-                     "pet_types": ", ".join([i.pet_type for i in req.items if i.pet_type])[:480] if any(i.pet_type for i in req.items) else ""},
+                     "pet_types": ", ".join([i.pet_type for i in req.items if i.pet_type])[:480] if any(i.pet_type for i in req.items) else "",
+                     "phone_number": req.phone_number[:48] if req.phone_number else ""},
         "created_at": datetime.now(timezone.utc).isoformat()
     })
     return {"url": session.url, "session_id": session.id, "order_id": order_id}

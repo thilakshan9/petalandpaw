@@ -18,6 +18,7 @@ export default function CartPage() {
   const [referralValid, setReferralValid] = useState(null);
   const [checking, setChecking] = useState(false);
   const [personalizedMessage, setPersonalizedMessage] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   const validateReferral = async () => {
     if (!referralCode.trim()) { setReferralValid(null); return; }
@@ -69,6 +70,7 @@ export default function CartPage() {
           referral_code: referralValid?.valid ? referralCode : "",
           personalized_message: personalizedMessage,
           special_notes: specialNotes,
+          phone_number: phoneNumber,
         }),
       });
       const data = await res.json();
@@ -191,6 +193,19 @@ export default function CartPage() {
                   data-testid="cart-personalized-message-input"
                 />
                 <p className="text-[10px] text-[#9CA3AF] mt-1 text-right">{personalizedMessage.length}/500</p>
+              </div>
+
+              {/* Phone Number */}
+              <div data-testid="phone-number-section">
+                <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-2 block">Phone Number</label>
+                <Input
+                  type="tel"
+                  placeholder="07123 456789"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="border-[#E5E0D6] text-sm"
+                  data-testid="cart-phone-input"
+                />
               </div>
 
               {/* Totals */}

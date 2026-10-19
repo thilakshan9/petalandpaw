@@ -33,6 +33,7 @@ export default function SubscriptionPage() {
   const [orderType, setOrderType] = useState(null);
   const [purchaseMode, setPurchaseMode] = useState({});
   const [personalizedMessage, setPersonalizedMessage] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [guestDialog, setGuestDialog] = useState(null);
   const [petType, setPetType] = useState({});
   const [petTypeOther, setPetTypeOther] = useState({});
@@ -179,6 +180,7 @@ export default function SubscriptionPage() {
           pet_type: petType[planId] || "",
           pet_type_other: petTypeOther[planId] || "",
           delivery_date: orderType === "one-time" ? deliveryDate[planId] || "" : "",
+          phone_number: phoneNumber,
         }),
       });
       const data = await res.json();
@@ -597,6 +599,17 @@ export default function SubscriptionPage() {
                   data-testid="personalized-message-input"
                 />
                 <p className="text-[10px] text-[#9CA3AF] mt-1 text-right">{personalizedMessage.length}/500</p>
+              </div>
+              <div>
+                <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Phone Number</label>
+                <Input
+                  type="tel"
+                  placeholder="07123 456789"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="border-[#E5E0D6] text-sm py-5"
+                  data-testid="checkout-phone-input"
+                />
               </div>
               <Button
                 onClick={handleSubscribe}
