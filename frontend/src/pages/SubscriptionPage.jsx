@@ -34,7 +34,6 @@ export default function SubscriptionPage() {
   const [purchaseMode, setPurchaseMode] = useState({});
   const [personalizedMessage, setPersonalizedMessage] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [guestDialog, setGuestDialog] = useState(null);
   const [petType, setPetType] = useState({});
   const [petTypeOther, setPetTypeOther] = useState({});
   const [deliveryDate, setDeliveryDate] = useState({});
@@ -127,7 +126,7 @@ export default function SubscriptionPage() {
     }
     setOrderType(type);
     if (!customer) {
-      setGuestDialog(planId);
+      goToSignInToSubscribe(planId, type);
       return;
     }
     setEmailDialog(planId);
@@ -135,25 +134,14 @@ export default function SubscriptionPage() {
     setPersonalizedMessage("");
   };
 
-  const handleGuestContinue = () => {
-    const planId = guestDialog;
-    setGuestDialog(null);
-    setEmailDialog(planId);
-    setCustomerEmail("");
-    setPersonalizedMessage("");
-  };
-
-  const handleGuestLogin = () => {
-    // Save pending purchase so we can resume after login
-    const planId = guestDialog;
+  const goToSignInToSubscribe = (planId, type) => {
     localStorage.setItem("pp_pending_checkout", JSON.stringify({
       planId,
-      orderType,
+      orderType: type,
       petType: petType[planId] || "",
       petTypeOther: petTypeOther[planId] || "",
       petToy: !!petToy[planId],
     }));
-    setGuestDialog(null);
     navigate("/login");
   };
 
@@ -174,7 +162,6 @@ export default function SubscriptionPage() {
           plan_id: planId,
           origin_url: window.location.origin,
           add_pet_toy: !!petToy[planId],
-          customer_email: customerEmail,
           checkout_mode: orderType,
           personalized_message: hwNote + personalizedMessage,
           pet_type: petType[planId] || "",
@@ -542,50 +529,20 @@ export default function SubscriptionPage() {
           </div>
         )}
 
-        {/* Guest or Login Dialog */}
-        <Dialog open={!!guestDialog} onOpenChange={(v) => { if (!v) setGuestDialog(null); }}>
-          <DialogContent className="max-w-sm border-[#E5E0D6] bg-[#FAF9F6] rounded-2xl" data-testid="guest-dialog">
-            <DialogTitle className="font-['Playfair_Display'] text-xl font-medium text-[#2C2C2C]">Before You Continue</DialogTitle>
-            <DialogDescription className="text-sm font-light text-[#6B7280]">
-              Sign in to track your orders and manage subscriptions, or continue as a guest.
-            </DialogDescription>
-            <div className="mt-4 space-y-3">
-              <Button
-                onClick={handleGuestLogin}
-                className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-8 py-6 text-xs uppercase tracking-widest w-full transition-all hover:scale-105"
-                data-testid="guest-login-btn"
-              >
-                Sign In / Create Account <ArrowRight size={14} className="ml-2" />
-              </Button>
-              <Button
-                onClick={handleGuestContinue}
-                variant="outline"
-                className="rounded-full border-[#E5E0D6] text-[#6B7280] hover:text-[#2C2C2C] hover:border-[#2C2C2C] px-8 py-6 text-xs uppercase tracking-widest w-full transition-all"
-                data-testid="guest-continue-btn"
-              >
-                Continue as Guest
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-
         {/* Email Dialog */}
         <Dialog open={!!emailDialog} onOpenChange={(v) => { if (!v) setEmailDialog(null); }}>
           <DialogContent className="max-w-sm border-[#E5E0D6] bg-[#FAF9F6] rounded-2xl" data-testid="email-dialog">
             <DialogTitle className="font-['Playfair_Display'] text-xl font-medium text-[#2C2C2C]">Your Email</DialogTitle>
             <DialogDescription className="text-sm font-light text-[#6B7280]">
-              Enter your email to receive your {orderType === "one-time" ? "order" : "subscription"} confirmation and receipt.
+              Your {orderType === "one-time" ? "order" : "subscription"} confirmation and receipt will be sent to your account email.
             </DialogDescription>
             <div className="mt-4 space-y-4">
               <Input
                 type="email"
                 placeholder="your@email.com"
                 value={customerEmail}
-                onChange={(e) => setCustomerEmail(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
-                className="border-[#E5E0D6] text-sm py-5"
-                data-testid="checkout-email-input"
-                autoFocus
+                readOnly
+                className="border-[#E5E0D6] text-sm py-5 bg-[#F3F1EC] text-[#6B7280]"
               />
               <div>
                 <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Add a gift note (optional)</label>
