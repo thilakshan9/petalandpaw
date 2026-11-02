@@ -110,7 +110,7 @@ export default function Navbar() {
             <SheetTrigger asChild className="md:hidden">
               <Button variant="ghost" size="icon" data-testid="mobile-menu-toggle"><Menu size={20} strokeWidth={1.5} /></Button>
             </SheetTrigger>
-            <SheetContent side="right" className="bg-[#FAF9F6] border-l border-[#E5E0D6] w-72">
+            <SheetContent side="right" className="mobile-menu-sheet bg-[#FAF9F6] border-l border-[#E5E0D6] w-72">
               <div className="menu-candy-band absolute inset-x-0 top-0 h-2" aria-hidden="true" />
               <div className="flex flex-col gap-6 mt-12">
                 {navLinks.map((link) => (

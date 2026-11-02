@@ -287,6 +287,14 @@
   background: repeating-linear-gradient(-45deg, #B5474A 0 4px, #FAF9F6 4px 8px);
 }
 .menu-candy-band { border-bottom: 1px solid rgba(181, 71, 74, 0.2); }
+.mobile-menu-sheet > button:first-child {
+  width: 36px; height: 36px; border-radius: 9999px;
+  display: flex; align-items: center; justify-content: center;
+  background: #B5474A; color: #FAF9F6; opacity: 1;
+  box-shadow: 0 0 0 3px #FAF9F6, 0 0 0 4px #B5474A;
+  transition: transform 0.3s ease, background-color 0.2s ease;
+}
+.mobile-menu-sheet > button:first-child:hover { transform: rotate(90deg); background: #9A3A3D; }
 .sparkle-burst { position: absolute; left: 50%; top: 50%; width: 0; height: 0; pointer-events: none; }
 .sparkle-particle {
   position: absolute; left: -4px; top: -4px; width: 8px; height: 8px;
