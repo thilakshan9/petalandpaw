@@ -16,10 +16,10 @@ function makeFlake(i) {
   };
 }
 
-// Global, decorative snow layer. Renders nothing unless `active`.
-// Persistent gentle snowfall + an optional `pp-snow-flurry` burst.
-export default function Snow({ active = false }) {
-  const persistent = useMemo(
+// Decorative snow layer. A `pp-snow-flurry` burst is always available; the gentle
+// persistent snowfall renders only when `persistent` is set.
+export default function Snow({ persistent = false }) {
+  const baseFlakes = useMemo(
     () => Array.from({ length: 50 }, (_, i) => makeFlake(i)),
     []
   );
@@ -32,7 +32,6 @@ export default function Snow({ active = false }) {
   }, []);
 
   useEffect(() => {
-    if (!active) { setFlurry([]); return; }
     const onFlurry = () => {
       const batch = Array.from({ length: 40 }, () => {
         idRef.current += 1;
@@ -45,9 +44,9 @@ export default function Snow({ active = false }) {
     };
     window.addEventListener("pp-snow-flurry", onFlurry);
     return () => window.removeEventListener("pp-snow-flurry", onFlurry);
-  }, [active]);
+  }, []);
 
-  if (!active) return null;
+  if (!persistent && flurry.length === 0) return null;
 
   const renderFlake = (f, cls, onEnd) => (
     <span
@@ -70,7 +69,7 @@ export default function Snow({ active = false }) {
 
   return (
     <div className="pp-snow" aria-hidden="true">
-      {persistent.map((f) => renderFlake(f, "persist"))}
+      {persistent && baseFlakes.map((f) => renderFlake(f, "persist"))}
       {flurry.map((f) => renderFlake(f, "once", removeFlurry))}
     </div>
   );

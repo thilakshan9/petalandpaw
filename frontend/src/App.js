@@ -24,7 +24,6 @@ import WorkshopsPage from "@/pages/WorkshopsPage";
 // RafflePage is intentionally kept for future re-enable.
 // import RafflePage from "@/pages/RafflePage";
 import VouchersPage from "@/pages/VouchersPage";
-import SeasonalPage from "@/pages/SeasonalPage";
 import SafeFlowersPage from "@/pages/SafeFlowersPage";
 import CustomerAuthPage from "@/pages/CustomerAuthPage";
 import CustomerDashboard from "@/pages/CustomerDashboard";
@@ -160,7 +159,6 @@ function AppRouter() {
       }
       <Route path="/workshops" element={<Layout><WorkshopsPage /></Layout>} />
       }
-      <Route path="/seasonal" element={<Layout><SeasonalPage /></Layout>} />
       }
       {/* Raffle route intentionally disabled for future re-enable.
       <Route path="/raffle" element={<Layout><RafflePage /></Layout>} />

@@ -56,10 +56,6 @@ export default function WorkshopsPage() {
   const seasonActive = !!season;
   const pal = isXmas ? XMAS : HW;
   const seasonEffect = useCallback(() => (isXmas ? flurrySnow() : burstBats()), [isXmas]);
-  const goSeasonal = () => {
-    seasonEffect();
-    navigate("/seasonal");
-  };
   const getQty = (id) => Math.max(1, Math.min(10, qty[id] || 1));
   const updateQty = (id, delta) => {
     setQty((q) => ({ ...q, [id]: Math.max(1, Math.min(10, (q[id] || 1) + delta)) }));
@@ -347,14 +343,6 @@ export default function WorkshopsPage() {
                 </div>
                 <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
                   <Button
-                    onClick={goSeasonal}
-                    className="rounded-full text-[#241B2B] px-6 py-5 text-xs uppercase tracking-widest font-semibold transition-all hover:scale-105"
-                    style={{ background: isXmas ? XMAS.goldSoft : "#D4956A" }}
-                    data-testid="workshops-visit-seasonal-btn"
-                  >
-                    Visit Seasonal <ArrowRight size={14} className="ml-2" />
-                  </Button>
-                  <Button
                     onClick={() => seasonEffect()}
                     variant="outline"
                     className="rounded-full border-[#FAF9F6]/40 bg-transparent text-[#FAF9F6] hover:bg-[#FAF9F6]/10 px-6 py-5 text-xs uppercase tracking-widest transition-all"
@@ -484,8 +472,6 @@ export default function WorkshopsPage() {
                               <tr
                                 key={i}
                                 className={`${border} ${rowClass}`}
-                                onClick={hit ? () => navigate(`/seasonal#ws-${w.id}`) : undefined}
-                                title={hit ? "See this workshop on our seasonal page" : undefined}
                                 data-testid={hit ? `${isXmas ? "december" : "october"}-row-${w.id}-${i}` : undefined}
                               >
                                 <td className="px-4 py-3 font-light" style={{ color: hit ? rowText : "#2C2C2C" }}>
@@ -546,7 +532,6 @@ export default function WorkshopsPage() {
                             <div
                               key={i}
                               className={`px-4 py-3 ${rowClass}`}
-                              onClick={hit ? () => navigate(`/seasonal#ws-${w.id}`) : undefined}
                               title={hit ? "See this workshop on our seasonal page" : undefined}
                               data-testid={hit ? `${isXmas ? "december" : "october"}-row-${w.id}-${i}` : undefined}
                             >

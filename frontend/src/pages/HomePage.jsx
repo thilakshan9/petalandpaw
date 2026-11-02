@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { ArrowRight, ShieldCheck, Leaf, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SEOHead from "@/components/SEOHead";
-import SeasonalPopup from "@/components/SeasonalPopup";
 
 export default function HomePage() {
   return (
@@ -129,8 +128,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      <SeasonalPopup />
     </div>
   );
 }
