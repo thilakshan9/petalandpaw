@@ -82,7 +82,7 @@ function FaqItem({ q, a }) {
 export default function FaqPage() {
   return (
     <div className="py-8 sm:py-12 md:py-20" data-testid="faq-page">
-      <SEOHead title="FAQ" description="Frequently asked questions about Petal & Paw pet-safe flowers." />
+      <SEOHead title="FAQ" description="Frequently asked questions about Petal & Paw non-toxic flowers." />
       <div className="container mx-auto px-5 md:px-8 max-w-3xl">
 
         <div className="text-center mb-10 sm:mb-14 animate-fade-in-up">

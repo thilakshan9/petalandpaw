@@ -51,7 +51,7 @@ export default function QuickViewModal({ product, open, onClose }) {
               </span>
               {product.pet_safe && (
                 <span className="pet-safe-badge inline-flex items-center gap-1">
-                  <ShieldCheck size={10} /> Pet Safe
+                  <ShieldCheck size={10} /> Non-Toxic
                 </span>
               )}
             </div>

@@ -2,8 +2,8 @@ import { Helmet } from "react-helmet-async";
 
 export default function SEOHead({ title, description, keywords, image, url }) {
   const siteName = "Petal & Paw";
-  const fullTitle = title ? `${title} | ${siteName}` : `${siteName} - Pet-Safe Flowers`;
-  const defaultDesc = "Hand-crafted pet-safe floral arrangements for the modern, conscious home.";
+  const fullTitle = title ? `${title} | ${siteName}` : `${siteName} - Non-Toxic Flowers`;
+  const defaultDesc = "Hand-crafted non-toxic floral arrangements for the modern, conscious home.";
 
   return (
     <Helmet>

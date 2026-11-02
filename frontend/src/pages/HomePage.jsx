@@ -6,26 +6,26 @@ import SEOHead from "@/components/SEOHead";
 export default function HomePage() {
   return (
     <div>
-      <SEOHead title="Home" description="Pet-safe floral arrangements for the modern, conscious home." image="https://lh3.googleusercontent.com/d/17eTVpte-bc4RkhtYq0-WlCXYnI6DTILz=w1200" />
+      <SEOHead title="Home" description="Non-toxic floral arrangements for the modern, conscious home." image="https://lh3.googleusercontent.com/d/17eTVpte-bc4RkhtYq0-WlCXYnI6DTILz=w1200" />
 
       {/* Full-Width Hero */}
       <section className="relative h-[60vh] sm:h-[70vh] md:h-[85vh] min-h-[420px] md:min-h-[600px] overflow-hidden" data-testid="hero-section">
         <img
           src="https://lh3.googleusercontent.com/d/1hrLMv_uhfNeMjbRLicfR_HFLKoEOgil_=w1920"
-          alt="Cat wearing a Christmas hat with pet-safe flowers"
+          alt="Cat wearing a Christmas hat with non-toxic flowers"
           className="absolute inset-0 w-full h-full object-cover object-[center_70%]"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#FAF9F6]/90 via-[#FAF9F6]/60 to-[#FAF9F6]/20 md:from-[#FAF9F6]/80 md:via-[#FAF9F6]/40 md:to-transparent" />
         <div className="relative h-full container mx-auto px-5 md:px-8 max-w-7xl flex items-end pb-12 sm:items-center sm:pb-0">
           <div className="max-w-xl animate-fade-in-up">
             <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 sm:mb-4 block">
-              Pet-Safe Florals
+              Non-Toxic Florals
             </span>
             <h1 className="font-['Playfair_Display'] text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-medium tracking-tight leading-[1.1] text-[#2C2C2C] mb-4 sm:mb-6">
               Flowers Your Pets Will Love Too
             </h1>
             <p className="text-sm sm:text-base md:text-lg font-light leading-relaxed text-[#4B5563] mb-6 sm:mb-10 max-w-md">
-              Hand-crafted arrangements using only pet-safe blooms.
+              Hand-crafted arrangements using only non-toxic blooms.
             </p>
             <Link to="/subscriptions">
               <Button className="shop-cta rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-7 py-5 sm:px-10 sm:py-7 text-xs sm:text-sm uppercase tracking-[0.2em] transition-all hover:scale-105" data-testid="hero-shop-btn">
@@ -41,7 +41,7 @@ export default function HomePage() {
         <div className="container mx-auto px-5 md:px-8 max-w-7xl">
           <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-8 md:gap-16">
             {[
-              { icon: ShieldCheck, text: "Pet Safe" },
+              { icon: ShieldCheck, text: "Non-Toxic" },
               { icon: Leaf, text: "Sustainably Sourced" },
               { icon: Truck, text: "Free UK Delivery" },
             ].map(({ icon: Icon, text }) => (
@@ -67,7 +67,7 @@ export default function HomePage() {
                 Workshops
               </h2>
               <p className="text-sm sm:text-base font-light leading-relaxed text-[#6B7280] mb-6 sm:mb-8 max-w-md">
-                Join us for a relaxed flower arranging experience. Create your own pet-safe bouquet to take home, meet like-minded people, and enjoy a creative session in good company.
+                Join us for a relaxed flower arranging experience. Create your own non-toxic bouquet to take home, meet like-minded people, and enjoy a creative session in good company.
               </p>
               <Link to="/workshops">
                 <Button className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-6 py-5 sm:px-8 sm:py-6 text-xs sm:text-sm uppercase tracking-[0.15em] transition-all hover:scale-105" data-testid="feature-workshops-btn">
@@ -86,7 +86,7 @@ export default function HomePage() {
             <div className="order-2 lg:order-1 animate-fade-in-up delay-200">
               <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 sm:mb-4 block">Monthly Delivery</span>
               <h2 className="font-['Playfair_Display'] text-2xl sm:text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C] mb-4 sm:mb-6">
-                Pet-Safe Subscriptions
+                Non-Toxic Subscriptions
               </h2>
               <p className="text-sm sm:text-base font-light leading-relaxed text-[#6B7280] mb-6 sm:mb-8 max-w-md">
                 Fresh, seasonal flowers delivered to your door every month. Three plans to choose from, each one guaranteed non-toxic. Surprise your pet with a toy by adding to any subscription.
@@ -112,7 +112,7 @@ export default function HomePage() {
               <img src="https://lh3.googleusercontent.com/d/16IURvclMQzZnIucglfEbfgsZFeegijRb=w800" alt="Cat with safe flowers" className="w-full h-full object-cover" />
             </div>
             <div className="animate-fade-in-up delay-200">
-              <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 sm:mb-4 block">Every Stem Pet-Safe</span>
+              <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 sm:mb-4 block">Every Stem Non-Toxic</span>
               <h2 className="font-['Playfair_Display'] text-2xl sm:text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C] mb-4 sm:mb-6">
                 Safe for Every Member of Your Family
               </h2>

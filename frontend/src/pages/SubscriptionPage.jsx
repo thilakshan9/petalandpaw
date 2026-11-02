@@ -259,7 +259,7 @@ export default function SubscriptionPage() {
 
   return (
     <div className="py-8 sm:py-12 md:py-20" data-testid="subscription-page">
-      <SEOHead title="Subscriptions" description="Monthly pet-safe flower subscriptions. Three plans with optional pet toy/treat add-on." keywords="flower subscription, monthly flowers, pet safe subscription" />
+      <SEOHead title="Subscriptions" description="Monthly non-toxic flower subscriptions. Three plans with optional pet toy/treat add-on." keywords="flower subscription, monthly flowers, non-toxic subscription" />
       <div className="container mx-auto px-5 md:px-8 max-w-7xl">
         <div className="text-center mb-10 sm:mb-16 animate-fade-in-up">
           <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-2 sm:mb-3 block">Shop</span>
@@ -267,7 +267,7 @@ export default function SubscriptionPage() {
             Shop
           </h1>
           <p className="text-base md:text-xl font-light text-[#2C2C2C] max-w-2xl mx-auto mb-3">
-            Luxury pet-safe bouquets delivered to your door. Safe for curious cats and dogs, beautifully arranged and always seasonal
+            Luxury non-toxic bouquets delivered to your door. Safe for curious cats and dogs, beautifully arranged and always seasonal
           </p>
         </div>
 
@@ -322,7 +322,7 @@ export default function SubscriptionPage() {
               const selectedPet = petType[plan.id] || "";
               const planName = isPop ? "Signature Selection" : plan.name;
               const planDescription = isPop
-                ? "Our most popular bouquet, handcrafted using seasonal pet-safe flowers and delivered fresh to your door every month."
+                ? "Our most popular bouquet, handcrafted using seasonal non-toxic flowers and delivered fresh to your door every month."
                 : plan.description;
               return (
                 <div

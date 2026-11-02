@@ -43,7 +43,7 @@ export default function EventsPage() {
 
   return (
     <div className="py-8 sm:py-12 md:py-20" data-testid="hire-us-page">
-      <SEOHead title="Hire Us" description="Beautiful pet-safe flowers for your special occasions. Weddings, birthdays, corporate events and more." />
+      <SEOHead title="Hire Us" description="Beautiful non-toxic flowers for your special occasions. Weddings, birthdays, corporate events and more." />
       <div className="container mx-auto px-5 md:px-8 max-w-7xl">
 
         <div className="text-center mb-10 sm:mb-16 animate-fade-in-up">
@@ -68,7 +68,7 @@ export default function EventsPage() {
                 <li className="flex items-start gap-2"><span className="text-[#8DA399] mt-0.5">-</span> Birthday and celebration flowers</li>
                 <li className="flex items-start gap-2"><span className="text-[#8DA399] mt-0.5">-</span> Corporate event florals</li>
                 <li className="flex items-start gap-2"><span className="text-[#8DA399] mt-0.5">-</span> Private workshops and private flower arranging classes</li>
-                <li className="flex items-start gap-2"><span className="text-[#8DA399] mt-0.5">-</span> Pet-safe options available on request</li>
+                <li className="flex items-start gap-2"><span className="text-[#8DA399] mt-0.5">-</span> Non-toxic options available on request</li>
               </ul>
             </div>
 
@@ -184,7 +184,7 @@ export default function EventsPage() {
                   <textarea
                     value={form.message}
                     onChange={(e) => setForm({ ...form, message: e.target.value })}
-                    placeholder="Any additional details, colour preferences, pet-safe requirements..."
+                    placeholder="Any additional details, colour preferences, non-toxic requirements..."
                     rows={4}
                     className="w-full border border-[#E5E0D6] rounded-md px-3 py-2 text-sm font-light text-[#2C2C2C] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-1 focus:ring-[#8DA399] resize-none"
                     data-testid="events-message"

@@ -13,7 +13,7 @@ export default function PrivacyPage() {
         <div className="prose-custom space-y-8 animate-fade-in-up delay-100">
           <section>
             <h2 className="font-['Playfair_Display'] text-xl font-medium text-[#2C2C2C] mb-3">1. Who We Are</h2>
-            <p className="text-sm font-light leading-[1.8] text-[#6B7280]">Petal & Paw is a UK-based flower business specialising in pet-safe floral arrangements. Our website is petalandpaw.co.uk. When we refer to "we", "us" or "our", we mean Petal & Paw.</p>
+            <p className="text-sm font-light leading-[1.8] text-[#6B7280]">Petal & Paw is a UK-based flower business specialising in non-toxic floral arrangements. Our website is petalandpaw.co.uk. When we refer to "we", "us" or "our", we mean Petal & Paw.</p>
           </section>
 
           <section>

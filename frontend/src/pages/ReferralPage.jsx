@@ -66,7 +66,7 @@ export default function ReferralPage() {
         ) : (
           <div className="animate-fade-in-up">
             <h1 className="font-['Playfair_Display'] text-3xl font-medium text-[#2C2C2C] mb-4">Invalid Referral</h1>
-            <p className="text-base font-light text-[#6B7280] mb-8">This referral code is not valid. You can still enjoy our pet-safe flowers!</p>
+            <p className="text-base font-light text-[#6B7280] mb-8">This referral code is not valid. You can still enjoy our non-toxic flowers!</p>
             <Link to="/shop">
               <Button className="shop-cta rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-8 py-6 text-sm uppercase tracking-widest" data-testid="referral-shop-btn">
                 Browse Flowers

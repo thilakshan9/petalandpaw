@@ -63,7 +63,7 @@ export default function AboutPage() {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 animate-fade-in-up delay-300">
           {[
-            { icon: ShieldCheck, label: "Pet Safe", desc: "Every stem verified" },
+            { icon: ShieldCheck, label: "Non-Toxic", desc: "Every stem verified" },
             { icon: Leaf, label: "Sustainable", desc: "Eco-friendly practices" },
             { icon: Heart, label: "Handcrafted", desc: "Arranged with care" },
             { icon: PawPrint, label: "Pet-Loving", desc: "By a pet owner, for pet owners" },

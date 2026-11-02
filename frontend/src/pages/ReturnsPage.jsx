@@ -6,7 +6,7 @@ import SEOHead from "@/components/SEOHead";
 export default function ReturnsPage() {
   return (
     <div className="py-8 sm:py-12 md:py-20" data-testid="returns-page">
-      <SEOHead title="Returns" description="Petal & Paw returns policy for pet-safe flower orders." />
+      <SEOHead title="Returns" description="Petal & Paw returns policy for non-toxic flower orders." />
       <div className="container mx-auto px-5 md:px-8 max-w-3xl">
 
         <div className="text-center mb-10 sm:mb-14 animate-fade-in-up">

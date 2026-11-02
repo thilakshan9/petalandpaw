@@ -18,7 +18,7 @@ export default function BlogPage() {
 
   return (
     <div className="py-8 sm:py-12 md:py-20" data-testid="blog-page">
-      <SEOHead title="Journal" description="Stories about flowers, pets, and sustainability." keywords="pet safe flowers blog, flower care, sustainable florals" />
+      <SEOHead title="Journal" description="Stories about flowers, pets, and sustainability." keywords="non-toxic flowers blog, flower care, sustainable florals" />
       <div className="container mx-auto px-5 md:px-8 max-w-7xl">
         <div className="mb-8 sm:mb-12 animate-fade-in-up">
           <span className="text-[10px] sm:text-xs uppercase tracking-[0.25em] font-semibold text-[#8DA399] mb-2 sm:mb-3 block">Journal</span>

@@ -14,7 +14,7 @@ const BOTH = [
 export default function SafeFlowersPage() {
   return (
     <div className="py-8 sm:py-12 md:py-20" data-testid="safe-flowers-page">
-      <SEOHead title="Pet-Safe Flowers" description="A complete guide to flowers that are safe for cats and dogs. Sourced via Blue Cross." />
+      <SEOHead title="Non-Toxic Flowers" description="A complete guide to flowers that are safe for cats and dogs. Sourced via Blue Cross." />
       <div className="container mx-auto px-5 md:px-8 max-w-4xl">
 
         <Link to="/" className="inline-flex items-center gap-2 text-sm font-light text-[#6B7280] hover:text-[#2C2C2C] transition-colors mb-8">
@@ -22,9 +22,9 @@ export default function SafeFlowersPage() {
         </Link>
 
         <div className="text-center mb-12 sm:mb-16 animate-fade-in-up">
-          <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-2 sm:mb-3 block">Pet Safety</span>
+          <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-2 sm:mb-3 block">Non-Toxic Info</span>
           <h1 className="font-['Playfair_Display'] text-3xl sm:text-5xl md:text-6xl font-medium tracking-tight text-[#2C2C2C] mb-3 sm:mb-4">
-            Pet-Safe Flower Guide
+            Non-Toxic Flower Guide
           </h1>
           <p className="text-sm md:text-lg font-light text-[#6B7280] max-w-xl mx-auto">
             Every stem we use is carefully selected to be safe for your furry family members. Below is the full list of pet-friendly flowers we offer.
@@ -85,7 +85,7 @@ export default function SafeFlowersPage() {
           </p>
           <Link to="/subscriptions">
             <Button className="shop-cta rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-8 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105" data-testid="safe-flowers-shop-btn">
-              Shop Pet-Safe Bouquets <ArrowLeft size={14} className="ml-2 rotate-180" />
+              Shop Non-Toxic Bouquets <ArrowLeft size={14} className="ml-2 rotate-180" />
             </Button>
           </Link>
         </div>

@@ -83,13 +83,13 @@ export function seasonConfig(season = getActiveSeason()) {
       themeAddLabel: "Make it Christmas themed",
       bannerKicker: "Festive Season",
       bannerTitle: "Christmas has arrived at Petal & Paw",
-      bannerBlurb: "Order a fresh, pet-safe Christmas wreath for any day in December, and explore our festive workshops.",
+      bannerBlurb: "Order a fresh, non-toxic Christmas wreath for any day in December, and explore our festive workshops.",
       heroKicker: "Petal & Paw at Christmas",
-      heroTitle: "A Very Merry, Pet-Safe Christmas",
-      heroBlurb: "Fresh evergreen wreaths and festive blooms, always pet-safe. Order for any day in December and join our Christmas workshops.",
+      heroTitle: "A Very Merry, Non-Toxic Christmas",
+      heroBlurb: "Fresh evergreen wreaths and festive blooms, always non-toxic. Order for any day in December and join our Christmas workshops.",
       collectionKicker: "Buy Now",
       collectionTitle: "The Christmas Wreath Collection",
-      collectionBlurb: "Fresh, hand-tied evergreen wreaths for your door or table, with pet-safe foliage throughout. Choose your favourite and the December day you\u2019d like it delivered.",
+      collectionBlurb: "Fresh, hand-tied evergreen wreaths for your door or table, with non-toxic foliage throughout. Choose your favourite and the December day you\u2019d like it delivered.",
     };
   }
   // default halloween
@@ -104,13 +104,13 @@ export function seasonConfig(season = getActiveSeason()) {
     themeAddLabel: "Make it Halloween themed",
     bannerKicker: "Spooky Season",
     bannerTitle: "Halloween has landed at Petal & Paw",
-    bannerBlurb: "Buy a pet-safe Halloween bouquet for any day in October, and explore our spooky-season workshops.",
+    bannerBlurb: "Buy a non-toxic Halloween bouquet for any day in October, and explore our spooky-season workshops.",
     heroKicker: "Petal & Paw After Dark",
     heroTitle: "A Spooky Season in Bloom",
-    heroBlurb: "Deliciously dark, always pet-safe. Buy a Halloween bouquet for any day in October and join our spooky-season workshops.",
+    heroBlurb: "Deliciously dark, always non-toxic. Buy a Halloween bouquet for any day in October and join our spooky-season workshops.",
     collectionKicker: "Buy Now",
     collectionTitle: "The Halloween Bouquet",
-    collectionBlurb: "A haunting arrangement of pet-safe autumnal blooms in deep plums, burnt oranges and inky tones, delicately tangled with spooky spiderwebs for a beautifully eerie finish. Choose your size and the October day you’d like your Halloween bouquet to arrive.",
+    collectionBlurb: "A haunting arrangement of non-toxic autumnal blooms in deep plums, burnt oranges and inky tones, delicately tangled with spooky spiderwebs for a beautifully eerie finish. Choose your size and the October day you’d like your Halloween bouquet to arrive.",
   };
 }
 

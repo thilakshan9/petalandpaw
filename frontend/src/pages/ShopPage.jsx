@@ -37,13 +37,13 @@ export default function ShopPage() {
 
   return (
     <div className="py-8 sm:py-12 md:py-20" data-testid="shop-page">
-      <SEOHead title="Shop" description="Browse our curated collection of pet-safe flowers, bouquets, and letterbox arrangements." keywords="pet safe flowers, bouquets, letterbox flowers, safe flowers for dogs cats" />
+      <SEOHead title="Shop" description="Browse our curated collection of non-toxic flowers, bouquets, and letterbox arrangements." keywords="non-toxic flowers, bouquets, letterbox flowers, safe flowers for dogs cats" />
       <div className="container mx-auto px-5 md:px-8 max-w-7xl">
         <div className="mb-8 sm:mb-12 animate-fade-in-up">
           <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-2 sm:mb-3 block">Collection</span>
           <h1 className="font-['Playfair_Display'] text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-medium tracking-tight text-[#2C2C2C]">Our Flowers</h1>
           <p className="text-sm md:text-lg font-light text-[#6B7280] mt-3 sm:mt-4 max-w-lg">
-            Every stem is verified pet-safe. Browse our curated collection of beautiful, worry-free blooms.
+            Every stem is verified non-toxic. Browse our curated collection of beautiful, worry-free blooms.
           </p>
         </div>
 

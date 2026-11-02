@@ -117,7 +117,7 @@ export default function CustomerDashboard() {
               </div>
               <div>
                 <p className="text-sm font-semibold text-[#2C2C2C]">Not Currently Subscribed</p>
-                <p className="text-xs font-light text-[#6B7280]">Subscribe for fresh, pet-safe flowers delivered to your door every month.</p>
+                <p className="text-xs font-light text-[#6B7280]">Subscribe for fresh, non-toxic flowers delivered to your door every month.</p>
               </div>
               <Button onClick={() => navigate("/subscriptions")} className="ml-auto rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-5 py-2 text-xs uppercase tracking-widest flex-shrink-0" data-testid="subscribe-cta">
                 Subscribe

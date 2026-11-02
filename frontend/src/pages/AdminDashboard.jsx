@@ -53,7 +53,7 @@ function ProductForm({ product, onSave, onClose }) {
         </Select></div>
       <div><Label className="text-xs uppercase tracking-widest text-[#6B7280]">Image URL</Label><Input value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} className="border-[#E5E0D6] mt-1" data-testid="product-form-image" /></div>
       <div><Label className="text-xs uppercase tracking-widest text-[#6B7280]">Description</Label><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="border-[#E5E0D6] mt-1" rows={3} data-testid="product-form-description" /></div>
-      <div><Label className="text-xs uppercase tracking-widest text-[#6B7280]">Pet Safety Details</Label><Input value={form.pet_safe_details} onChange={(e) => setForm({ ...form, pet_safe_details: e.target.value })} className="border-[#E5E0D6] mt-1" /></div>
+      <div><Label className="text-xs uppercase tracking-widest text-[#6B7280]">Non-Toxic Details</Label><Input value={form.pet_safe_details} onChange={(e) => setForm({ ...form, pet_safe_details: e.target.value })} className="border-[#E5E0D6] mt-1" /></div>
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-2"><Switch checked={form.featured} onCheckedChange={(v) => setForm({ ...form, featured: v })} /><Label className="text-sm text-[#6B7280]">Featured</Label></div>
         <div className="flex items-center gap-2"><Switch checked={form.in_stock} onCheckedChange={(v) => setForm({ ...form, in_stock: v })} /><Label className="text-sm text-[#6B7280]">In Stock</Label></div>

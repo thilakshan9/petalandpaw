@@ -22,7 +22,7 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 className="font-['Playfair_Display'] text-xl font-medium text-[#2C2C2C] mb-3">3. Pet Safety</h2>
+            <h2 className="font-['Playfair_Display'] text-xl font-medium text-[#2C2C2C] mb-3">3. Non-Toxic Flowers</h2>
             <p className="text-sm font-light leading-[1.8] text-[#6B7280]">Our bouquets are designed using flowers that are widely considered non-toxic to cats and dogs, based on guidance from the ASPCA. However, we are not veterinary professionals and cannot guarantee that every pet will react the same way. We always recommend keeping flowers out of direct reach of pets and supervising curious animals. Petal & Paw accepts no liability for any adverse reactions.</p>
           </section>
 

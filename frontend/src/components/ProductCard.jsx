@@ -47,7 +47,7 @@ export default function ProductCard({ product, index = 0 }) {
           <div className="flex items-center gap-2">
             {product.pet_safe && (
               <span className="pet-safe-badge inline-flex items-center gap-1">
-                <ShieldCheck size={10} /> Pet Safe
+                <ShieldCheck size={10} /> Non-Toxic
               </span>
             )}
           </div>

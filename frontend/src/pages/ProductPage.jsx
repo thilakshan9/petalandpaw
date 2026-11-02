@@ -77,7 +77,7 @@ export default function ProductPage() {
               <span className="text-[10px] sm:text-xs uppercase tracking-[0.25em] font-semibold text-[#6B7280]">{product.category}</span>
               {product.pet_safe && (
                 <span className="pet-safe-badge inline-flex items-center gap-1">
-                  <ShieldCheck size={10} /> Pet Safe
+                  <ShieldCheck size={10} /> Non-Toxic
                 </span>
               )}
             </div>
@@ -98,7 +98,7 @@ export default function ProductPage() {
               <div className="bg-[#8DA399]/8 border border-[#8DA399]/20 rounded-xl p-4 mb-8">
                 <div className="flex items-center gap-2 mb-1">
                   <ShieldCheck size={14} className="text-[#8DA399]" />
-                  <span className="text-xs uppercase tracking-widest font-semibold text-[#8DA399]">Pet Safety Info</span>
+                  <span className="text-xs uppercase tracking-widest font-semibold text-[#8DA399]">Non-Toxic Info</span>
                 </div>
                 <p className="text-sm font-light text-[#6B7280]">{product.pet_safe_details}</p>
               </div>

@@ -267,7 +267,7 @@ export default function WorkshopsPage() {
 
   return (
     <div className="py-8 sm:py-12 md:py-20" data-testid="workshops-page">
-      <SEOHead title="Workshops" description="Join our flower arranging workshops. Create your own pet-safe bouquet in a fun, relaxed setting." />
+      <SEOHead title="Workshops" description="Join our flower arranging workshops. Create your own non-toxic bouquet in a fun, relaxed setting." />
       <Helmet>
         {upcomingWorkshops()
           .filter((w) => w.date !== "Monthly")
@@ -315,7 +315,7 @@ export default function WorkshopsPage() {
             Upcoming Workshops
           </h1>
           <p className="text-sm md:text-lg font-light text-[#6B7280] max-w-xl mx-auto">
-            Learn to arrange beautiful, pet-safe flowers in a fun and relaxed setting. No experience needed - just come ready to create.
+            Learn to arrange beautiful, non-toxic flowers in a fun and relaxed setting. No experience needed - just come ready to create.
           </p>
         </div>
 
@@ -374,7 +374,7 @@ export default function WorkshopsPage() {
                   Hosting something special? We'll build a workshop around you.
                 </h2>
                 <p className="text-sm font-light text-[#6B7280] leading-relaxed">
-                  From hen dos and birthdays to corporate away days and team socials, share a few details and we'll design a private, pet-safe flower arranging experience tailored to your group.
+                  From hen dos and birthdays to corporate away days and team socials, share a few details and we'll design a private, non-toxic flower arranging experience tailored to your group.
                 </p>
               </div>
               <Button

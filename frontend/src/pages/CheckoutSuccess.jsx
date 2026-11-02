@@ -328,7 +328,7 @@ export default function CheckoutSuccess() {
             {/* Sweet brand sign-off */}
             <div className="text-center mt-10 flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.3em] font-semibold text-[#8DA399]">
               <Sparkles size={12} />
-              <span>Petal & Paw - Pet-Safe Florals</span>
+              <span>Petal & Paw - Non-Toxic Florals</span>
               <Sparkles size={12} />
             </div>
           </div>

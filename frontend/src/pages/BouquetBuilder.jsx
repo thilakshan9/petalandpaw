@@ -30,7 +30,7 @@ export default function BouquetBuilder() {
   if (COMING_SOON) {
     return (
       <div className="py-20 sm:py-32 md:py-44" data-testid="bouquet-builder-page">
-        <SEOHead title="Build Your Bouquet" description="Create a custom pet-safe bouquet. Coming soon." />
+        <SEOHead title="Build Your Bouquet" description="Create a custom non-toxic bouquet. Coming soon." />
         <div className="container mx-auto px-5 md:px-8 max-w-xl text-center animate-fade-in-up">
           <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 block">Coming Soon</span>
           <h1 className="font-['Playfair_Display'] text-3xl sm:text-5xl md:text-6xl font-medium tracking-tight text-[#2C2C2C] mb-4">
@@ -132,7 +132,7 @@ function BouquetBuilderFull() {
 
   return (
     <div className="py-6 sm:py-8 md:py-16" data-testid="bouquet-builder-page">
-      <SEOHead title="Build Your Bouquet" description="Create a custom pet-safe bouquet. Choose size, flowers, and tell us about your pet." />
+      <SEOHead title="Build Your Bouquet" description="Create a custom non-toxic bouquet. Choose size, flowers, and tell us about your pet." />
       <div className="container mx-auto px-5 md:px-8 max-w-3xl">
         <div className="text-center mb-8 sm:mb-12 animate-fade-in-up">
           <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-2 sm:mb-3 block">Create</span>
