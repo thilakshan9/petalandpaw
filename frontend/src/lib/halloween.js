@@ -53,7 +53,7 @@ function readPreview() {
 // MANUAL OVERRIDE: set FORCE_SEASON to keep a season permanently on regardless
 // of the month. Set it back to null to restore automatic behaviour
 // (Halloween in October, Christmas in December). Preview params still win.
-const FORCE_SEASON = "halloween"; // "halloween" | "christmas" | null
+const FORCE_SEASON = "christmas"; // "halloween" | "christmas" | null
 
 export function getActiveSeason() {
   const preview = readPreview();
@@ -69,7 +69,7 @@ export function isHalloweenActive() { return getActiveSeason() === "halloween"; 
 export function isChristmasActive() { return getActiveSeason() === "christmas"; }
 export function isSeasonActive() { return getActiveSeason() !== null; }
 
-// Per-season display config used across nav, banners, popups.
+// Per-season display config used across nav and banners.
 export function seasonConfig(season = getActiveSeason()) {
   if (season === "christmas") {
     return {
@@ -87,8 +87,6 @@ export function seasonConfig(season = getActiveSeason()) {
       heroKicker: "Petal & Paw at Christmas",
       heroTitle: "A Very Merry, Pet-Safe Christmas",
       heroBlurb: "Fresh evergreen wreaths and festive blooms, always pet-safe. Order for any day in December and join our Christmas workshops.",
-      popupTitle: "Something festive is in bloom",
-      popupBlurb: "Step into our seasonal shop for pet-safe Christmas wreaths and December's festive workshops.",
       collectionKicker: "Buy Now",
       collectionTitle: "The Christmas Wreath Collection",
       collectionBlurb: "Fresh, hand-tied evergreen wreaths for your door or table, with pet-safe foliage throughout. Choose your favourite and the December day you\u2019d like it delivered.",
@@ -110,8 +108,6 @@ export function seasonConfig(season = getActiveSeason()) {
     heroKicker: "Petal & Paw After Dark",
     heroTitle: "A Spooky Season in Bloom",
     heroBlurb: "Deliciously dark, always pet-safe. Buy a Halloween bouquet for any day in October and join our spooky-season workshops.",
-    popupTitle: "Something spooky this way blooms",
-    popupBlurb: "Step into our seasonal shop for pet-safe Halloween bouquets and October's spooky workshops.",
     collectionKicker: "Buy Now",
     collectionTitle: "The Halloween Bouquet",
     collectionBlurb: "A haunting arrangement of pet-safe autumnal blooms in deep plums, burnt oranges and inky tones, delicately tangled with spooky spiderwebs for a beautifully eerie finish. Choose your size and the October day you’d like your Halloween bouquet to arrive.",
