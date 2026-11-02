@@ -19,6 +19,7 @@ import AboutPage from "@/pages/AboutPage";
 import ContactPage from "@/pages/ContactPage";
 import FaqPage from "@/pages/FaqPage";
 import ReturnsPage from "@/pages/ReturnsPage";
+import WreathGuidePage from "@/pages/WreathGuidePage";
 import EventsPage from "@/pages/EventsPage";
 import WorkshopsPage from "@/pages/WorkshopsPage";
 // RafflePage is intentionally kept for future re-enable.
@@ -178,6 +179,7 @@ function AppRouter() {
       <Route path="/account" element={<Layout><CustomerDashboard /></Layout>} />
       }
       <Route path="/referral/:code" element={<Layout><ReferralPage /></Layout>} />
+      <Route path="/wreath-guide" element={<Layout><WreathGuidePage /></Layout>} />
       }
     </Routes>
   );
