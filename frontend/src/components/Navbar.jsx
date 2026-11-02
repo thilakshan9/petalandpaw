@@ -38,15 +38,32 @@ function HolidayHat({ variant }) {
   );
 }
 
+const SPARKLE_COUNT = 8;
+
+function SparkleBurst({ onDone }) {
+  return (
+    <span className="sparkle-burst" aria-hidden="true" onAnimationEnd={onDone}>
+      {Array.from({ length: SPARKLE_COUNT }, (_, i) => (
+        <span key={i} className="sparkle-particle" style={{ "--angle": `${(360 / SPARKLE_COUNT) * i}deg` }} />
+      ))}
+    </span>
+  );
+}
+
 export default function Navbar() {
   const { itemCount } = useCart();
   const { customer } = useCustomerAuth();
   const location = useLocation();
   const [open, setOpen] = useState(false);
+  const [burst, setBurst] = useState(null);
   const scrollToTop = () => window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   const handleNavClick = () => {
     scrollToTop();
     flurrySnow();
+  };
+  const handleTabClick = (href) => {
+    setBurst({ href, id: Date.now() });
+    handleNavClick();
   };
   const handleMobileLinkClick = () => {
     setOpen(false);
@@ -65,7 +82,7 @@ export default function Navbar() {
 
         <div className="hidden md:flex items-center gap-10">
           {navLinks.map((link, index) => (
-            <Link key={link.href} to={link.href} onClick={handleNavClick}
+            <Link key={link.href} to={link.href} onClick={() => handleTabClick(link.href)}
               className={`nav-link relative text-sm font-light tracking-wide transition-colors ${
                 location.pathname === link.href ? "text-[#2C2C2C]" : "text-[#6B7280] hover:text-[#2C2C2C]"
               }`}
@@ -74,6 +91,7 @@ export default function Navbar() {
               <HolidayHat variant={index % 2 === 0 ? "elf" : "santa"} />
               {link.label}
               {location.pathname === link.href && <span className="candy-underline" />}
+              {burst?.href === link.href && <SparkleBurst key={burst.id} onDone={() => setBurst(null)} />}
             </Link>
           ))}
         </div>
@@ -93,6 +111,7 @@ export default function Navbar() {
               <Button variant="ghost" size="icon" data-testid="mobile-menu-toggle"><Menu size={20} strokeWidth={1.5} /></Button>
             </SheetTrigger>
             <SheetContent side="right" className="bg-[#FAF9F6] border-l border-[#E5E0D6] w-72">
+              <div className="menu-candy-band absolute inset-x-0 top-0 h-2" aria-hidden="true" />
               <div className="flex flex-col gap-6 mt-12">
                 {navLinks.map((link) => (
                   <Link key={link.href} to={link.href} onClick={handleMobileLinkClick}

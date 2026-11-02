@@ -282,7 +282,22 @@
 .holiday-hat { transform: translateX(-50%); transform-origin: bottom center; }
 .nav-link:hover .holiday-hat { animation: hat-sway 1.4s ease-in-out infinite; }
 
-/* Festive logo star and candy-cane tab underline */
+/* Festive logo star, candy-cane tab underline, sparkle burst, and menu candy band */
+.candy-underline, .menu-candy-band {
+  background: repeating-linear-gradient(-45deg, #B5474A 0 4px, #FAF9F6 4px 8px);
+}
+.menu-candy-band { border-bottom: 1px solid rgba(181, 71, 74, 0.2); }
+.sparkle-burst { position: absolute; left: 50%; top: 50%; width: 0; height: 0; pointer-events: none; }
+.sparkle-particle {
+  position: absolute; left: -4px; top: -4px; width: 8px; height: 8px;
+  background: #D9A441;
+  clip-path: polygon(50% 0%, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0% 50%, 38% 38%);
+  animation: sparkle-out 0.6s ease-out forwards;
+}
+@keyframes sparkle-out {
+  0% { opacity: 1; transform: rotate(var(--angle)) translateX(0) scale(0.3); }
+  100% { opacity: 0; transform: rotate(var(--angle)) translateX(28px) scale(1.1); }
+}
 .logo-star { position: absolute; top: -4px; right: -6px; width: 12px; height: 12px; pointer-events: none; animation: star-twinkle 2.4s ease-in-out infinite; }
 @keyframes star-twinkle {
   0%, 100% { opacity: 0.45; transform: scale(0.8) rotate(0deg); }
@@ -305,5 +320,5 @@
   .pp-flake, .candle-flame, .candle-halo, .holiday-hat, .logo-star {
     animation: none !important;
   }
-  .pp-bats, .pp-snow { display: none; }
+  .pp-bats, .pp-snow, .sparkle-burst { display: none; }
 }
