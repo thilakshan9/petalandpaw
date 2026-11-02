@@ -461,8 +461,8 @@ export default function SubscriptionPage() {
                     />
                   </div>
 
-                  {/* Seasonal themed add-on (October/December only) */}
-                  {seasonActive && (
+                  {/* Seasonal themed add-on (October only) */}
+                  {seasonActive && !isXmas && (
                     <label
                       className="flex items-center justify-between rounded-xl px-4 py-3 mb-6 cursor-pointer border transition-colors"
                       style={{
