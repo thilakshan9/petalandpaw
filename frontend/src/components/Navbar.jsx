@@ -24,16 +24,16 @@ function HolidayHat({ variant }) {
       className="holiday-hat absolute -top-5 left-1/2 pointer-events-none">
       {isElf ? (
         <>
-          <path d="M7 14 Q10 7 13 1.5 Q15 0 17.5 2 Q15 5 20 14 Z" fill="#4F7A5C" />
-          <circle cx="18" cy="2.5" r="2.2" fill="#FAF9F6" />
+          <path d="M7 14 Q10 7 13 1.5 Q15 0 17.5 2 Q15 5 20 14 Z" fill="#4F7A5C" stroke="#2C2C2C" strokeWidth="1" strokeLinejoin="round" />
+          <circle cx="18" cy="2.5" r="2.2" fill="#FAF9F6" stroke="#2C2C2C" strokeWidth="1" />
         </>
       ) : (
         <>
-          <path d="M5 14 Q6 4 17 2 Q21 1.5 22 4 Q18 6 19 10 Q20 12 23 14 Z" fill="#B5474A" />
-          <circle cx="22.5" cy="3.5" r="2.3" fill="#FAF9F6" />
+          <path d="M5 14 Q6 4 17 2 Q21 1.5 22 4 Q18 6 19 10 Q20 12 23 14 Z" fill="#B5474A" stroke="#2C2C2C" strokeWidth="1" strokeLinejoin="round" />
+          <circle cx="22.5" cy="3.5" r="2.3" fill="#FAF9F6" stroke="#2C2C2C" strokeWidth="1" />
         </>
       )}
-      <rect x="2" y="13" width="23" height="4" rx="2" fill="#FAF9F6" />
+      <rect x="2" y="13" width="23" height="4" rx="2" fill="#FAF9F6" stroke="#2C2C2C" strokeWidth="1" />
     </svg>
   );
 }
