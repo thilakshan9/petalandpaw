@@ -56,8 +56,11 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E0D6]/50" data-testid="navbar">
       <div className="container mx-auto px-4 md:px-8 max-w-7xl flex items-center justify-between h-16 md:h-20">
-        <Link to="/" onClick={scrollToTop} className="flex items-center gap-2" data-testid="nav-logo">
+        <Link to="/" onClick={scrollToTop} className="relative flex items-center gap-2" data-testid="nav-logo">
           <img src="/assets/logo-new.png" alt="Petal & Paw" className="h-10 md:h-12 w-auto" />
+          <svg className="logo-star" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.6 7L12 17.8l-6.2 3.4 1.6-7L2 9.5l7.1-.6z" fill="#D9A441" />
+          </svg>
         </Link>
 
         <div className="hidden md:flex items-center gap-10">
@@ -70,6 +73,7 @@ export default function Navbar() {
             >
               <HolidayHat variant={index % 2 === 0 ? "elf" : "santa"} />
               {link.label}
+              {location.pathname === link.href && <span className="candy-underline" />}
             </Link>
           ))}
         </div>

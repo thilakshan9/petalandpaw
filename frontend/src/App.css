@@ -282,12 +282,27 @@
 .holiday-hat { transform: translateX(-50%); transform-origin: bottom center; }
 .nav-link:hover .holiday-hat { animation: hat-sway 1.4s ease-in-out infinite; }
 
+/* Festive logo star and candy-cane tab underline */
+.logo-star { position: absolute; top: -4px; right: -6px; width: 12px; height: 12px; pointer-events: none; animation: star-twinkle 2.4s ease-in-out infinite; }
+@keyframes star-twinkle {
+  0%, 100% { opacity: 0.45; transform: scale(0.8) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.1) rotate(20deg); }
+}
+.candy-underline {
+  position: absolute; left: 0; right: 0; bottom: -8px; height: 3px; border-radius: 2px;
+  background: repeating-linear-gradient(-45deg, #B5474A 0 4px, #FAF9F6 4px 8px);
+  box-shadow: 0 0 0 0.5px rgba(181, 71, 74, 0.35);
+  transform-origin: left center;
+  animation: candy-grow 0.4s ease-out both;
+}
+@keyframes candy-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
 /* Cobweb corner accents */
 .cobweb { position: absolute; pointer-events: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .pp-bat, .pp-bat-inner, .spooky-flicker, .spooky-float, .spooky-fog, .moon-glow,
-  .pp-flake, .candle-flame, .candle-halo, .holiday-hat {
+  .pp-flake, .candle-flame, .candle-halo, .holiday-hat, .logo-star {
     animation: none !important;
   }
   .pp-bats, .pp-snow { display: none; }
