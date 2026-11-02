@@ -21,7 +21,7 @@ function HolidayHat({ variant }) {
   const isElf = variant === "elf";
   return (
     <svg viewBox="0 0 24 16" width="22" height="15" aria-hidden="true"
-      className="absolute -top-3.5 left-1/2 -translate-x-1/2 pointer-events-none">
+      className="holiday-hat absolute -top-3.5 left-1/2 pointer-events-none">
       {isElf ? (
         <path d="M3 14 L12 2 L18 14 Z" fill="#6E8F7A" />
       ) : (
