@@ -272,23 +272,22 @@
 @keyframes candle-halo { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.85; } }
 .candle-halo { animation: candle-halo 1.5s ease-in-out infinite; }
 
-.xmas-theme button.rounded-full[class*="bg-[#2C2C2C]"],
-.xmas-theme a.rounded-full[class*="bg-[#2C2C2C]"],
-.xmas-theme button.rounded-full[class*="bg-[#8DA399]"]:not([class*="bg-[#8DA399]/"]),
-.xmas-theme a.rounded-full[class*="bg-[#8DA399]"]:not([class*="bg-[#8DA399]/"]) {
+.xmas-theme button[class~="bg-[#2C2C2C]"],
+.xmas-theme a[class~="bg-[#2C2C2C]"],
+.xmas-theme button[class~="bg-[#8DA399]"],
+.xmas-theme a[class~="bg-[#8DA399]"],
+.xmas-theme span[class~="bg-[#8DA399]"] {
   background-color: #A65A57 !important;
   color: #FAF9F6 !important;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
-.xmas-theme button.rounded-full[class*="bg-[#2C2C2C]"]:hover,
-.xmas-theme a.rounded-full[class*="bg-[#2C2C2C]"]:hover,
-.xmas-theme button.rounded-full[class*="bg-[#8DA399]"]:not([class*="bg-[#8DA399]/"]):hover,
-.xmas-theme a.rounded-full[class*="bg-[#8DA399]"]:not([class*="bg-[#8DA399]/"]):hover {
+.xmas-theme button[class~="bg-[#2C2C2C]"]:hover,
+.xmas-theme a[class~="bg-[#2C2C2C]"]:hover,
+.xmas-theme button[class~="bg-[#8DA399]"]:hover,
+.xmas-theme a[class~="bg-[#8DA399]"]:hover {
   background-color: #8F4A48 !important;
 }
-.xmas-theme span.rounded-full[class*="bg-[#8DA399]"] {
-  background-color: #A65A57;
-  color: #FAF9F6;
+.xmas-theme svg[class~="text-[#8DA399]"] {
+  color: #A65A57 !important;
 }
 .xmas-theme button.shop-cta.rounded-full {
   background-color: #A65A57 !important;
