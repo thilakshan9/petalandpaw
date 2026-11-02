@@ -51,7 +51,7 @@ export const WORKSHOPS = [
     date: "See dates",
     time: "See dates",
     duration: "90 mins",
-    price: 45,
+    price: 70,
     description: "Join us at King's Dog Daycare for a festive wreath-making workshop surrounded by wagging tails and seasonal cheer. You'll be guided through creating your own Christmas wreath from start to finish using fresh seasonal foliage, pinecones, dried fruit and ribbons. Sip a warm drink from the café, meet the daycare dogs, and take your finished wreath home ready to claim its place on your front door. All materials, guidance and dog cuddles included.",
     seasonalDescription: "Get into the festive spirit at King's Dog Daycare in Chelsea. Craft your own Christmas wreath using fresh seasonal foliage, pinecones, dried fruit and festive decorations, all surrounded by the daycare's playful dogs. Sip a warm drink from the café, enjoy puppy cuddles between arranging, and leave with a beautiful handmade wreath for your front door. All materials, guidance and festive dog cheer included.",
     upcomingDates: [
@@ -74,7 +74,7 @@ export const WORKSHOPS = [
     date: "See dates",
     time: "See dates",
     duration: "90 mins",
-    price: 48,
+    price: 75,
     description: "Join us at ALFI for a festive wreath-making workshop, complete with seasonal foliage, Christmas decorations and a glass of prosecco. You'll be guided through creating your own Christmas wreath from start to finish, before taking it home ready to claim its place on your front door. Set in ALFI's stylish Italian surroundings in the heart of Spitalfields Market, this relaxed and sociable workshop is perfect for beginners and experienced crafters alike. All materials, guidance and a glass of prosecco included.",
     seasonalDescription: "Join us at ALFI Spitalfields for a festive wreath-making workshop, complete with seasonal foliage, Christmas decorations and a glass of prosecco. You'll be guided through creating your own Christmas wreath from start to finish, before taking it home ready to claim its place on your front door. Set in ALFI's stylish Italian surroundings in the heart of Spitalfields Market, this relaxed and sociable workshop is perfect for beginners and experienced crafters alike. All materials, guidance and a glass of prosecco included.",
     upcomingDates: [
