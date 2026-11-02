@@ -20,15 +20,20 @@ const navLinks = [
 function HolidayHat({ variant }) {
   const isElf = variant === "elf";
   return (
-    <svg viewBox="0 0 24 16" width="22" height="15" aria-hidden="true"
-      className="holiday-hat absolute -top-3.5 left-1/2 pointer-events-none">
+    <svg viewBox="0 0 28 20" width="28" height="20" aria-hidden="true"
+      className="holiday-hat absolute -top-5 left-1/2 pointer-events-none">
       {isElf ? (
-        <path d="M3 14 L12 2 L18 14 Z" fill="#6E8F7A" />
+        <>
+          <path d="M7 14 Q10 7 13 1.5 Q15 0 17.5 2 Q15 5 20 14 Z" fill="#4F7A5C" />
+          <circle cx="18" cy="2.5" r="2.2" fill="#FAF9F6" />
+        </>
       ) : (
-        <path d="M3 14 Q8 3 16 1 Q15 6 19 14 Z" fill="#B5474A" />
+        <>
+          <path d="M5 14 Q6 4 17 2 Q21 1.5 22 4 Q18 6 19 10 Q20 12 23 14 Z" fill="#B5474A" />
+          <circle cx="22.5" cy="3.5" r="2.3" fill="#FAF9F6" />
+        </>
       )}
-      <circle cx={isElf ? 12 : 16.5} cy={isElf ? 2 : 1.5} r="1.6" fill="#FAF9F6" />
-      <rect x="1" y="13" width="20" height="2.5" rx="1.2" fill="#FAF9F6" />
+      <rect x="2" y="13" width="23" height="4" rx="2" fill="#FAF9F6" />
     </svg>
   );
 }
