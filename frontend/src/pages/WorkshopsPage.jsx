@@ -475,7 +475,7 @@ export default function WorkshopsPage() {
                                 data-testid={hit ? `${isXmas ? "december" : "october"}-row-${w.id}-${i}` : undefined}
                               >
                                 <td className="px-4 py-3 font-light" style={{ color: hit ? rowText : "#2C2C2C" }}>
-                                  {hit && <span aria-hidden="true">{cfg.emoji} </span>}{d.date}
+                                  {seasonActive && <span aria-hidden="true">{cfg.emoji} </span>}{d.date}
                                   {d.kids && (
                                     <span className="inline-block bg-[#E89149] text-white text-[9px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full ml-2 align-middle">Kids</span>
                                   )}
@@ -537,7 +537,7 @@ export default function WorkshopsPage() {
                             >
                               <div className="flex items-center justify-between gap-2 mb-2">
                                 <span className="font-light text-sm" style={{ color: hit ? rowText : "#2C2C2C" }}>
-                                  {hit && <span aria-hidden="true">{cfg.emoji} </span>}{d.date}
+                                  {seasonActive && <span aria-hidden="true">{cfg.emoji} </span>}{d.date}
                                   {d.kids && (
                                     <span className="inline-block bg-[#E89149] text-white text-[9px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full ml-2 align-middle">Kids</span>
                                   )}

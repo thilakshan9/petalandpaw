@@ -22,10 +22,12 @@ export default function Navbar() {
   const { customer } = useCustomerAuth();
   const location = useLocation();
   const [open, setOpen] = useState(false);
+  const [sleigh, setSleigh] = useState(null);
   const scrollToTop = () => window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   const handleNavClick = () => {
     scrollToTop();
     flurrySnow();
+    setSleigh({ key: Date.now(), animal: Math.random() < 0.5 ? "🐕" : "🐈" });
   };
   const handleMobileLinkClick = () => {
     setOpen(false);
@@ -80,6 +82,11 @@ export default function Navbar() {
           </Sheet>
         </div>
       </div>
+      {sleigh && (
+        <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+          <span key={sleigh.key} className="pp-sleigh">{sleigh.animal}🛷</span>
+        </div>
+      )}
     </nav>
   );
 }
