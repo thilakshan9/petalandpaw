@@ -109,7 +109,7 @@ export default function HomePage() {
         <div className="container mx-auto px-5 md:px-8 max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-20 items-center">
             <div className="aspect-[4/5] max-h-[60vh] lg:max-h-none rounded-2xl overflow-hidden animate-fade-in-up">
-              <img src="https://lh3.googleusercontent.com/d/16IURvclMQzZnIucglfEbfgsZFeegijRb=w800" alt="Cat with safe flowers" className="w-full h-full object-cover" />
+              <img src="https://lh3.googleusercontent.com/d/1hrLMv_uhfNeMjbRLicfR_HFLKoEOgil_=w800" alt="Cat with safe flowers" className="w-full h-full object-cover" />
             </div>
             <div className="animate-fade-in-up delay-200">
               <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 sm:mb-4 block">Every Stem Pet-Safe</span>
