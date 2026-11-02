@@ -28,7 +28,7 @@ export default function HomePage() {
               Hand-crafted arrangements using only pet-safe blooms.
             </p>
             <Link to="/subscriptions">
-              <Button className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-7 py-5 sm:px-10 sm:py-7 text-xs sm:text-sm uppercase tracking-[0.2em] transition-all hover:scale-105" data-testid="hero-shop-btn">
+              <Button className="shop-cta rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-7 py-5 sm:px-10 sm:py-7 text-xs sm:text-sm uppercase tracking-[0.2em] transition-all hover:scale-105" data-testid="hero-shop-btn">
                 Shop Now <ArrowRight size={16} className="ml-2 sm:ml-3" />
               </Button>
             </Link>

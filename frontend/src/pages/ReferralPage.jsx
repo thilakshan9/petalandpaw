@@ -58,7 +58,7 @@ export default function ReferralPage() {
               </p>
             </div>
             <Link to="/shop">
-              <Button className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-10 py-6 text-sm uppercase tracking-widest transition-all hover:scale-105" data-testid="referral-shop-btn">
+              <Button className="shop-cta rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-10 py-6 text-sm uppercase tracking-widest transition-all hover:scale-105" data-testid="referral-shop-btn">
                 Start Shopping <ArrowRight size={14} className="ml-2" />
               </Button>
             </Link>
@@ -68,7 +68,7 @@ export default function ReferralPage() {
             <h1 className="font-['Playfair_Display'] text-3xl font-medium text-[#2C2C2C] mb-4">Invalid Referral</h1>
             <p className="text-base font-light text-[#6B7280] mb-8">This referral code is not valid. You can still enjoy our pet-safe flowers!</p>
             <Link to="/shop">
-              <Button className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-8 py-6 text-sm uppercase tracking-widest" data-testid="referral-shop-btn">
+              <Button className="shop-cta rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-8 py-6 text-sm uppercase tracking-widest" data-testid="referral-shop-btn">
                 Browse Flowers
               </Button>
             </Link>

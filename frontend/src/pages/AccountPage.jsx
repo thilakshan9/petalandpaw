@@ -111,7 +111,7 @@ export default function AccountPage() {
             <div className="text-center py-12 bg-white border border-[#E5E0D6] rounded-2xl">
               <p className="text-[#6B7280] font-light mb-4">No orders yet.</p>
               <Link to="/shop">
-                <Button className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-6 py-5 text-xs uppercase tracking-widest" data-testid="shop-now-btn">
+                <Button className="shop-cta rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-6 py-5 text-xs uppercase tracking-widest" data-testid="shop-now-btn">
                   Start Shopping
                 </Button>
               </Link>

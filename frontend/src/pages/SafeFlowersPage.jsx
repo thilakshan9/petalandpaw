@@ -84,7 +84,7 @@ export default function SafeFlowersPage() {
             This list was sourced via the <a href="https://www.aspca.org/pet-care/animal-poison-control/toxic-and-non-toxic-plants" target="_blank" rel="noopener noreferrer" className="text-[#8DA399] hover:underline">ASPCA</a>
           </p>
           <Link to="/subscriptions">
-            <Button className="rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-8 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105" data-testid="safe-flowers-shop-btn">
+            <Button className="shop-cta rounded-full bg-[#8DA399] text-white hover:bg-[#8DA399]/90 px-8 py-6 text-xs uppercase tracking-widest transition-all hover:scale-105" data-testid="safe-flowers-shop-btn">
               Shop Pet-Safe Bouquets <ArrowLeft size={14} className="ml-2 rotate-180" />
             </Button>
           </Link>

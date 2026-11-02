@@ -272,10 +272,7 @@
 @keyframes candle-halo { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.85; } }
 .candle-halo { animation: candle-halo 1.5s ease-in-out infinite; }
 
-/* Festive logo hat sits on the top bloom */
-.logo-santa-hat { width: 46%; height: auto; left: 14%; top: -30%; overflow: visible; }
-
-/* Christmas theme: festive buttons and icons (scoped by .xmas-theme on the page root) */
+/* Festive hat sits on the profile icon (scoped by .xmas-theme on the page root) */
 .xmas-theme button.rounded-full[class*="bg-[#2C2C2C]"],
 .xmas-theme a.rounded-full[class*="bg-[#2C2C2C]"] {
   background-color: #2E5D3F !important;
@@ -294,6 +291,15 @@
 .xmas-theme button.rounded-full[class*="bg-[#8DA399]"]:not([class*="bg-[#8DA399]/"]):hover,
 .xmas-theme a.rounded-full[class*="bg-[#8DA399]"]:not([class*="bg-[#8DA399]/"]):hover {
   background-color: #9A3A3D !important;
+}
+.xmas-theme button.shop-cta.rounded-full {
+  background-color: #A65A57 !important;
+  color: #FAF9F6;
+  box-shadow: inset 0 0 0 1px rgba(250, 249, 246, 0.35), 0 0 0 3px #FAF9F6, 0 0 0 4px #8DA399, 0 6px 16px rgba(166, 90, 87, 0.25);
+}
+.xmas-theme button.shop-cta.rounded-full:hover {
+  background-color: #8F4A48 !important;
+  box-shadow: inset 0 0 0 1px rgba(250, 249, 246, 0.45), 0 0 0 3px #FAF9F6, 0 0 0 4px #8DA399, 0 8px 20px rgba(143, 74, 72, 0.3);
 }
 .xmas-theme .nav-icon-btn { color: #2E5D3F; }
 .xmas-theme .nav-icon-btn:hover { color: #B5474A; }
