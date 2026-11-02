@@ -306,11 +306,6 @@
   0% { opacity: 1; transform: rotate(var(--angle)) translateX(0) scale(0.3); }
   100% { opacity: 0; transform: rotate(var(--angle)) translateX(28px) scale(1.1); }
 }
-.logo-star { position: absolute; top: -4px; right: -6px; width: 12px; height: 12px; pointer-events: none; animation: star-twinkle 2.4s ease-in-out infinite; }
-@keyframes star-twinkle {
-  0%, 100% { opacity: 0.45; transform: scale(0.8) rotate(0deg); }
-  50% { opacity: 1; transform: scale(1.1) rotate(20deg); }
-}
 .candy-underline {
   position: absolute; left: 0; right: 0; bottom: -8px; height: 3px; border-radius: 2px;
   background: repeating-linear-gradient(-45deg, #B5474A 0 4px, #FAF9F6 4px 8px);
@@ -325,7 +320,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .pp-bat, .pp-bat-inner, .spooky-flicker, .spooky-float, .spooky-fog, .moon-glow,
-  .pp-flake, .candle-flame, .candle-halo, .holiday-hat, .logo-star {
+  .pp-flake, .candle-flame, .candle-halo, .holiday-hat {
     animation: none !important;
   }
   .pp-bats, .pp-snow, .sparkle-burst { display: none; }
