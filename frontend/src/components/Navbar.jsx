@@ -17,23 +17,12 @@ const navLinks = [
   { href: "/contact", label: "Contact" },
 ];
 
-function HolidayHat({ variant }) {
-  const isElf = variant === "elf";
+function LogoSantaHat() {
   return (
-    <svg viewBox="0 0 28 20" width="28" height="20" aria-hidden="true"
-      className="holiday-hat absolute -top-5 left-1/2 pointer-events-none">
-      {isElf ? (
-        <>
-          <path d="M7 14 Q10 7 13 1.5 Q15 0 17.5 2 Q15 5 20 14 Z" fill="#4F7A5C" stroke="#2C2C2C" strokeWidth="1" strokeLinejoin="round" />
-          <circle cx="18" cy="2.5" r="2.2" fill="#FAF9F6" stroke="#2C2C2C" strokeWidth="1" />
-        </>
-      ) : (
-        <>
-          <path d="M5 14 Q6 4 17 2 Q21 1.5 22 4 Q18 6 19 10 Q20 12 23 14 Z" fill="#B5474A" stroke="#2C2C2C" strokeWidth="1" strokeLinejoin="round" />
-          <circle cx="22.5" cy="3.5" r="2.3" fill="#FAF9F6" stroke="#2C2C2C" strokeWidth="1" />
-        </>
-      )}
-      <rect x="2" y="13" width="23" height="4" rx="2" fill="#FAF9F6" stroke="#2C2C2C" strokeWidth="1" />
+    <svg viewBox="0 0 40 30" aria-hidden="true" className="logo-santa-hat absolute pointer-events-none">
+      <path d="M6 22 Q14 4 34 4 Q30 14 32 22 Z" fill="#B5474A" stroke="#2C2C2C" strokeWidth="1" strokeLinejoin="round" />
+      <circle cx="34" cy="4" r="3.5" fill="#FAF9F6" stroke="#2C2C2C" strokeWidth="1" />
+      <rect x="3" y="20" width="32" height="6" rx="3" fill="#FAF9F6" stroke="#2C2C2C" strokeWidth="1" />
     </svg>
   );
 }
@@ -74,18 +63,20 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E0D6]/50" data-testid="navbar">
       <div className="container mx-auto px-4 md:px-8 max-w-7xl flex items-center justify-between h-16 md:h-20">
         <Link to="/" onClick={scrollToTop} className="flex items-center gap-2" data-testid="nav-logo">
-          <img src="/assets/logo-new.png" alt="Petal & Paw" className="h-10 md:h-12 w-auto" />
+          <span className="relative inline-block">
+            <img src="/assets/logo-new.png" alt="Petal & Paw" className="h-10 md:h-12 w-auto" />
+            <LogoSantaHat />
+          </span>
         </Link>
 
         <div className="hidden md:flex items-center gap-10">
-          {navLinks.map((link, index) => (
+          {navLinks.map((link) => (
             <Link key={link.href} to={link.href} onClick={() => handleTabClick(link.href)}
               className={`nav-link relative text-sm font-light tracking-wide transition-colors ${
                 location.pathname === link.href ? "text-[#2C2C2C]" : "text-[#6B7280] hover:text-[#2C2C2C]"
               }`}
               data-testid={`nav-${link.label.toLowerCase().replace(/\s/g, '-')}`}
             >
-              <HolidayHat variant={index % 2 === 0 ? "elf" : "santa"} />
               {link.label}
               {location.pathname === link.href && <span className="candy-underline" />}
               {burst?.href === link.href && <SparkleBurst key={burst.id} onDone={() => setBurst(null)} />}
@@ -94,10 +85,10 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Link to={customer ? "/account" : "/login"} onClick={scrollToTop} className="p-2 hover:bg-[#E8E4D9]/50 rounded-full transition-colors hidden md:flex" data-testid="nav-account">
+          <Link to={customer ? "/account" : "/login"} onClick={scrollToTop} className="nav-icon-btn p-2 hover:bg-[#E8E4D9]/50 rounded-full transition-colors hidden md:flex" data-testid="nav-account">
             <User size={20} strokeWidth={1.5} />
           </Link>
-          <Link to="/cart" onClick={scrollToTop} className="relative p-2 hover:bg-[#E8E4D9]/50 rounded-full transition-colors" data-testid="nav-cart">
+          <Link to="/cart" onClick={scrollToTop} className="nav-icon-btn relative p-2 hover:bg-[#E8E4D9]/50 rounded-full transition-colors" data-testid="nav-cart">
             <ShoppingBag size={20} strokeWidth={1.5} />
             {itemCount > 0 && (
               <span className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-[#8DA399] text-white text-[10px] font-semibold rounded-full flex items-center justify-center">{itemCount}</span>

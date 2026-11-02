@@ -10,7 +10,7 @@ export default function Layout({ children }) {
   const season = getActiveSeason();
   const seasonalPage = pathname === "/workshops";
   return (
-    <div className="min-h-screen bg-[#FAF9F6] text-[#2C2C2C] flex flex-col">
+    <div className={`min-h-screen bg-[#FAF9F6] text-[#2C2C2C] flex flex-col ${season === "christmas" ? "xmas-theme" : ""}`}>
       <Snow persistent />
       <Bats active={season === "halloween" && seasonalPage} />
       <Navbar />

@@ -272,15 +272,39 @@
 @keyframes candle-halo { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.85; } }
 .candle-halo { animation: candle-halo 1.5s ease-in-out infinite; }
 
-/* Holiday hats sway on tab hover */
-@keyframes hat-sway {
-  0%, 100% { transform: translateX(-50%) translateY(0) rotate(-9deg); }
-  25% { transform: translateX(-50%) translateY(-4px) rotate(3deg); }
-  50% { transform: translateX(-50%) translateY(0) rotate(9deg); }
-  75% { transform: translateX(-50%) translateY(-2px) rotate(-3deg); }
+/* Festive logo hat sits on the top bloom */
+.logo-santa-hat { width: 46%; height: auto; left: 14%; top: -30%; overflow: visible; }
+
+/* Christmas theme: festive buttons and icons (scoped by .xmas-theme on the page root) */
+.xmas-theme button.rounded-full[class*="bg-[#2C2C2C]"],
+.xmas-theme a.rounded-full[class*="bg-[#2C2C2C]"] {
+  background-color: #2E5D3F !important;
+  box-shadow: inset 0 0 0 1px rgba(227, 199, 126, 0.55), 0 4px 14px rgba(46, 93, 63, 0.25);
 }
-.holiday-hat { transform: translateX(-50%); transform-origin: bottom center; }
-.nav-link:hover .holiday-hat { animation: hat-sway 1.4s ease-in-out infinite; }
+.xmas-theme button.rounded-full[class*="bg-[#2C2C2C]"]:hover,
+.xmas-theme a.rounded-full[class*="bg-[#2C2C2C]"]:hover {
+  background-color: #1E3D2A !important;
+  box-shadow: inset 0 0 0 1px rgba(227, 199, 126, 0.85), 0 6px 18px rgba(140, 47, 47, 0.3);
+}
+.xmas-theme button.rounded-full[class*="bg-[#8DA399]"]:not([class*="bg-[#8DA399]/"]),
+.xmas-theme a.rounded-full[class*="bg-[#8DA399]"]:not([class*="bg-[#8DA399]/"]) {
+  background-color: #B5474A !important;
+  box-shadow: inset 0 0 0 1px rgba(250, 249, 246, 0.35), 0 4px 14px rgba(181, 71, 74, 0.25);
+}
+.xmas-theme button.rounded-full[class*="bg-[#8DA399]"]:not([class*="bg-[#8DA399]/"]):hover,
+.xmas-theme a.rounded-full[class*="bg-[#8DA399]"]:not([class*="bg-[#8DA399]/"]):hover {
+  background-color: #9A3A3D !important;
+}
+.xmas-theme .nav-icon-btn { color: #2E5D3F; }
+.xmas-theme .nav-icon-btn:hover { color: #B5474A; }
+.xmas-theme .nav-icon-btn:hover svg { animation: icon-wiggle 0.6s ease-in-out; }
+.xmas-theme .nav-icon-btn span { background-color: #B5474A !important; box-shadow: 0 0 0 2px #FAF9F6; }
+@keyframes icon-wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg); }
+  50% { transform: rotate(10deg); }
+  75% { transform: rotate(-5deg); }
+}
 
 /* Festive logo star, candy-cane tab underline, sparkle burst, and menu candy band */
 .candy-underline, .menu-candy-band {
@@ -320,8 +344,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .pp-bat, .pp-bat-inner, .spooky-flicker, .spooky-float, .spooky-fog, .moon-glow,
-  .pp-flake, .candle-flame, .candle-halo, .holiday-hat {
+  .pp-flake, .candle-flame, .candle-halo {
     animation: none !important;
   }
+  .nav-icon-btn:hover svg { animation: none !important; }
   .pp-bats, .pp-snow, .sparkle-burst { display: none; }
 }
