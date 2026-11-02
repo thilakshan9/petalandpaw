@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ShoppingBag, Menu, User } from "lucide-react";
 import { useCart } from "@/components/CartProvider";
 import { useCustomerAuth } from "@/context/CustomerAuthContext";
@@ -17,33 +17,40 @@ const navLinks = [
   { href: "/contact", label: "Contact" },
 ];
 
+const SLEIGH_OFFSCREEN_X = -40;
+
 export default function Navbar() {
   const { itemCount } = useCart();
   const { customer } = useCustomerAuth();
   const location = useLocation();
   const [open, setOpen] = useState(false);
-  const [sleigh, setSleigh] = useState(null);
+  const navRef = useRef(null);
+  const [sleighX, setSleighX] = useState(SLEIGH_OFFSCREEN_X);
   const scrollToTop = () => window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-  const handleNavClick = (e) => {
+  const handleNavClick = () => {
     scrollToTop();
     flurrySnow();
-    const navRect = e?.currentTarget?.closest("nav")?.getBoundingClientRect();
-    const tabRect = e?.currentTarget?.getBoundingClientRect();
-    const left = navRect && tabRect ? tabRect.left - navRect.left : 0;
-    setSleigh({
-      key: Date.now(),
-      animal: Math.random() < 0.5 ? "🐕" : "🐈",
-      left,
-      travel: window.innerWidth - left + 80,
-    });
   };
   const handleMobileLinkClick = () => {
     setOpen(false);
     handleNavClick();
   };
 
+  useEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+    const tab = Array.from(nav.querySelectorAll("[data-nav-href]")).find(
+      (el) => el.dataset.navHref === location.pathname
+    );
+    if (!tab) return;
+    const tabRect = tab.getBoundingClientRect();
+    if (tabRect.width === 0) return;
+    const navRect = nav.getBoundingClientRect();
+    setSleighX(tabRect.left - navRect.left + tabRect.width / 2);
+  }, [location.pathname]);
+
   return (
-    <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E0D6]/50" data-testid="navbar">
+    <nav ref={navRef} className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E0D6]/50" data-testid="navbar">
       <div className="container mx-auto px-4 md:px-8 max-w-7xl flex items-center justify-between h-16 md:h-20">
         <Link to="/" onClick={scrollToTop} className="flex items-center gap-2" data-testid="nav-logo">
           <img src="/assets/logo-new.png" alt="Petal & Paw" className="h-10 md:h-12 w-auto" />
@@ -51,7 +58,7 @@ export default function Navbar() {
 
         <div className="hidden md:flex items-center gap-10">
           {navLinks.map((link) => (
-            <Link key={link.href} to={link.href} onClick={handleNavClick}
+            <Link key={link.href} to={link.href} onClick={handleNavClick} data-nav-href={link.href}
               className={`nav-link text-sm font-light tracking-wide transition-colors ${
                 location.pathname === link.href ? "text-[#2C2C2C]" : "text-[#6B7280] hover:text-[#2C2C2C]"
               }`}
@@ -90,11 +97,11 @@ export default function Navbar() {
           </Sheet>
         </div>
       </div>
-      {sleigh && (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-          <span key={sleigh.key} className="pp-sleigh" style={{ left: sleigh.left, "--sleigh-travel": `${sleigh.travel}px` }}>{sleigh.animal}🛷</span>
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div className="pp-sleigh" style={{ left: sleighX }}>
+          <span className="pp-sleigh-bob">🐾🛷</span>
         </div>
-      )}
+      </div>
     </nav>
   );
 }

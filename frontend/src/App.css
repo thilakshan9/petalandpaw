@@ -261,11 +261,12 @@
 .pp-flake.persist { animation-name: snow-fall; animation-timing-function: linear; animation-iteration-count: infinite; }
 .pp-flake.once { animation-name: snow-fall; animation-timing-function: linear; animation-iteration-count: 1; animation-fill-mode: forwards; }
 
-@keyframes sleigh-dash {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(var(--sleigh-travel)); }
+@keyframes sleigh-bob {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50%      { transform: translateY(-4px) rotate(3deg); }
 }
-.pp-sleigh { position: absolute; top: 50%; margin-top: -14px; font-size: 28px; line-height: 1; white-space: nowrap; animation: sleigh-dash 3.2s ease-in forwards; }
+.pp-sleigh { position: absolute; top: 50%; margin-top: -16px; transform: translateX(-50%); font-size: 28px; line-height: 1; white-space: nowrap; transition: left 1.8s cubic-bezier(0.45, 0, 0.25, 1); }
+.pp-sleigh-bob { display: inline-block; animation: sleigh-bob 0.9s ease-in-out infinite; }
 
 /* Candles (Halloween hero) */
 @keyframes candle-flicker {
@@ -283,7 +284,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .pp-bat, .pp-bat-inner, .spooky-flicker, .spooky-float, .spooky-fog, .moon-glow,
-  .pp-flake, .pp-sleigh, .candle-flame, .candle-halo {
+  .pp-flake, .pp-sleigh-bob, .candle-flame, .candle-halo {
     animation: none !important;
   }
   .pp-bats, .pp-snow { display: none; }
