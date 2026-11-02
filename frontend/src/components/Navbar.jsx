@@ -24,10 +24,18 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [sleigh, setSleigh] = useState(null);
   const scrollToTop = () => window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-  const handleNavClick = () => {
+  const handleNavClick = (e) => {
     scrollToTop();
     flurrySnow();
-    setSleigh({ key: Date.now(), animal: Math.random() < 0.5 ? "🐕" : "🐈" });
+    const navRect = e?.currentTarget?.closest("nav")?.getBoundingClientRect();
+    const tabRect = e?.currentTarget?.getBoundingClientRect();
+    const left = navRect && tabRect ? tabRect.left - navRect.left : 0;
+    setSleigh({
+      key: Date.now(),
+      animal: Math.random() < 0.5 ? "🐕" : "🐈",
+      left,
+      travel: window.innerWidth - left + 80,
+    });
   };
   const handleMobileLinkClick = () => {
     setOpen(false);
@@ -84,7 +92,7 @@ export default function Navbar() {
       </div>
       {sleigh && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-          <span key={sleigh.key} className="pp-sleigh">{sleigh.animal}🛷</span>
+          <span key={sleigh.key} className="pp-sleigh" style={{ left: sleigh.left, "--sleigh-travel": `${sleigh.travel}px` }}>{sleigh.animal}🛷</span>
         </div>
       )}
     </nav>

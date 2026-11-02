@@ -262,10 +262,10 @@
 .pp-flake.once { animation-name: snow-fall; animation-timing-function: linear; animation-iteration-count: 1; animation-fill-mode: forwards; }
 
 @keyframes sleigh-dash {
-  0%   { transform: translateX(-15vw); }
-  100% { transform: translateX(115vw); }
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(var(--sleigh-travel)); }
 }
-.pp-sleigh { position: absolute; bottom: 8px; left: 0; font-size: 28px; line-height: 1; white-space: nowrap; animation: sleigh-dash 1.8s linear forwards; }
+.pp-sleigh { position: absolute; top: 50%; margin-top: -14px; font-size: 28px; line-height: 1; white-space: nowrap; animation: sleigh-dash 3.2s ease-in forwards; }
 
 /* Candles (Halloween hero) */
 @keyframes candle-flicker {
