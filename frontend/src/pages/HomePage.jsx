@@ -11,8 +11,8 @@ export default function HomePage() {
       {/* Full-Width Hero */}
       <section className="relative h-[60vh] sm:h-[70vh] md:h-[85vh] min-h-[420px] md:min-h-[600px] overflow-hidden" data-testid="hero-section">
         <img
-          src="https://lh3.googleusercontent.com/d/1KIlARmnFdSkxUVp2I_mTEnMp9gtLC4iA=w1920"
-          alt="Dog with beautiful pet-safe flowers"
+          src="https://lh3.googleusercontent.com/d/1hrLMv_uhfNeMjbRLicfR_HFLKoEOgil_=w1920"
+          alt="Cat wearing a Christmas hat with pet-safe flowers"
           className="absolute inset-0 w-full h-full object-cover object-[center_70%]"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#FAF9F6]/90 via-[#FAF9F6]/60 to-[#FAF9F6]/20 md:from-[#FAF9F6]/80 md:via-[#FAF9F6]/40 md:to-transparent" />
