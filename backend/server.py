@@ -947,6 +947,7 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
                           "pet_types": ", ".join(pet_types)[:480] if pet_types else "",
                           "personalized_message": req.personalized_message[:500] if req.personalized_message else "",
                           "special_notes": req.special_notes[:490] if req.special_notes else "",
+                          "delivery_date": req.delivery_date or "",
                           "phone_number": req.phone_number[:48] if req.phone_number else ""}
         pid = {"metadata": cart_metadata}
         if req.customer_email:
