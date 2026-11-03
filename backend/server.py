@@ -947,7 +947,7 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
     try:
         pet_toy_items = [i for i in req.items if i.add_pet_toy]
         pet_types = [i.pet_type for i in req.items if i.pet_type]
-        cart_metadata = {"order_id": order_id, "order_type": req.order_type,
+        cart_metadata = {"order_id": order_id,
                           "item_count": str(len(validated_items)),
                           "add_pet_toy": str(any(i.add_pet_toy for i in req.items)),
                           "pet_toy_count": str(len(pet_toy_items)),
@@ -962,7 +962,7 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
         checkout_params = {
             "payment_method_types": ["card"],
             "line_items": [{"price_data": {"currency": "gbp", "unit_amount": int(total * 100),
-                "product_data": {"name": f"Order {order_id[:8]}"}}, "quantity": 1}],
+                "product_data": {"name": ", ".join(i["name"] for i in validated_items)[:250]}}, "quantity": 1}],
             "mode": "payment",
             "success_url": success_url,
             "cancel_url": cancel_url,
