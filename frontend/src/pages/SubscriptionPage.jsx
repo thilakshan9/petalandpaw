@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check, ArrowRight, PawPrint, ChevronDown, ShoppingBag, Sparkles, Loader as Loader2, CircleCheck as CheckCircle2 } from "lucide-react";
+import { Check, ArrowRight, PawPrint, ChevronDown, Sparkles, Loader as Loader2, CircleCheck as CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -172,9 +172,9 @@ export default function SubscriptionPage() {
       });
       const data = await res.json();
       if (data.url) {
-        // Save to basket before redirecting - if they don't complete Stripe, it'll be in their basket
+        // One-time purchases are saved to the basket so they can be retried if Stripe checkout is abandoned
         const plan = plans.find(p => p.id === planId);
-        if (plan) {
+        if (plan && orderType === "one-time") {
           const toyOn = !!petToy[planId];
           const toyPrice = plan.pet_toy_price || 8.99;
           const basePrice = orderType === "subscription" ? plan.price * 0.9 : plan.price;
@@ -495,30 +495,6 @@ export default function SubscriptionPage() {
                     data-testid={selectedMode === "subscription" ? `subscribe-${plan.slug}` : `one-time-${plan.slug}`}
                   >
                     {subscribing === plan.id ? "Processing..." : selectedMode === "subscription" ? "Subscribe & Save" : "One-Time Purchase"} <ArrowRight size={14} className="ml-2" />
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      const selectedPet = petType[plan.id] || "";
-                      if (!selectedPet) { toast.error("Please select your pet type first"); return; }
-                      if (selectedPet === "other" && !(petTypeOther[plan.id] || "").trim()) { toast.error("Please enter your pet type"); return; }
-                      addToCart({
-                        product_id: plan.id,
-                        name: planName + (toyOn ? " + Pet Toy/Treat" : "") + (halloweenThemed[plan.id] ? ` (${cfg.tagLabel} themed)` : ""),
-                        price: toyOn ? oneTimePrice + toyPrice : oneTimePrice,
-                        quantity: 1,
-                        image_url: plan.image_url,
-                        plan_slug: plan.slug,
-                        pet_type: selectedPet === "other" ? petTypeOther[plan.id] : selectedPet,
-                        add_pet_toy: toyOn,
-                        theme: halloweenThemed[plan.id] ? season : undefined,
-                      });
-                      toast.success(`${planName} added to basket`);
-                    }}
-                    variant="ghost"
-                    className="rounded-full px-6 py-5 text-xs uppercase tracking-widest w-full text-[#6B7280] hover:text-[#2C2C2C] hover:bg-[#F2F0EB] mt-2"
-                    data-testid={`add-to-basket-${plan.slug}`}
-                  >
-                    <ShoppingBag size={14} className="mr-2" /> Add to Basket
                   </Button>
                   <p className="text-xs font-light text-[#6B7280] text-center mt-2" data-testid="order-deadline">
                     {selectedMode === "subscription" ? "Cancel anytime" : "Order by the 26th for this month's delivery"}
