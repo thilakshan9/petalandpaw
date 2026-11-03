@@ -22,7 +22,6 @@ export default function AuthCallback() {
 
     // Determine login type from the current path
     const isAdmin = window.location.pathname.includes("/admin");
-    const loginType = isAdmin ? "admin" : "customer";
     const redirectPath = isAdmin ? "/admin/dashboard" : "/account";
 
     const exchangeSession = async () => {
@@ -31,7 +30,7 @@ export default function AuthCallback() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
-          body: JSON.stringify({ session_id: sessionId, login_type: loginType }),
+          body: JSON.stringify({ session_id: sessionId }),
         });
 
         if (!res.ok) throw new Error("Auth failed");

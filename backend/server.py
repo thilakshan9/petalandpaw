@@ -289,6 +289,7 @@ async def send_workshop_booking_emails(booking: dict):
 
 JWT_SECRET = os.environ.get('JWT_SECRET', uuid.uuid4().hex + uuid.uuid4().hex)
 JWT_ALGORITHM = "HS256"
+ADMIN_EMAILS = {"petalandpawflorist@gmail.com"}
 
 def hash_password(password: str) -> str:
     return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
@@ -328,6 +329,11 @@ async def get_current_user(request: Request):
         raise HTTPException(status_code=401, detail="User not found")
     return user_doc
 
+async def require_admin(user=Depends(get_current_user)):
+    if not user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Admin access required")
+    return user
+
 async def get_optional_user(request: Request):
     try:
         return await get_current_user(request)
@@ -362,7 +368,6 @@ async def get_customer(request: Request):
 async def exchange_session(request: Request, response: Response):
     body = await request.json()
     session_id = body.get("session_id")
-    login_type = body.get("login_type", "admin")  # "admin" or "customer"
     if not session_id:
         raise HTTPException(status_code=400, detail="session_id required")
     async with httpx.AsyncClient() as http_client:
@@ -374,19 +379,21 @@ async def exchange_session(request: Request, response: Response):
             raise HTTPException(status_code=401, detail="Invalid session")
         user_data = resp.json()
     user_id = f"user_{uuid.uuid4().hex[:12]}"
+    is_admin = user_data["email"].strip().lower() in ADMIN_EMAILS
     existing_user = await db.users.find_one({"email": user_data["email"]}, {"_id": 0})
     if existing_user:
         user_id = existing_user["user_id"]
         await db.users.update_one(
             {"email": user_data["email"]},
             {"$set": {"name": user_data["name"], "picture": user_data["picture"],
+                      "is_admin": is_admin,
                       "updated_at": datetime.now(timezone.utc).isoformat()}}
         )
     else:
         await db.users.insert_one({
             "user_id": user_id, "email": user_data["email"],
             "name": user_data["name"], "picture": user_data["picture"],
-            "is_admin": login_type == "admin",
+            "is_admin": is_admin,
             "referral_code": generate_referral_code(),
             "credits": 0.0,
             "created_at": datetime.now(timezone.utc).isoformat()
@@ -658,7 +665,7 @@ async def get_product(slug: str):
     return product
 
 @api_router.post("/products")
-async def create_product(product_data: ProductCreate, user=Depends(get_current_user)):
+async def create_product(product_data: ProductCreate, user=Depends(require_admin)):
     doc = product_data.model_dump()
     doc["id"] = str(uuid.uuid4())
     doc["created_at"] = datetime.now(timezone.utc).isoformat()
@@ -666,7 +673,7 @@ async def create_product(product_data: ProductCreate, user=Depends(get_current_u
     return await db.products.find_one({"id": doc["id"]}, {"_id": 0})
 
 @api_router.put("/products/{product_id}")
-async def update_product(product_id: str, product_data: dict, user=Depends(get_current_user)):
+async def update_product(product_id: str, product_data: dict, user=Depends(require_admin)):
     product_data.pop("_id", None)
     product_data.pop("id", None)
     product_data["updated_at"] = datetime.now(timezone.utc).isoformat()
@@ -676,7 +683,7 @@ async def update_product(product_id: str, product_data: dict, user=Depends(get_c
     return await db.products.find_one({"id": product_id}, {"_id": 0})
 
 @api_router.delete("/products/{product_id}")
-async def delete_product(product_id: str, user=Depends(get_current_user)):
+async def delete_product(product_id: str, user=Depends(require_admin)):
     result = await db.products.delete_one({"id": product_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -702,7 +709,7 @@ async def get_blog_post(slug: str):
     return post
 
 @api_router.post("/blog")
-async def create_blog_post(post_data: BlogPostCreate, user=Depends(get_current_user)):
+async def create_blog_post(post_data: BlogPostCreate, user=Depends(require_admin)):
     doc = post_data.model_dump()
     doc["id"] = str(uuid.uuid4())
     doc["created_at"] = datetime.now(timezone.utc).isoformat()
@@ -711,7 +718,7 @@ async def create_blog_post(post_data: BlogPostCreate, user=Depends(get_current_u
     return await db.blog_posts.find_one({"id": doc["id"]}, {"_id": 0})
 
 @api_router.put("/blog/{post_id}")
-async def update_blog_post(post_id: str, post_data: dict, user=Depends(get_current_user)):
+async def update_blog_post(post_id: str, post_data: dict, user=Depends(require_admin)):
     post_data.pop("_id", None)
     post_data.pop("id", None)
     post_data["updated_at"] = datetime.now(timezone.utc).isoformat()
@@ -721,7 +728,7 @@ async def update_blog_post(post_id: str, post_data: dict, user=Depends(get_curre
     return await db.blog_posts.find_one({"id": post_id}, {"_id": 0})
 
 @api_router.delete("/blog/{post_id}")
-async def delete_blog_post(post_id: str, user=Depends(get_current_user)):
+async def delete_blog_post(post_id: str, user=Depends(require_admin)):
     result = await db.blog_posts.delete_one({"id": post_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Post not found")
@@ -1890,7 +1897,7 @@ async def get_order_status(session_id: str, request: Request, background_tasks: 
     return result
 
 @api_router.get("/orders")
-async def get_orders(user=Depends(get_current_user)):
+async def get_orders(user=Depends(require_admin)):
     orders = await db.orders.find({}, {"_id": 0}).sort("created_at", -1).to_list(100)
     return orders
 
@@ -1953,7 +1960,7 @@ async def stripe_webhook(request: Request):
 # ============================================================
 
 @api_router.get("/admin/stats")
-async def get_admin_stats(user=Depends(get_current_user)):
+async def get_admin_stats(user=Depends(require_admin)):
     product_count = await db.products.count_documents({})
     order_count = await db.orders.count_documents({})
     blog_count = await db.blog_posts.count_documents({})
@@ -1966,7 +1973,7 @@ async def get_admin_stats(user=Depends(get_current_user)):
             "todo_orders": todo_count}
 
 @api_router.put("/admin/orders/{order_id}/status")
-async def update_order_status(order_id: str, request: Request, user=Depends(get_current_user)):
+async def update_order_status(order_id: str, request: Request, user=Depends(require_admin)):
     body = await request.json()
     new_status = body.get("status", "todo")
     if new_status not in ["todo", "complete"]:
@@ -1980,12 +1987,12 @@ async def update_order_status(order_id: str, request: Request, user=Depends(get_
     return {"message": f"Order status updated to {new_status}"}
 
 @api_router.get("/admin/orders/subscriptions")
-async def get_subscription_orders(user=Depends(get_current_user)):
+async def get_subscription_orders(user=Depends(require_admin)):
     orders = await db.orders.find({"order_type": "subscription"}, {"_id": 0}).sort("created_at", -1).to_list(100)
     return orders
 
 @api_router.get("/admin/transactions")
-async def get_transactions(user=Depends(get_current_user)):
+async def get_transactions(user=Depends(require_admin)):
     txs = await db.payment_transactions.find({}, {"_id": 0}).sort("created_at", -1).to_list(200)
     return txs
 
