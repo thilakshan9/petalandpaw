@@ -904,7 +904,7 @@ async def save_bouquet(req: StepBouquetRequest):
 # ============================================================
 
 WREATH_KIT_ID = "wreath_kit"
-WREATH_KIT_PRICE = 24.99
+WREATH_KIT_PRICE = 50.00
 
 @api_router.post("/orders/checkout")
 async def create_checkout(req: CheckoutRequest, request: Request, background_tasks: BackgroundTasks):

@@ -9,7 +9,7 @@ import SEOHead from "@/components/SEOHead";
 const WREATH_KIT = {
   id: "wreath_kit",
   name: "Wreath Making Kit",
-  price: 24.99,
+  price: 50,
   image_url: "/images/wreath-kit.jpg",
 };
 
