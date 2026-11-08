@@ -26,7 +26,7 @@ export default function CustomerAuthPage() {
     try {
       if (mode === "login") {
         await login(email, password);
-        toast.success("Welcome back!");
+        toast.success("Logged in");
         const pending = localStorage.getItem("pp_pending_checkout");
         navigate(pending ? "/subscriptions" : "/account");
       } else if (mode === "register") {

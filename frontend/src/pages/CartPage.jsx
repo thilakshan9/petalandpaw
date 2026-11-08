@@ -8,8 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { useCart } from "@/components/CartProvider";
 import { toast } from "sonner";
 import SEOHead from "@/components/SEOHead";
-
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+import { startStripeCheckout } from "@/lib/checkout";
 
 export default function CartPage() {
   const { items, updateQuantity, removeFromCart, total } = useCart();
@@ -30,27 +29,13 @@ export default function CartPage() {
     const seasonDate = (themedItems.find((i) => i.season_date) || {}).season_date || "";
     const finalDeliveryDate = deliveryDate ? deliveryDate.toISOString().split("T")[0] : seasonDate;
     try {
-      const res = await fetch(`${API}/orders/checkout`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          items: items.map((i) => ({
-            product_id: i.product_id, name: i.name, price: i.price,
-            quantity: i.quantity, image_url: i.image_url || "",
-            add_pet_toy: i.add_pet_toy || false,
-            pet_type: i.pet_type || "",
-          })),
-          origin_url: window.location.origin, order_type: "regular",
-          delivery_date: finalDeliveryDate,
-          personalized_message: personalizedMessage,
-          special_notes: specialNotes,
-          phone_number: phoneNumber,
-        }),
+      await startStripeCheckout(items, {
+        deliveryDate: finalDeliveryDate,
+        personalizedMessage,
+        specialNotes,
+        phoneNumber,
       });
-      const data = await res.json();
-      if (data.url) window.location.href = data.url;
-      else toast.error("Failed to create checkout session.");
-    } catch { toast.error("Something went wrong."); }
+    } catch { toast.error("Failed to create checkout session."); }
   };
 
   if (items.length === 0) {
