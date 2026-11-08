@@ -1,8 +1,16 @@
+import { useNavigate } from "react-router-dom";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
 export default function WreathKitWelcomeDialog({ open, onOpenChange }) {
+  const navigate = useNavigate();
+
+  const handleCheckItOut = () => {
+    onOpenChange(false);
+    navigate("/wreath-kit");
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -25,7 +33,7 @@ export default function WreathKitWelcomeDialog({ open, onOpenChange }) {
 
           <DialogHeader className="space-y-3 text-left">
             <DialogTitle className="font-['Playfair_Display'] text-3xl sm:text-4xl font-medium text-white leading-[1.2]">
-              Yaaay! Christmas wreath kits are here
+              Christmas wreath kits are here
             </DialogTitle>
             <DialogDescription className="text-sm sm:text-base font-light text-white/90 leading-[1.6]">
               A little festive creativity, delivered to your door. Create your own wreath with fresh foliage, decorations and easy step-by-step instructions.
@@ -35,7 +43,7 @@ export default function WreathKitWelcomeDialog({ open, onOpenChange }) {
           <div className="flex items-center justify-between gap-4 pt-2">
             <p className="font-['Playfair_Display'] text-2xl text-white">£50.00</p>
             <Button
-              onClick={() => onOpenChange(false)}
+              onClick={handleCheckItOut}
               className="group rounded-full bg-white text-[#2C2C2C] hover:bg-[#F2F0EB] px-6 py-5 text-sm uppercase tracking-widest font-semibold transition-all hover:scale-105"
               data-testid="wreath-kit-welcome-close-btn"
             >

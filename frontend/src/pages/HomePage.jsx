@@ -40,7 +40,7 @@ export default function HomePage() {
               </Link>
               <Link to="/wreath-kit">
                 <Button className="rounded-full bg-[#2E5D3F] text-white hover:bg-[#244A32] px-7 py-5 sm:px-10 sm:py-7 text-xs sm:text-sm uppercase tracking-[0.2em] transition-all hover:scale-105" data-testid="hero-wreath-kit-btn">
-                  Buy Wreath Kit <ArrowRight size={16} className="ml-2 sm:ml-3" />
+                  Wreath Kits <ArrowRight size={16} className="ml-2 sm:ml-3" />
                 </Button>
               </Link>
             </div>
