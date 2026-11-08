@@ -546,7 +546,7 @@ export default function SubscriptionPage() {
                       Add to basket
                     </Button>
                   )}
-
+                  <p className="text-xs font-light text-[#6B7280] text-center mt-2" data-testid="order-deadline">
                     {selectedMode === "subscription" ? "Cancel anytime" : "Order by the 26th for this month's delivery"}
                   </p>
                 </div>
