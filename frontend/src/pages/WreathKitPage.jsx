@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Minus, Plus, ShoppingBag, ArrowRight, Leaf, Gift, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/components/CartProvider";
 import { toast } from "sonner";
 import SEOHead from "@/components/SEOHead";
+import WreathKitWelcomeDialog from "@/components/WreathKitWelcomeDialog";
+
+const WELCOME_SEEN_KEY = "wreathKitWelcomeSeen";
 
 const WREATH_KIT = {
   id: "wreath_kit",
@@ -14,14 +17,33 @@ const WREATH_KIT = {
 };
 
 const included = [
-  { icon: Leaf, title: "Fresh foliage", text: "A generous bundle of fresh, non-toxic greenery to build your wreath base." },
-  { icon: Gift, title: "Festive decorations", text: "Seasonal accents and decorative details to make your wreath uniquely yours." },
-  { icon: BookOpen, title: "Step-by-step instructions", text: "Easy guidance so you can create your wreath at home, no experience needed." },
+  {
+    icon: Leaf,
+    title: "Frame & foliage",
+    items: ["Metal wreath ring", "Moss", "Fresh foliage", "Roll of wire"],
+  },
+  {
+    icon: Gift,
+    title: "Decorations",
+    items: ["4 pine cones", "9 mini baubles", "4 mini bows", "2 bells", "4 dried orange slices", "Ribbon"],
+  },
+  {
+    icon: BookOpen,
+    title: "Step-by-step guide",
+    items: ["Written step-by-step instructions", "Video guide, so you can follow along at your own pace"],
+  },
 ];
 
 export default function WreathKitPage() {
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
+  const [welcomeOpen, setWelcomeOpen] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem(WELCOME_SEEN_KEY)) return;
+    localStorage.setItem(WELCOME_SEEN_KEY, "1");
+    setWelcomeOpen(true);
+  }, []);
 
   const handleAddToBasket = () => {
     addToCart({
@@ -36,6 +58,7 @@ export default function WreathKitPage() {
 
   return (
     <div className="py-8 sm:py-12 md:py-20" data-testid="wreath-kit-page">
+      <WreathKitWelcomeDialog open={welcomeOpen} onOpenChange={setWelcomeOpen} />
       <SEOHead
         title="Wreath Making Kits"
         description="A little festive creativity, delivered to your door. Create your own wreath with fresh foliage, decorations and easy step-by-step instructions."
@@ -101,13 +124,20 @@ export default function WreathKitPage() {
         <section className="mt-16 md:mt-24" data-testid="wreath-kit-included">
           <h2 className="font-['Playfair_Display'] text-2xl sm:text-3xl font-medium text-[#2C2C2C] mb-8 text-center">What's Included</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-8">
-            {included.map(({ icon: Icon, title, text }) => (
+            {included.map(({ icon: Icon, title, items }) => (
               <div key={title} className="bg-white border border-[#E5E0D6] rounded-2xl p-6 md:p-8">
                 <div className="w-11 h-11 rounded-full bg-[#8DA399]/15 flex items-center justify-center mb-4">
                   <Icon size={18} strokeWidth={1.5} className="text-[#8DA399]" />
                 </div>
-                <h3 className="font-['Playfair_Display'] text-lg font-medium text-[#2C2C2C] mb-2">{title}</h3>
-                <p className="text-sm font-light text-[#6B7280] leading-[1.6]">{text}</p>
+                <h3 className="font-['Playfair_Display'] text-lg font-medium text-[#2C2C2C] mb-3">{title}</h3>
+                <ul className="space-y-2">
+                  {items.map((item) => (
+                    <li key={item} className="text-sm font-light text-[#6B7280] leading-[1.6] flex gap-2">
+                      <span className="text-[#8DA399]" aria-hidden="true">•</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
