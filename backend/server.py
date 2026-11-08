@@ -1844,9 +1844,11 @@ async def get_order_status(session_id: str, request: Request, background_tasks: 
                 if order.get("customer_email"):
                     background_tasks.add_task(send_order_confirmation_email, order["customer_email"], order)
             elif customer_email and not raffle_entry and not booking and not voucher_record and not redemption:
+                tx_meta = tx.get("metadata", {})
                 background_tasks.add_task(send_order_confirmation_email, customer_email, {
-                    "items": [{"name": tx.get("metadata", {}).get("plan_name", "Subscription"), "quantity": 1, "price": tx.get("amount", 0)}],
+                    "items": [{"name": tx_meta.get("plan_name", "Subscription"), "quantity": 1, "price": tx.get("amount", 0)}],
                     "total": tx.get("amount", 0),
+                    "delivery_date": tx_meta.get("preferred_delivery_date", ""),
                 })
     await db.payment_transactions.update_one({"session_id": session_id}, {"$set": update_data}, upsert=True)
     result = {"status": status, "payment_status": payment_status,
