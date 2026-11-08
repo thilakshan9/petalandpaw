@@ -118,30 +118,32 @@ export default function WreathKitPage() {
             >
               View basket <ArrowRight size={12} />
             </Link>
+
+            <section className="mt-10 pt-10 border-t border-[#E5E0D6]" data-testid="wreath-kit-included">
+              <h2 className="font-['Playfair_Display'] text-xl sm:text-2xl font-medium text-[#2C2C2C] mb-5">What's Included</h2>
+              <div className="space-y-4">
+                {included.map(({ icon: Icon, title, items }) => (
+                  <div key={title} className="bg-white border border-[#E5E0D6] rounded-2xl p-5 sm:p-6 flex gap-4">
+                    <div className="w-10 h-10 shrink-0 rounded-full bg-[#8DA399]/15 flex items-center justify-center">
+                      <Icon size={18} strokeWidth={1.5} className="text-[#8DA399]" />
+                    </div>
+                    <div>
+                      <h3 className="font-['Playfair_Display'] text-lg font-medium text-[#2C2C2C] mb-2">{title}</h3>
+                      <ul className="space-y-1.5">
+                        {items.map((item) => (
+                          <li key={item} className="text-sm font-light text-[#6B7280] leading-[1.6] flex gap-2">
+                            <span className="text-[#8DA399]" aria-hidden="true">•</span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
           </div>
         </div>
-
-        <section className="mt-16 md:mt-24" data-testid="wreath-kit-included">
-          <h2 className="font-['Playfair_Display'] text-2xl sm:text-3xl font-medium text-[#2C2C2C] mb-8 text-center">What's Included</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-8">
-            {included.map(({ icon: Icon, title, items }) => (
-              <div key={title} className="bg-white border border-[#E5E0D6] rounded-2xl p-6 md:p-8">
-                <div className="w-11 h-11 rounded-full bg-[#8DA399]/15 flex items-center justify-center mb-4">
-                  <Icon size={18} strokeWidth={1.5} className="text-[#8DA399]" />
-                </div>
-                <h3 className="font-['Playfair_Display'] text-lg font-medium text-[#2C2C2C] mb-3">{title}</h3>
-                <ul className="space-y-2">
-                  {items.map((item) => (
-                    <li key={item} className="text-sm font-light text-[#6B7280] leading-[1.6] flex gap-2">
-                      <span className="text-[#8DA399]" aria-hidden="true">•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </section>
       </div>
     </div>
   );
