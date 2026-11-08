@@ -1,16 +1,13 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Minus, Plus, ShoppingBag, ArrowRight, Leaf, Gift, BookOpen, PawPrint, ChevronDown } from "lucide-react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Minus, Plus, ArrowRight, Leaf, Gift, BookOpen, PawPrint, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/components/CartProvider";
 import { toast } from "sonner";
 import SEOHead from "@/components/SEOHead";
-import WreathKitWelcomeDialog from "@/components/WreathKitWelcomeDialog";
 import WreathKitSlideshow from "@/components/WreathKitSlideshow";
-
-const WELCOME_SEEN_KEY = "wreathKitWelcomeSeen";
 
 const WREATH_KIT = {
   id: "wreath_kit",
@@ -42,21 +39,15 @@ const included = [
 
 export default function WreathKitPage() {
   const { addToCart } = useCart();
+  const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
   const [petToy, setPetToy] = useState(false);
   const [petType, setPetType] = useState("");
   const [petTypeOther, setPetTypeOther] = useState("");
-  const [welcomeOpen, setWelcomeOpen] = useState(false);
-
-  useEffect(() => {
-    if (localStorage.getItem(WELCOME_SEEN_KEY)) return;
-    localStorage.setItem(WELCOME_SEEN_KEY, "1");
-    setWelcomeOpen(true);
-  }, []);
 
   const petLabel = petType === "other" ? petTypeOther.trim() : petType;
 
-  const handleAddToBasket = () => {
+  const handleBuyNow = () => {
     if (petToy && !petType) {
       toast.error("Please select your pet type first");
       return;
@@ -74,12 +65,11 @@ export default function WreathKitPage() {
       add_pet_toy: petToy,
       pet_type: petToy ? petLabel : "",
     });
-    toast.success(`${WREATH_KIT.name} added to basket`);
+    navigate("/cart");
   };
 
   return (
     <div className="py-8 sm:py-12 md:py-20" data-testid="wreath-kit-page">
-      <WreathKitWelcomeDialog open={welcomeOpen} onOpenChange={setWelcomeOpen} />
       <SEOHead
         title="Wreath Making Kits"
         description="A little festive creativity, delivered to your door. Create your own wreath with fresh foliage, decorations and easy step-by-step instructions."
@@ -165,11 +155,11 @@ export default function WreathKitPage() {
                 </button>
               </div>
               <Button
-                onClick={handleAddToBasket}
+                onClick={handleBuyNow}
                 className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-8 py-6 text-sm uppercase tracking-widest transition-all hover:scale-105 flex-1"
-                data-testid="wreath-kit-add-to-basket-btn"
+                data-testid="wreath-kit-buy-now-btn"
               >
-                <ShoppingBag size={14} className="mr-2" /> Add to Basket
+                Buy Now <ArrowRight size={14} className="ml-2" />
               </Button>
             </div>
             <Link

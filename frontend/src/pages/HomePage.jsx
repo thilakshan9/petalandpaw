@@ -1,12 +1,17 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, ShieldCheck, Leaf, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SEOHead from "@/components/SEOHead";
+import WreathKitWelcomeDialog from "@/components/WreathKitWelcomeDialog";
 
 export default function HomePage() {
+  const [welcomeOpen, setWelcomeOpen] = useState(true);
+
   return (
     <div>
       <SEOHead title="Home" description="Non-toxic floral arrangements for the modern, conscious home." image="https://lh3.googleusercontent.com/d/17eTVpte-bc4RkhtYq0-WlCXYnI6DTILz=w1200" />
+      <WreathKitWelcomeDialog open={welcomeOpen} onOpenChange={setWelcomeOpen} />
 
       {/* Full-Width Hero */}
       <section className="relative h-[60vh] sm:h-[70vh] md:h-[85vh] min-h-[420px] md:min-h-[600px] overflow-hidden" data-testid="hero-section">
@@ -27,11 +32,18 @@ export default function HomePage() {
             <p className="text-sm sm:text-base md:text-lg font-light leading-relaxed text-[#4B5563] mb-6 sm:mb-10 max-w-md">
               Hand-crafted arrangements using only non-toxic blooms.
             </p>
-            <Link to="/subscriptions">
-              <Button className="shop-cta rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-7 py-5 sm:px-10 sm:py-7 text-xs sm:text-sm uppercase tracking-[0.2em] transition-all hover:scale-105" data-testid="hero-shop-btn">
-                Shop Now <ArrowRight size={16} className="ml-2 sm:ml-3" />
-              </Button>
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <Link to="/subscriptions">
+                <Button className="shop-cta rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-7 py-5 sm:px-10 sm:py-7 text-xs sm:text-sm uppercase tracking-[0.2em] transition-all hover:scale-105" data-testid="hero-shop-btn">
+                  Shop Now <ArrowRight size={16} className="ml-2 sm:ml-3" />
+                </Button>
+              </Link>
+              <Link to="/wreath-kit">
+                <Button className="rounded-full bg-[#2E5D3F] text-white hover:bg-[#244A32] px-7 py-5 sm:px-10 sm:py-7 text-xs sm:text-sm uppercase tracking-[0.2em] transition-all hover:scale-105" data-testid="hero-wreath-kit-btn">
+                  Buy Wreath Kit <ArrowRight size={16} className="ml-2 sm:ml-3" />
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
