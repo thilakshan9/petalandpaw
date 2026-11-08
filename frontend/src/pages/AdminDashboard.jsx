@@ -123,7 +123,6 @@ function OrderDetailDialog({ order }) {
       {order.delivery_date && <p className="text-xs text-[#6B7280]">Delivery: {order.delivery_date}</p>}
       {order.pet_notes && <p className="text-xs text-[#6B7280]">Pet Notes: {order.pet_notes}</p>}
       {order.order_type && <p className="text-xs text-[#6B7280]">Type: {order.order_type}</p>}
-      {order.referral_code && <p className="text-xs text-[#8DA399]">Referral: {order.referral_code} (-£{order.credit_applied?.toFixed(2)})</p>}
       <p className="text-xs text-[#6B7280]">{order.created_at ? new Date(order.created_at).toLocaleString() : ""}</p>
     </div>
   );

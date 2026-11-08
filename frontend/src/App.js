@@ -14,7 +14,6 @@ import AdminLogin from "@/pages/AdminLogin";
 import AuthCallback from "@/pages/AuthCallback";
 import AdminDashboard from "@/pages/AdminDashboard";
 import AccountPage from "@/pages/AccountPage";
-import ReferralPage from "@/pages/ReferralPage";
 import AboutPage from "@/pages/AboutPage";
 import ContactPage from "@/pages/ContactPage";
 import FaqPage from "@/pages/FaqPage";
@@ -108,7 +107,7 @@ function CustomerLogin() {
     <div className="py-20 md:py-32 text-center" data-testid="customer-login-page">
       <div className="container mx-auto px-4 max-w-sm animate-fade-in-up">
         <h1 className="font-['Playfair_Display'] text-3xl font-medium text-[#2C2C2C] mb-2">My Account</h1>
-        <p className="text-sm font-light text-[#6B7280] mb-8">Sign in to view orders and manage your referrals.</p>
+        <p className="text-sm font-light text-[#6B7280] mb-8">Sign in to view your orders.</p>
         <button onClick={handleLogin} className="w-full rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-8 py-4 text-sm uppercase tracking-widest transition-all" data-testid="customer-google-login-btn">
           Sign in with Google
         </button>
@@ -159,7 +158,6 @@ function AppRouter() {
       <Route path="/login" element={<Layout><CustomerAuthPage /></Layout>} />
       <Route path="/reset-password" element={<Layout><ResetPasswordPage /></Layout>} />
       <Route path="/account" element={<Layout><CustomerDashboard /></Layout>} />
-      <Route path="/referral/:code" element={<Layout><ReferralPage /></Layout>} />
       <Route path="/wreath-guide" element={<Layout><WreathGuidePage /></Layout>} />
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin/dashboard" element={<ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>} />

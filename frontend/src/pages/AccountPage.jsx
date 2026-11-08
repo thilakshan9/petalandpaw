@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { User, Package, Gift, LogOut, Copy, Check, CreditCard } from "lucide-react";
+import { User, Package, LogOut, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import SEOHead from "@/components/SEOHead";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -11,22 +10,18 @@ export default function AccountPage() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [orders, setOrders] = useState([]);
-  const [referral, setReferral] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [userRes, ordersRes, refRes] = await Promise.all([
+        const [userRes, ordersRes] = await Promise.all([
           fetch(`${API}/auth/me`, { credentials: "include" }),
           fetch(`${API}/account/orders`, { credentials: "include" }),
-          fetch(`${API}/referral/code`, { credentials: "include" }),
         ]);
         if (!userRes.ok) { navigate("/login"); return; }
         setUser(await userRes.json());
         if (ordersRes.ok) setOrders(await ordersRes.json());
-        if (refRes.ok) setReferral(await refRes.json());
       } catch { navigate("/login"); }
       setLoading(false);
     };
@@ -36,15 +31,6 @@ export default function AccountPage() {
   const handleLogout = async () => {
     await fetch(`${API}/auth/logout`, { method: "POST", credentials: "include" });
     navigate("/");
-  };
-
-  const copyReferralLink = () => {
-    if (!referral?.code) return;
-    const link = `${window.location.origin}/referral/${referral.code}`;
-    navigator.clipboard.writeText(link);
-    setCopied(true);
-    toast.success("Referral link copied!");
-    setTimeout(() => setCopied(false), 2000);
   };
 
   if (loading) {
@@ -70,37 +56,6 @@ export default function AccountPage() {
             <LogOut size={16} className="mr-1" /> Logout
           </Button>
         </div>
-
-        {/* Referral Card */}
-        {referral && (
-          <div className="bg-[#8DA399]/8 border border-[#8DA399]/20 rounded-2xl p-6 md:p-8 mb-8 animate-fade-in-up" data-testid="referral-section">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-full bg-[#8DA399]/10 flex items-center justify-center flex-shrink-0">
-                <Gift size={20} className="text-[#8DA399]" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-['Playfair_Display'] text-xl font-medium text-[#2C2C2C] mb-1">Give £10, Get £10</h3>
-                <p className="text-sm font-light text-[#6B7280] mb-4">
-                  Share your referral code with friends. When they make their first purchase, you both get £10 credit.
-                </p>
-                <div className="flex items-center gap-3 flex-wrap">
-                  <div className="bg-white border border-[#E5E0D6] rounded-full px-5 py-2.5 font-mono text-sm tracking-widest font-semibold text-[#2C2C2C]" data-testid="referral-code">
-                    {referral.code}
-                  </div>
-                  <Button onClick={copyReferralLink} variant="outline" className="rounded-full border-[#8DA399] text-[#8DA399] px-5 py-5 text-xs uppercase tracking-widest" data-testid="copy-referral-btn">
-                    {copied ? <><Check size={12} className="mr-1" /> Copied</> : <><Copy size={12} className="mr-1" /> Copy Link</>}
-                  </Button>
-                </div>
-                {referral.credits > 0 && (
-                  <div className="flex items-center gap-2 mt-4 text-[#8DA399]">
-                    <CreditCard size={14} />
-                    <span className="text-sm font-semibold">Your credit: £{referral.credits.toFixed(2)}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Orders */}
         <div className="animate-fade-in-up delay-200">

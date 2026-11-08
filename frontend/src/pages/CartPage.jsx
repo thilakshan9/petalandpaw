@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Minus, Plus, Trash as Trash2, ArrowRight, ShoppingBag, CalendarDays, Tag } from "lucide-react";
+import { Minus, Plus, Trash as Trash2, ArrowRight, ShoppingBag, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
@@ -14,36 +14,11 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 export default function CartPage() {
   const { items, updateQuantity, removeFromCart, total } = useCart();
   const [deliveryDate, setDeliveryDate] = useState(null);
-  const [referralCode, setReferralCode] = useState(() => localStorage.getItem("petal-paw-referral") || "");
-  const [referralValid, setReferralValid] = useState(null);
-  const [checking, setChecking] = useState(false);
   const [personalizedMessage, setPersonalizedMessage] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
 
-  const validateReferral = async () => {
-    if (!referralCode.trim()) { setReferralValid(null); return; }
-    setChecking(true);
-    try {
-      const res = await fetch(`${API}/referral/validate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: referralCode }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setReferralValid(data);
-        toast.success(`£${data.discount} discount from ${data.referrer_name}!`);
-      } else {
-        setReferralValid(false);
-        toast.error("Invalid referral code.");
-      }
-    } catch { setReferralValid(false); }
-    setChecking(false);
-  };
-
-  const discount = referralValid && referralValid.valid ? referralValid.discount : 0;
   const delivery = total >= 50 ? 0 : 5.99;
-  const finalTotal = Math.max(0.01, total + delivery - discount);
+  const finalTotal = total + delivery;
 
   const handleCheckout = async () => {
     if (items.length === 0) return;
@@ -67,7 +42,6 @@ export default function CartPage() {
           })),
           origin_url: window.location.origin, order_type: "regular",
           delivery_date: finalDeliveryDate,
-          referral_code: referralValid?.valid ? referralCode : "",
           personalized_message: personalizedMessage,
           special_notes: specialNotes,
           phone_number: phoneNumber,
@@ -167,19 +141,6 @@ export default function CartPage() {
                 </Popover>
               </div>
 
-              {/* Referral Code */}
-              <div data-testid="referral-code-section">
-                <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-2 block">Referral Code</label>
-                <div className="flex gap-2">
-                  <Input value={referralCode} onChange={(e) => { setReferralCode(e.target.value); setReferralValid(null); }} placeholder="Enter code" className="border-[#E5E0D6] text-sm" data-testid="referral-input" />
-                  <Button variant="outline" onClick={validateReferral} disabled={checking} className="border-[#E5E0D6] px-4 flex-shrink-0" data-testid="apply-referral-btn">
-                    <Tag size={14} />
-                  </Button>
-                </div>
-                {referralValid === false && <p className="text-xs text-red-400 mt-1">Invalid code</p>}
-                {referralValid?.valid && <p className="text-xs text-[#8DA399] mt-1">-£{referralValid.discount.toFixed(2)} discount applied</p>}
-              </div>
-
               {/* Personalized Message */}
               <div data-testid="personalized-message-section">
                 <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-2 block">Personalized Message</label>
@@ -216,11 +177,6 @@ export default function CartPage() {
                 <div className="flex justify-between text-sm font-light text-[#6B7280]">
                   <span>Delivery</span><span>{delivery === 0 ? "Free" : `£${delivery.toFixed(2)}`}</span>
                 </div>
-                {discount > 0 && (
-                  <div className="flex justify-between text-sm font-light text-[#8DA399]">
-                    <span>Referral discount</span><span>-£{discount.toFixed(2)}</span>
-                  </div>
-                )}
                 <div className="border-t border-[#E5E0D6] pt-3 flex justify-between">
                   <span className="text-base font-medium text-[#2C2C2C]">Total</span>
                   <span className="text-base font-medium text-[#2C2C2C]" data-testid="cart-total">£{finalTotal.toFixed(2)}</span>
