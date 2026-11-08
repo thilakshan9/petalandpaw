@@ -5,11 +5,17 @@ import { Button } from "@/components/ui/button";
 import SEOHead from "@/components/SEOHead";
 import WreathKitWelcomeDialog from "@/components/WreathKitWelcomeDialog";
 
+let welcomeShownThisLoad = false;
+
 export default function HomePage() {
   const [welcomeOpen, setWelcomeOpen] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setWelcomeOpen(true), 1000);
+    if (welcomeShownThisLoad) return undefined;
+    const timer = setTimeout(() => {
+      welcomeShownThisLoad = true;
+      setWelcomeOpen(true);
+    }, 1000);
     return () => clearTimeout(timer);
   }, []);
 
