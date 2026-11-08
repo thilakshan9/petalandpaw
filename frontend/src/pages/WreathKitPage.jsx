@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Minus, Plus, ShoppingBag, ArrowRight, Leaf, Gift, BookOpen } from "lucide-react";
+import { Minus, Plus, ShoppingBag, ArrowRight, Leaf, Gift, BookOpen, PawPrint, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
 import { useCart } from "@/components/CartProvider";
 import { toast } from "sonner";
 import SEOHead from "@/components/SEOHead";
 import WreathKitWelcomeDialog from "@/components/WreathKitWelcomeDialog";
+import WreathKitSlideshow from "@/components/WreathKitSlideshow";
 
 const WELCOME_SEEN_KEY = "wreathKitWelcomeSeen";
 
@@ -14,7 +17,10 @@ const WREATH_KIT = {
   name: "Wreath Making Kit",
   price: 50,
   image_url: "/images/wreath-kit.jpg",
+  images: ["/images/wreath-kit.jpg", "/images/wreath-kit-2.jpg", "/images/wreath-kit-3.jpg"],
 };
+
+const WREATH_PET_TOY_PRICE = 8.99;
 
 const included = [
   {
@@ -37,6 +43,9 @@ const included = [
 export default function WreathKitPage() {
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
+  const [petToy, setPetToy] = useState(false);
+  const [petType, setPetType] = useState("");
+  const [petTypeOther, setPetTypeOther] = useState("");
   const [welcomeOpen, setWelcomeOpen] = useState(false);
 
   useEffect(() => {
@@ -45,13 +54,25 @@ export default function WreathKitPage() {
     setWelcomeOpen(true);
   }, []);
 
+  const petLabel = petType === "other" ? petTypeOther.trim() : petType;
+
   const handleAddToBasket = () => {
+    if (petToy && !petType) {
+      toast.error("Please select your pet type first");
+      return;
+    }
+    if (petToy && petType === "other" && !petLabel) {
+      toast.error("Please enter your pet type");
+      return;
+    }
     addToCart({
-      product_id: WREATH_KIT.id,
+      product_id: petToy ? `${WREATH_KIT.id}:pet:${petLabel}` : WREATH_KIT.id,
       name: WREATH_KIT.name,
-      price: WREATH_KIT.price,
+      price: WREATH_KIT.price + (petToy ? WREATH_PET_TOY_PRICE : 0),
       quantity,
       image_url: WREATH_KIT.image_url,
+      add_pet_toy: petToy,
+      pet_type: petToy ? petLabel : "",
     });
     toast.success(`${WREATH_KIT.name} added to basket`);
   };
@@ -65,9 +86,7 @@ export default function WreathKitPage() {
       />
       <div className="container mx-auto px-5 md:px-8 max-w-6xl">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-start">
-          <div className="aspect-[4/5] rounded-2xl overflow-hidden bg-[#F2F0EB] animate-fade-in-up">
-            <img src={WREATH_KIT.image_url} alt="Wreath making kit" className="w-full h-full object-cover" />
-          </div>
+          <WreathKitSlideshow images={WREATH_KIT.images} alt="Wreath making kit" />
 
           <div className="animate-fade-in-up delay-50">
             <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 block">Christmas Kit</span>
@@ -80,6 +99,48 @@ export default function WreathKitPage() {
             <p className="font-['Playfair_Display'] text-2xl text-[#2C2C2C] mb-8" data-testid="wreath-kit-price">
               £{WREATH_KIT.price.toFixed(2)}
             </p>
+
+            <div className="bg-[#F2F0EB]/60 rounded-xl px-4 py-3 mb-4" data-testid="wreath-kit-pet-toy-toggle">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <PawPrint size={14} className="text-[#8DA399]" />
+                  <span className="text-sm text-[#2C2C2C]">Add festive pet toy/treat</span>
+                  <span className="text-xs text-[#6B7280]">+£{WREATH_PET_TOY_PRICE.toFixed(2)}</span>
+                </div>
+                <Switch checked={petToy} onCheckedChange={setPetToy} data-testid="wreath-kit-pet-toy-switch" />
+              </div>
+            </div>
+
+            {petToy && (
+              <div className="mb-6" data-testid="wreath-kit-pet-type-section">
+                <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Your Pet</label>
+                <div className="relative">
+                  <select
+                    value={petType}
+                    onChange={(e) => setPetType(e.target.value)}
+                    className="w-full appearance-none border border-[#E5E0D6] rounded-lg px-3 py-2.5 text-sm font-light text-[#2C2C2C] bg-white focus:outline-none focus:ring-1 focus:ring-[#8DA399] pr-8"
+                    data-testid="wreath-kit-pet-type-select"
+                  >
+                    <option value="">Select pet...</option>
+                    <option value="cat">Cat</option>
+                    <option value="dog">Dog</option>
+                    <option value="n/a">Petless</option>
+                    <option value="other">Other</option>
+                  </select>
+                  <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280] pointer-events-none" />
+                </div>
+                {petType === "other" && (
+                  <Input
+                    type="text"
+                    placeholder="Please specify..."
+                    value={petTypeOther}
+                    onChange={(e) => setPetTypeOther(e.target.value)}
+                    className="mt-2 border-[#E5E0D6] text-sm"
+                    data-testid="wreath-kit-pet-type-other-input"
+                  />
+                )}
+              </div>
+            )}
 
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex items-center border border-[#E5E0D6] rounded-full w-fit" data-testid="wreath-kit-quantity">
