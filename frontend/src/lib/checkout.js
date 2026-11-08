@@ -1,5 +1,23 @@
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
+export function earliestDeliveryDate() {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() + 3);
+  return d;
+}
+
+export function toIsoDate(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+export function isDeliveryDateTooSoon(isoDate) {
+  return new Date(isoDate + "T00:00:00") < earliestDeliveryDate();
+}
+
 export async function startStripeCheckout(items, details = {}) {
   const res = await fetch(`${API}/orders/checkout`, {
     method: "POST",

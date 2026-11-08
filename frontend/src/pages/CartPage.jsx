@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Minus, Plus, Trash as Trash2, ArrowRight, ShoppingBag, CalendarDays } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -10,29 +10,46 @@ import { toast } from "sonner";
 import SEOHead from "@/components/SEOHead";
 import CheckoutChoiceDialog from "@/components/CheckoutChoiceDialog";
 import { useCustomerAuth } from "@/context/CustomerAuthContext";
-import { startStripeCheckout } from "@/lib/checkout";
+import { startStripeCheckout, earliestDeliveryDate, isDeliveryDateTooSoon, toIsoDate } from "@/lib/checkout";
+
+const RETURN_KEY = "pp_return_to_cart";
+
+function readReturnDetails() {
+  try { return JSON.parse(localStorage.getItem(RETURN_KEY)) || {}; } catch { return {}; }
+}
 
 export default function CartPage() {
   const { items, updateQuantity, removeFromCart, total } = useCart();
   const { customer } = useCustomerAuth();
   const navigate = useNavigate();
   const [choiceOpen, setChoiceOpen] = useState(false);
-  const [deliveryDate, setDeliveryDate] = useState(null);
-  const [personalizedMessage, setPersonalizedMessage] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [savedDetails] = useState(readReturnDetails);
+  const [deliveryDate, setDeliveryDate] = useState(() =>
+    savedDetails.deliveryDate ? new Date(savedDetails.deliveryDate + "T00:00:00") : null
+  );
+  const [personalizedMessage, setPersonalizedMessage] = useState(savedDetails.personalizedMessage || "");
+  const [phoneNumber, setPhoneNumber] = useState(savedDetails.phoneNumber || "");
+
+  useEffect(() => {
+    localStorage.removeItem(RETURN_KEY);
+  }, []);
 
   const delivery = total >= 50 ? 0 : 5.99;
   const finalTotal = total + delivery;
 
-  const startCheckout = async () => {
+  const getDeliveryDate = () => {
+    if (deliveryDate) return toIsoDate(deliveryDate);
+    const seasonDate = (items.find((i) => i.season_date) || {}).season_date || "";
+    const basketDate = (items.find((i) => i.delivery_date) || {}).delivery_date || "";
+    return seasonDate || basketDate;
+  };
+
+  const startCheckout = async (finalDeliveryDate) => {
     const themedItems = items.filter((i) => i.theme);
     const label = (t) => (t === "christmas" ? "Christmas" : "Halloween");
     const specialNotes = themedItems.length
       ? themedItems.map((i) => `${label(i.theme)}: ${i.name}${i.season_date ? ` (deliver ${i.season_date})` : ""}`).join("; ")
       : "";
-    const seasonDate = (themedItems.find((i) => i.season_date) || {}).season_date || "";
-    const basketDate = (items.find((i) => i.delivery_date) || {}).delivery_date || "";
-    const finalDeliveryDate = deliveryDate ? deliveryDate.toISOString().split("T")[0] : seasonDate || basketDate;
     try {
       await startStripeCheckout(items, {
         deliveryDate: finalDeliveryDate,
@@ -45,21 +62,38 @@ export default function CartPage() {
 
   const handleCheckout = () => {
     if (items.length === 0) return;
+    const finalDeliveryDate = getDeliveryDate();
+    if (!finalDeliveryDate) {
+      toast.error("Please choose a delivery date.");
+      return;
+    }
+    if (isDeliveryDateTooSoon(finalDeliveryDate)) {
+      toast.error("Please choose a delivery date at least 3 days from today.");
+      return;
+    }
+    if (!phoneNumber.trim()) {
+      toast.error("Please enter your phone number.");
+      return;
+    }
     if (!customer) {
       setChoiceOpen(true);
       return;
     }
-    startCheckout();
+    startCheckout(finalDeliveryDate);
   };
 
   const handleChoiceSignIn = () => {
-    localStorage.setItem("pp_return_to_cart", "1");
+    localStorage.setItem(RETURN_KEY, JSON.stringify({
+      deliveryDate: getDeliveryDate(),
+      personalizedMessage,
+      phoneNumber,
+    }));
     navigate("/login");
   };
 
   const handleChoiceGuest = () => {
     setChoiceOpen(false);
-    startCheckout();
+    startCheckout(getDeliveryDate());
   };
 
   if (items.length === 0) {
@@ -130,7 +164,7 @@ export default function CartPage() {
 
               {/* Delivery Date */}
               <div data-testid="delivery-date-section">
-                <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-2 block">Delivery Date</label>
+                <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-2 block">Delivery Date (required)</label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button variant="outline" className="w-full justify-start text-left font-light border-[#E5E0D6] rounded-lg" data-testid="delivery-date-btn">
@@ -143,7 +177,7 @@ export default function CartPage() {
                       mode="single"
                       selected={deliveryDate}
                       onSelect={setDeliveryDate}
-                      disabled={(date) => date < new Date() || date < new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)}
+                  disabled={(date) => date < earliestDeliveryDate()}
                       initialFocus
                     />
                   </PopoverContent>
@@ -167,7 +201,7 @@ export default function CartPage() {
 
               {/* Phone Number */}
               <div data-testid="phone-number-section">
-                <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-2 block">Phone Number</label>
+                <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-2 block">Phone Number (required)</label>
                 <Input
                   type="tel"
                   placeholder="07123 456789"

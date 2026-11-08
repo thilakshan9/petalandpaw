@@ -22,10 +22,7 @@ export default function CustomerAuthPage() {
 
   const postAuthPath = () => {
     if (localStorage.getItem("pp_pending_checkout")) return "/subscriptions";
-    if (localStorage.getItem("pp_return_to_cart")) {
-      localStorage.removeItem("pp_return_to_cart");
-      return "/cart";
-    }
+    if (localStorage.getItem("pp_return_to_cart")) return "/cart";
     return "/account";
   };
 

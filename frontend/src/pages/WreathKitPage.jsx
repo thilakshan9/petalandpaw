@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Minus, Plus, ArrowRight, Leaf, Gift, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useCart } from "@/components/CartProvider";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { toast } from "sonner";
 import SEOHead from "@/components/SEOHead";
 import WreathKitSlideshow from "@/components/WreathKitSlideshow";
+import { startStripeCheckout, earliestDeliveryDate, isDeliveryDateTooSoon, toIsoDate } from "@/lib/checkout";
 
 const WREATH_KIT = {
   id: "wreath_kit",
@@ -33,19 +36,38 @@ const included = [
 ];
 
 export default function WreathKitPage() {
-  const { addToCart } = useCart();
-  const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
+  const [paymentOpen, setPaymentOpen] = useState(false);
+  const [deliveryDate, setDeliveryDate] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [paying, setPaying] = useState(false);
 
-  const handleBuyNow = () => {
-    addToCart({
-      product_id: WREATH_KIT.id,
-      name: WREATH_KIT.name,
-      price: WREATH_KIT.price,
-      quantity,
-      image_url: WREATH_KIT.image_url,
-    });
-    navigate("/cart");
+  const handlePayNow = async () => {
+    if (!deliveryDate) {
+      toast.error("Please choose your preferred delivery date.");
+      return;
+    }
+    if (isDeliveryDateTooSoon(deliveryDate)) {
+      toast.error("Please choose a delivery date at least 3 days from today.");
+      return;
+    }
+    if (!phoneNumber.trim()) {
+      toast.error("Please enter your phone number.");
+      return;
+    }
+    setPaying(true);
+    try {
+      await startStripeCheckout([{
+        product_id: WREATH_KIT.id,
+        name: WREATH_KIT.name,
+        price: WREATH_KIT.price,
+        quantity,
+        image_url: WREATH_KIT.image_url,
+      }], { deliveryDate, phoneNumber });
+    } catch {
+      toast.error("Failed to create checkout session.");
+      setPaying(false);
+    }
   };
 
   return (
@@ -93,7 +115,7 @@ export default function WreathKitPage() {
                 </button>
               </div>
               <Button
-                onClick={handleBuyNow}
+                onClick={() => setPaymentOpen(true)}
                 className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-8 py-6 text-sm uppercase tracking-widest transition-all hover:scale-105 flex-1"
                 data-testid="wreath-kit-buy-now-btn"
               >
@@ -134,6 +156,47 @@ export default function WreathKitPage() {
           </div>
         </div>
       </div>
+      <Dialog open={paymentOpen} onOpenChange={(v) => !paying && setPaymentOpen(v)}>
+        <DialogContent className="max-w-sm border-[#E5E0D6] bg-[#FAF9F6] rounded-2xl" data-testid="wreath-kit-payment-dialog">
+          <DialogTitle className="font-['Playfair_Display'] text-xl font-medium text-[#2C2C2C]">Delivery details</DialogTitle>
+          <DialogDescription className="text-sm font-light text-[#6B7280]">
+            We need these before you continue to payment.
+          </DialogDescription>
+          <div className="mt-4 space-y-4">
+            <div>
+              <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Preferred Delivery Date (required)</label>
+              <input
+                type="date"
+                value={deliveryDate}
+                min={toIsoDate(earliestDeliveryDate())}
+                onChange={(e) => setDeliveryDate(e.target.value)}
+                className="w-full border border-[#E5E0D6] rounded-lg px-3 py-2.5 text-sm font-light text-[#2C2C2C] bg-white focus:outline-none focus:ring-1 focus:ring-[#8DA399]"
+                data-testid="wreath-kit-delivery-date-input"
+              />
+              <p className="text-[10px] text-[#9CA3AF] mt-1">Minimum 3 days notice required.</p>
+            </div>
+            <div>
+              <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Phone Number (required)</label>
+              <Input
+                type="tel"
+                placeholder="07123 456789"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                className="border-[#E5E0D6] text-sm py-5"
+                data-testid="wreath-kit-phone-input"
+              />
+            </div>
+            <Button
+              onClick={handlePayNow}
+              disabled={paying}
+              className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-8 py-6 text-xs uppercase tracking-widest w-full"
+              data-testid="wreath-kit-pay-now-btn"
+            >
+              {paying ? "Processing..." : <>Continue to Payment <ArrowRight size={14} className="ml-2" /></>}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

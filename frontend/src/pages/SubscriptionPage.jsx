@@ -202,6 +202,10 @@ export default function SubscriptionPage() {
       toast.error("Please enter a valid email address");
       return;
     }
+    if (!phoneNumber.trim()) {
+      toast.error("Please enter your phone number");
+      return;
+    }
     const planId = emailDialog;
     setEmailDialog(null);
     setSubscribing(planId);
