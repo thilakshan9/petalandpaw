@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { useCustomerAuth } from "@/context/CustomerAuthContext";
 import { useCart } from "@/components/CartProvider";
 import SEOHead from "@/components/SEOHead";
+import CheckoutChoiceDialog from "@/components/CheckoutChoiceDialog";
 import { getActiveSeason, seasonConfig, HW, XMAS } from "@/lib/halloween";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -29,6 +30,7 @@ export default function SubscriptionPage() {
   const seasonActive = !!season;
   const isXmas = season === "christmas";
   const [emailDialog, setEmailDialog] = useState(null);
+  const [choicePlanId, setChoicePlanId] = useState(null);
   const [customerEmail, setCustomerEmail] = useState("");
   const [orderType, setOrderType] = useState(null);
   const [purchaseMode, setPurchaseMode] = useState({});
@@ -98,22 +100,22 @@ export default function SubscriptionPage() {
     } catch { localStorage.removeItem("pp_pending_checkout"); }
   }, [authLoading, customer, loading, plans]);
 
-  const handleSubscribeClick = (planId, type = "subscription") => {
+  const validateSelection = (planId, type) => {
     const selectedPet = petType[planId] || "";
     if (!selectedPet) {
       toast.error("Please select your pet type first");
-      return;
+      return false;
     }
     if (selectedPet === "other" && !(petTypeOther[planId] || "").trim()) {
       toast.error("Please enter your pet type");
-      return;
+      return false;
     }
-    // Enforce 3-day minimum on preferred delivery date (mobile Safari ignores HTML5 min)
     const dDate = deliveryDate[planId];
     if (type === "one-time" && !dDate) {
       toast.error("Please choose your preferred delivery date.");
-      return;
+      return false;
     }
+    // Mobile Safari ignores HTML5 min, so the 3-day minimum is enforced here
     if (dDate) {
       const picked = new Date(dDate + "T00:00:00");
       const minDate = new Date();
@@ -121,17 +123,67 @@ export default function SubscriptionPage() {
       minDate.setDate(minDate.getDate() + 3);
       if (picked < minDate) {
         toast.error("Please choose a delivery date at least 3 days from today.");
-        return;
+        return false;
       }
     }
+    return true;
+  };
+
+  const buildBasketItem = (planId) => {
+    const plan = plans.find((p) => p.id === planId);
+    const toyOn = !!petToy[planId];
+    const toyPrice = plan.pet_toy_price || 8.99;
+    return {
+      product_id: planId,
+      name: plan.name + (toyOn ? " + Pet Toy/Treat" : "") + (halloweenThemed[planId] ? ` (${cfg.tagLabel} themed)` : ""),
+      price: toyOn ? plan.price + toyPrice : plan.price,
+      quantity: 1,
+      image_url: plan.image_url,
+      plan_slug: plan.slug,
+      order_type: "one-time",
+      pet_type: (petType[planId] === "other" ? petTypeOther[planId] : petType[planId]) || "",
+      add_pet_toy: toyOn,
+      theme: halloweenThemed[planId] ? season : undefined,
+      delivery_date: deliveryDate[planId] || "",
+    };
+  };
+
+  const handleSubscribeClick = (planId, type = "subscription") => {
+    if (!validateSelection(planId, type)) return;
     setOrderType(type);
     if (!customer) {
-      goToSignInToSubscribe(planId, type);
+      if (type === "one-time") {
+        setChoicePlanId(planId);
+      } else {
+        goToSignInToSubscribe(planId, type);
+      }
       return;
     }
+    openEmailDialog(planId, customer.email);
+  };
+
+  const openEmailDialog = (planId, email) => {
     setEmailDialog(planId);
-    setCustomerEmail(customer.email);
+    setCustomerEmail(email);
     setPersonalizedMessage("");
+  };
+
+  const handleGuestCheckout = () => {
+    const planId = choicePlanId;
+    setChoicePlanId(null);
+    openEmailDialog(planId, "");
+  };
+
+  const handleChoiceSignIn = () => {
+    const planId = choicePlanId;
+    setChoicePlanId(null);
+    goToSignInToSubscribe(planId, "one-time");
+  };
+
+  const handleAddToBasket = (planId) => {
+    if (!validateSelection(planId, "one-time")) return;
+    addToCart(buildBasketItem(planId));
+    toast.success("Added to your basket");
   };
 
   const goToSignInToSubscribe = (planId, type) => {
@@ -175,23 +227,7 @@ export default function SubscriptionPage() {
         // One-time purchases are saved to the basket so they can be retried if Stripe checkout is abandoned
         const plan = plans.find(p => p.id === planId);
         if (plan && orderType === "one-time") {
-          const toyOn = !!petToy[planId];
-          const toyPrice = plan.pet_toy_price || 8.99;
-          const basePrice = orderType === "subscription" ? plan.price * 0.9 : plan.price;
-          const price = toyOn ? basePrice + toyPrice : basePrice;
-          const cartItem = {
-            product_id: planId,
-            name: plan.name + (toyOn ? " + Pet Toy/Treat" : "") + (halloweenThemed[planId] ? ` (${cfg.tagLabel} themed)` : ""),
-            price,
-            quantity: 1,
-            image_url: plan.image_url,
-            plan_slug: plan.slug,
-            order_type: orderType,
-            pet_type: (petType[planId] === "other" ? petTypeOther[planId] : petType[planId]) || "",
-            add_pet_toy: toyOn,
-            theme: halloweenThemed[planId] ? season : undefined,
-          };
-          localStorage.setItem("pp_pending_stripe_item", JSON.stringify(cartItem));
+          localStorage.setItem("pp_pending_stripe_item", JSON.stringify(buildBasketItem(planId)));
         }
         window.location.href = data.url;
       } else {
@@ -496,7 +532,17 @@ export default function SubscriptionPage() {
                   >
                     {subscribing === plan.id ? "Processing..." : selectedMode === "subscription" ? "Subscribe & Save" : "One-Time Purchase"} <ArrowRight size={14} className="ml-2" />
                   </Button>
-                  <p className="text-xs font-light text-[#6B7280] text-center mt-2" data-testid="order-deadline">
+                  {selectedMode === "one-time" && (
+                    <Button
+                      variant="outline"
+                      onClick={() => handleAddToBasket(plan.id)}
+                      className="rounded-full border-[#8DA399] bg-white text-[#5A7264] hover:bg-[#8DA399]/10 px-8 py-6 text-sm uppercase tracking-widest transition-all hover:scale-105 w-full mt-3"
+                      data-testid={`add-to-basket-${plan.slug}`}
+                    >
+                      Add to basket
+                    </Button>
+                  )}
+
                     {selectedMode === "subscription" ? "Cancel anytime" : "Order by the 26th for this month's delivery"}
                   </p>
                 </div>
@@ -505,20 +551,30 @@ export default function SubscriptionPage() {
           </div>
         )}
 
+        <CheckoutChoiceDialog
+          open={!!choicePlanId}
+          onOpenChange={(v) => { if (!v) setChoicePlanId(null); }}
+          onSignIn={handleChoiceSignIn}
+          onGuest={handleGuestCheckout}
+        />
+
         {/* Email Dialog */}
         <Dialog open={!!emailDialog} onOpenChange={(v) => { if (!v) setEmailDialog(null); }}>
           <DialogContent className="max-w-sm border-[#E5E0D6] bg-[#FAF9F6] rounded-2xl" data-testid="email-dialog">
             <DialogTitle className="font-['Playfair_Display'] text-xl font-medium text-[#2C2C2C]">Your Email</DialogTitle>
             <DialogDescription className="text-sm font-light text-[#6B7280]">
-              Your {orderType === "one-time" ? "order" : "subscription"} confirmation and receipt will be sent to your account email.
+              {customer
+                ? `Your ${orderType === "one-time" ? "order" : "subscription"} confirmation and receipt will be sent to your account email.`
+                : "Enter the email address for your order confirmation and receipt."}
             </DialogDescription>
             <div className="mt-4 space-y-4">
               <Input
                 type="email"
                 placeholder="your@email.com"
                 value={customerEmail}
-                readOnly
-                className="border-[#E5E0D6] text-sm py-5 bg-[#F3F1EC] text-[#6B7280]"
+                onChange={(e) => setCustomerEmail(e.target.value)}
+                readOnly={!!customer}
+                className={`border-[#E5E0D6] text-sm py-5 ${customer ? "bg-[#F3F1EC] text-[#6B7280]" : ""}`}
               />
               <div>
                 <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Add a gift note (optional)</label>

@@ -20,6 +20,15 @@ export default function CustomerAuthPage() {
   const { login, register } = useCustomerAuth();
   const navigate = useNavigate();
 
+  const postAuthPath = () => {
+    if (localStorage.getItem("pp_pending_checkout")) return "/subscriptions";
+    if (localStorage.getItem("pp_return_to_cart")) {
+      localStorage.removeItem("pp_return_to_cart");
+      return "/cart";
+    }
+    return "/account";
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -27,13 +36,11 @@ export default function CustomerAuthPage() {
       if (mode === "login") {
         await login(email, password);
         toast.success("Logged in");
-        const pending = localStorage.getItem("pp_pending_checkout");
-        navigate(pending ? "/subscriptions" : "/account");
+        navigate(postAuthPath());
       } else if (mode === "register") {
         await register(name, email, password);
         toast.success("Account created!");
-        const pending = localStorage.getItem("pp_pending_checkout");
-        navigate(pending ? "/subscriptions" : "/account");
+        navigate(postAuthPath());
       } else if (mode === "forgot") {
         const res = await fetch(`${API}/customer/forgot-password`, {
           method: "POST",

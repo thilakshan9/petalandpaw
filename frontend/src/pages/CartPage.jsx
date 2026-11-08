@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { Minus, Plus, Trash as Trash2, ArrowRight, ShoppingBag, CalendarDays } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
@@ -8,10 +8,15 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { useCart } from "@/components/CartProvider";
 import { toast } from "sonner";
 import SEOHead from "@/components/SEOHead";
+import CheckoutChoiceDialog from "@/components/CheckoutChoiceDialog";
+import { useCustomerAuth } from "@/context/CustomerAuthContext";
 import { startStripeCheckout } from "@/lib/checkout";
 
 export default function CartPage() {
   const { items, updateQuantity, removeFromCart, total } = useCart();
+  const { customer } = useCustomerAuth();
+  const navigate = useNavigate();
+  const [choiceOpen, setChoiceOpen] = useState(false);
   const [deliveryDate, setDeliveryDate] = useState(null);
   const [personalizedMessage, setPersonalizedMessage] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -19,15 +24,15 @@ export default function CartPage() {
   const delivery = total >= 50 ? 0 : 5.99;
   const finalTotal = total + delivery;
 
-  const handleCheckout = async () => {
-    if (items.length === 0) return;
+  const startCheckout = async () => {
     const themedItems = items.filter((i) => i.theme);
     const label = (t) => (t === "christmas" ? "Christmas" : "Halloween");
     const specialNotes = themedItems.length
       ? themedItems.map((i) => `${label(i.theme)}: ${i.name}${i.season_date ? ` (deliver ${i.season_date})` : ""}`).join("; ")
       : "";
     const seasonDate = (themedItems.find((i) => i.season_date) || {}).season_date || "";
-    const finalDeliveryDate = deliveryDate ? deliveryDate.toISOString().split("T")[0] : seasonDate;
+    const basketDate = (items.find((i) => i.delivery_date) || {}).delivery_date || "";
+    const finalDeliveryDate = deliveryDate ? deliveryDate.toISOString().split("T")[0] : seasonDate || basketDate;
     try {
       await startStripeCheckout(items, {
         deliveryDate: finalDeliveryDate,
@@ -36,6 +41,25 @@ export default function CartPage() {
         phoneNumber,
       });
     } catch { toast.error("Failed to create checkout session."); }
+  };
+
+  const handleCheckout = () => {
+    if (items.length === 0) return;
+    if (!customer) {
+      setChoiceOpen(true);
+      return;
+    }
+    startCheckout();
+  };
+
+  const handleChoiceSignIn = () => {
+    localStorage.setItem("pp_return_to_cart", "1");
+    navigate("/login");
+  };
+
+  const handleChoiceGuest = () => {
+    setChoiceOpen(false);
+    startCheckout();
   };
 
   if (items.length === 0) {
@@ -176,6 +200,12 @@ export default function CartPage() {
           </div>
         </div>
       </div>
+      <CheckoutChoiceDialog
+        open={choiceOpen}
+        onOpenChange={setChoiceOpen}
+        onSignIn={handleChoiceSignIn}
+        onGuest={handleChoiceGuest}
+      />
     </div>
   );
 }
