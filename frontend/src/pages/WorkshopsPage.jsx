@@ -343,12 +343,12 @@ export default function WorkshopsPage() {
                 </div>
                 <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
                   <Button
-                    onClick={() => seasonEffect()}
+                    onClick={() => (isXmas ? navigate("/wreath-kit") : seasonEffect())}
                     variant="outline"
                     className="rounded-full border-[#FAF9F6]/40 bg-transparent text-[#FAF9F6] hover:bg-[#FAF9F6]/10 px-6 py-5 text-xs uppercase tracking-widest transition-all"
                     data-testid="workshops-release-bats-btn"
                   >
-                    <span aria-hidden="true" className="mr-2">{isXmas ? "❄️" : "🦇"}</span> {isXmas ? "Let it snow" : "Release the bats"}
+                    <span aria-hidden="true" className="mr-2">{isXmas ? "❄️" : "🦇"}</span> {isXmas ? "Shop Wreath Kits" : "Release the bats"}
                   </Button>
                 </div>
               </div>

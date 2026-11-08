@@ -22,6 +22,7 @@ import ReturnsPage from "@/pages/ReturnsPage";
 import WreathGuidePage from "@/pages/WreathGuidePage";
 import EventsPage from "@/pages/EventsPage";
 import WorkshopsPage from "@/pages/WorkshopsPage";
+import WreathKitPage from "@/pages/WreathKitPage";
 // RafflePage is intentionally kept for future re-enable.
 // import RafflePage from "@/pages/RafflePage";
 import VouchersPage from "@/pages/VouchersPage";
@@ -147,6 +148,7 @@ function AppRouter() {
       <Route path="/hire-us" element={<Layout><EventsPage /></Layout>} />
       <Route path="/events" element={<Layout><EventsPage /></Layout>} />
       <Route path="/workshops" element={<Layout><WorkshopsPage /></Layout>} />
+      <Route path="/wreath-kit" element={<Layout><WreathKitPage /></Layout>} />
       {/* Raffle route intentionally disabled for future re-enable.
       <Route path="/raffle" element={<Layout><RafflePage /></Layout>} />
       } */}

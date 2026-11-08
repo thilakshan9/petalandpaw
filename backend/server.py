@@ -903,12 +903,19 @@ async def save_bouquet(req: StepBouquetRequest):
 # CHECKOUT / ORDER ROUTES
 # ============================================================
 
+WREATH_KIT_ID = "wreath_kit"
+WREATH_KIT_PRICE = 24.99
+
 @api_router.post("/orders/checkout")
 async def create_checkout(req: CheckoutRequest, request: Request, background_tasks: BackgroundTasks):
     total = 0.0
     validated_items = []
     for item in req.items:
-        if item.product_id.startswith("bouquet_"):
+        if item.product_id == WREATH_KIT_ID:
+            validated_items.append({"product_id": WREATH_KIT_ID, "name": "Wreath Making Kit",
+                "price": WREATH_KIT_PRICE, "quantity": item.quantity, "image_url": ""})
+            total += WREATH_KIT_PRICE * item.quantity
+        elif item.product_id.startswith("bouquet_"):
             bouquet = await db.saved_bouquets.find_one(
                 {"id": item.product_id.replace("bouquet_", "")}, {"_id": 0})
             if bouquet:

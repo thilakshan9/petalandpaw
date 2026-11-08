@@ -9,10 +9,11 @@ import { flurrySnow, isChristmasActive } from "@/lib/halloween";
 
 const navLinks = [
   { href: "/gallery", label: "Gallery" },
-  { href: "/hire-us", label: "Hire Us" },
+  { href: "/wreath-kit", label: "Wreath Kit" },
   { href: "/subscriptions", label: "Shop" },
   { href: "/workshops", label: "Workshops" },
   { href: "/vouchers", label: "Vouchers" },
+  { href: "/hire-us", label: "Hire Us" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
