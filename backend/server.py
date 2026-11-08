@@ -213,6 +213,16 @@ async def send_order_confirmation_email(to_email: str, order_data: dict):
     """
     return _send_email(to_email, "Your Petal & Paw Order Confirmation", html_content)
 
+async def _claim_order_receipt(session_id: str):
+    claim = await db.orders.update_one(
+        {"stripe_session_id": session_id, "receipt_sent_at": {"$exists": False}},
+        {"$set": {"receipt_sent_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    if claim.modified_count != 1:
+        return None
+    order = await db.orders.find_one({"stripe_session_id": session_id}, {"_id": 0})
+    return order if order and order.get("customer_email") else None
+
 async def send_contact_form_email(name: str, email: str, subject: str, message: str, to_email: str = ""):
     contact_email = to_email or "contact@petalandpaw.co.uk"
     html_content = f"""
@@ -1841,8 +1851,9 @@ async def get_order_status(session_id: str, request: Request, background_tasks: 
                     if referrer:
                         await db.users.update_one({"referral_code": order["referral_code"]},
                             {"$inc": {"credits": 10.0}})
-                if order.get("customer_email"):
-                    background_tasks.add_task(send_order_confirmation_email, order["customer_email"], order)
+                order_receipt = await _claim_order_receipt(session_id)
+                if order_receipt:
+                    background_tasks.add_task(send_order_confirmation_email, order_receipt["customer_email"], order_receipt)
             elif customer_email and not raffle_entry and not booking and not voucher_record and not redemption:
                 tx_meta = tx.get("metadata", {})
                 background_tasks.add_task(send_order_confirmation_email, customer_email, {
@@ -1943,7 +1954,7 @@ async def submit_contact_form(req: ContactFormRequest, background_tasks: Backgro
 # ============================================================
 
 @api_router.post("/webhook/stripe")
-async def stripe_webhook(request: Request):
+async def stripe_webhook(request: Request, background_tasks: BackgroundTasks):
     body = await request.body()
     signature = request.headers.get("Stripe-Signature")
     try:
@@ -1962,6 +1973,9 @@ async def stripe_webhook(request: Request):
                     {"stripe_session_id": session_id},
                     {"$set": {"status": "todo", "updated_at": datetime.now(timezone.utc).isoformat()}}
                 )
+                order_receipt = await _claim_order_receipt(session_id)
+                if order_receipt:
+                    background_tasks.add_task(send_order_confirmation_email, order_receipt["customer_email"], order_receipt)
         return {"status": "ok"}
     except Exception as e:
         logger.error(f"Webhook error: {e}")
