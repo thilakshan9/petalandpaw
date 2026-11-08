@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, ShieldCheck, Leaf, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,7 +6,12 @@ import SEOHead from "@/components/SEOHead";
 import WreathKitWelcomeDialog from "@/components/WreathKitWelcomeDialog";
 
 export default function HomePage() {
-  const [welcomeOpen, setWelcomeOpen] = useState(true);
+  const [welcomeOpen, setWelcomeOpen] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setWelcomeOpen(true), 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div>
