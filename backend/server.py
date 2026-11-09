@@ -231,6 +231,7 @@ async def send_order_confirmation_email(to_email: str, order_data: dict):
                 <strong>Total: £{order_data.get('total', 0):.2f}</strong>
             </p>
             {f'<p style="color: #8DA399;">Delivery date: {order_data.get("delivery_date", "")}</p>' if order_data.get("delivery_date") else ""}
+            {f'<p style="color: #6B7280;">Phone: {order_data.get("phone_number", "")}</p>' if order_data.get("phone_number") else ""}
             {f'<p style="color: #4B5563;">{order_data.get("billing_note", "")}</p>' if order_data.get("billing_note") else ""}
         </div>
         <p style="color: #8DA399; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;">Petal & Paw - Pet-Safe Florals</p>
