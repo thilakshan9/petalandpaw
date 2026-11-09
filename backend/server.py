@@ -205,8 +205,8 @@ def _ordinal_day(n: int) -> str:
     suffix = "th" if 11 <= n % 100 <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
     return f"{n}{suffix}"
 
-def _subscription_billing_note(frequency: str) -> str:
-    day = _ordinal_day(datetime.now(ZoneInfo("Europe/London")).day)
+def _subscription_billing_note(frequency: str, purchased_at: int) -> str:
+    day = _ordinal_day(datetime.fromtimestamp(purchased_at, ZoneInfo("Europe/London")).day)
     if frequency == "month":
         return f"You will be charged on the {day} of every month."
     if frequency == "2months":
@@ -1894,7 +1894,7 @@ async def get_order_status(session_id: str, request: Request, background_tasks: 
                     background_tasks.add_task(send_order_confirmation_email, order_receipt["customer_email"], order_receipt)
             elif customer_email and not raffle_entry and not booking and not voucher_record and not redemption:
                 tx_meta = tx.get("metadata", {})
-                billing_note = _subscription_billing_note(tx_meta.get("delivery_frequency", "")) if tx_meta.get("type") == "subscription" else ""
+                billing_note = _subscription_billing_note(tx_meta.get("delivery_frequency", ""), session.created) if tx_meta.get("type") == "subscription" else ""
                 background_tasks.add_task(send_order_confirmation_email, customer_email, {
                     "items": [{"name": tx_meta.get("plan_name", "Subscription"), "quantity": 1, "price": tx.get("amount", 0)}],
                     "total": tx.get("amount", 0),
