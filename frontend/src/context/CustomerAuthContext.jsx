@@ -17,7 +17,10 @@ export function CustomerAuthProvider({ children }) {
     const token = localStorage.getItem("pp_token");
     if (!token) { setLoading(false); return; }
     fetch(`${API}/customer/me`, { headers: authHeaders() })
-      .then((r) => (r.ok ? r.json() : null))
+      .then((r) => {
+        if (!r.ok) { localStorage.removeItem("pp_token"); return null; }
+        return r.json();
+      })
       .then((data) => { setCustomer(data); setLoading(false); })
       .catch(() => { localStorage.removeItem("pp_token"); setLoading(false); });
   }, []);

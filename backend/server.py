@@ -87,11 +87,18 @@ class CheckoutRequest(BaseModel):
     special_notes: str = ""
     phone_number: str = ""
 
+SUBSCRIPTION_FREQUENCIES = {
+    "2weeks": {"interval": "week", "interval_count": 2},
+    "month": {"interval": "month", "interval_count": 1},
+    "2months": {"interval": "month", "interval_count": 2},
+}
+
 class SubscriptionCheckoutRequest(BaseModel):
     plan_id: str
     origin_url: str
     add_pet_toy: bool = False
     checkout_mode: str = "subscription"
+    delivery_frequency: str = "month"
     personalized_message: str = ""
     pet_type: str = ""
     pet_type_other: str = ""
@@ -353,7 +360,10 @@ async def get_optional_user(request: Request):
 async def get_optional_customer(request: Request):
     if not request.headers.get("Authorization"):
         return None
-    return await get_customer(request)
+    try:
+        return await get_customer(request)
+    except HTTPException:
+        return None
 
 async def get_customer(request: Request):
     """Get customer from JWT token (Authorization header)"""
@@ -806,6 +816,8 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
             raise HTTPException(status_code=400, detail="Invalid delivery date format")
     total = float(plan.get("price", 0))
     if is_recurring:
+        if req.delivery_frequency not in SUBSCRIPTION_FREQUENCIES:
+            raise HTTPException(status_code=400, detail="Invalid delivery frequency")
         total = round(total * 0.9, 2)
     if total < 0.30:
         logger.error(f"Plan price too low: {plan.get('name')} = £{total}. Plan data: {plan}")
@@ -823,7 +835,7 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
             "product_data": {"name": plan["name"]},
         }
         if is_recurring:
-            price_data["recurring"] = {"interval": "month"}
+            price_data["recurring"] = SUBSCRIPTION_FREQUENCIES[req.delivery_frequency]
 
         order_metadata = {
             "type": req.checkout_mode, "plan_id": plan["id"], "plan_name": plan["name"],
@@ -833,6 +845,8 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
             "preferred_delivery_date": req.delivery_date or "",
             "phone_number": req.phone_number[:48] if req.phone_number else "",
         }
+        if is_recurring:
+            order_metadata["delivery_frequency"] = req.delivery_frequency
 
         checkout_params = {
             "payment_method_types": ["card"],

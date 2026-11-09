@@ -34,6 +34,7 @@ export default function SubscriptionPage() {
   const [customerEmail, setCustomerEmail] = useState("");
   const [orderType, setOrderType] = useState(null);
   const [purchaseMode, setPurchaseMode] = useState({});
+  const [deliveryFrequency, setDeliveryFrequency] = useState({});
   const [personalizedMessage, setPersonalizedMessage] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [petType, setPetType] = useState({});
@@ -93,6 +94,7 @@ export default function SubscriptionPage() {
       if (data.petType) setPetType(prev => ({ ...prev, [data.planId]: data.petType }));
       if (data.petTypeOther) setPetTypeOther(prev => ({ ...prev, [data.planId]: data.petTypeOther }));
       if (data.petToy) setPetToy(prev => ({ ...prev, [data.planId]: data.petToy }));
+      if (data.deliveryFrequency) setDeliveryFrequency(prev => ({ ...prev, [data.planId]: data.deliveryFrequency }));
       setOrderType(data.orderType);
       setEmailDialog(data.planId);
       setCustomerEmail(customer.email);
@@ -193,6 +195,7 @@ export default function SubscriptionPage() {
       petType: petType[planId] || "",
       petTypeOther: petTypeOther[planId] || "",
       petToy: !!petToy[planId],
+      deliveryFrequency: deliveryFrequency[planId] || "month",
     }));
     navigate("/login");
   };
@@ -220,6 +223,7 @@ export default function SubscriptionPage() {
           origin_url: window.location.origin,
           add_pet_toy: !!petToy[planId],
           checkout_mode: orderType,
+          delivery_frequency: deliveryFrequency[planId] || "month",
           personalized_message: hwNote + personalizedMessage,
           pet_type: petType[planId] || "",
           pet_type_other: petTypeOther[planId] || "",
@@ -457,9 +461,22 @@ export default function SubscriptionPage() {
                   </div>
 
                   {selectedMode === "subscription" ? (
-                    <p className="text-xs font-light text-[#6B7280] mb-4" data-testid={`subscription-note-${plan.slug}`}>
-                      Subscriptions are delivered at the end of every month. <span className="text-[#8DA399]">Cancel anytime.</span>
-                    </p>
+                    <div className="mb-4" data-testid={`delivery-frequency-${plan.slug}`}>
+                      <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Delivery Frequency</label>
+                      <select
+                        value={deliveryFrequency[plan.id] || "month"}
+                        onChange={(e) => setDeliveryFrequency({ ...deliveryFrequency, [plan.id]: e.target.value })}
+                        className="w-full rounded-md border border-[#E5E0D6] bg-white px-3 py-2 text-sm text-[#2C2C2C]"
+                        data-testid={`delivery-frequency-select-${plan.slug}`}
+                      >
+                        <option value="2weeks">Every 2 weeks</option>
+                        <option value="month">Every month</option>
+                        <option value="2months">Every 2 months</option>
+                      </select>
+                      <p className="mt-2 text-xs font-light text-[#6B7280]" data-testid={`subscription-note-${plan.slug}`}>
+                        <span className="text-[#8DA399]">Cancel anytime.</span>
+                      </p>
+                    </div>
                   ) : (
                     <div className="mb-4" data-testid={`delivery-date-${plan.slug}`}>
                       <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Preferred Delivery Date</label>
