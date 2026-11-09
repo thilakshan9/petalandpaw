@@ -30,7 +30,7 @@ stripe.api_key = stripe_api_key
 
 # SendGrid (optional - works without key)
 sendgrid_api_key = os.environ.get('SENDGRID_API_KEY')
-sender_email = os.environ.get('SENDER_EMAIL', 'noreply@petalandpaw.com')
+sender_email = os.environ.get('SENDER_EMAIL', 'info@petalandpaw.co.uk')
 
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
@@ -179,7 +179,7 @@ def _send_email(to_email: str, subject: str, html_content: str, reply_to: str = 
         import resend
         resend.api_key = resend_api_key
         params = {
-            "from": from_email or "Petal & Paw <noreply@petalandpaw.co.uk>",
+            "from": from_email or "Petal & Paw <info@petalandpaw.co.uk>",
             "to": [to_email],
             "subject": subject,
             "html": html_content,
@@ -224,8 +224,7 @@ async def _claim_order_receipt(session_id: str):
     order = await db.orders.find_one({"stripe_session_id": session_id}, {"_id": 0})
     return order if order and order.get("customer_email") else None
 
-async def send_contact_form_email(name: str, email: str, subject: str, message: str, to_email: str = ""):
-    contact_email = to_email or "contact@petalandpaw.co.uk"
+async def send_contact_form_email(name: str, email: str, subject: str, message: str):
     html_content = f"""
     <div style="font-family: 'Helvetica', sans-serif; max-width: 600px; margin: 0 auto; background: #FAF9F6; padding: 40px;">
         <h1 style="font-family: serif; color: #2C2C2C; font-weight: 400;">New Contact Form Message</h1>
@@ -239,10 +238,10 @@ async def send_contact_form_email(name: str, email: str, subject: str, message: 
         <p style="color: #8DA399; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;">Petal & Paw - Contact Form</p>
     </div>
     """
-    return _send_email(contact_email, f"[Petal & Paw] {subject or 'Contact Form Message'}", html_content, reply_to=email)
+    return _send_email("info@petalandpaw.co.uk", f"[Petal & Paw] {subject or 'Contact Form Message'}", html_content, reply_to=email)
 
 async def send_workshop_booking_emails(booking: dict):
-    """Send confirmation to customer + notification to events@"""
+    """Send confirmation to customer + notification to info@"""
     customer_email = booking.get("customer_email", "")
     full_name = booking.get("full_name", "")
     workshop_name = booking.get("workshop_name", "")
@@ -272,9 +271,9 @@ async def send_workshop_booking_emails(booking: dict):
     </div>
     """
     if customer_email:
-        _send_email(customer_email, f"Workshop Booking Confirmed - {workshop_name}", customer_html, reply_to="events@petalandpaw.co.uk")
+        _send_email(customer_email, f"Workshop Booking Confirmed - {workshop_name}", customer_html, reply_to="info@petalandpaw.co.uk")
 
-    # Internal events@ notification
+    # Internal notification
     events_html = f"""
     <div style="font-family: 'Helvetica', sans-serif; max-width: 600px; margin: 0 auto; background: #FAF9F6; padding: 40px;">
         <h1 style="font-family: serif; color: #2C2C2C; font-weight: 400;">New Workshop Booking</h1>
@@ -292,7 +291,7 @@ async def send_workshop_booking_emails(booking: dict):
         <p style="color: #8DA399; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;">Petal & Paw - Workshop Booking</p>
     </div>
     """
-    _send_email("events@petalandpaw.co.uk", f"[Workshop Booking] {workshop_name} - {full_name}", events_html, reply_to=customer_email)
+    _send_email("info@petalandpaw.co.uk", f"[Workshop Booking] {workshop_name} - {full_name}", events_html, reply_to=customer_email)
 
 # ============================================================
 # AUTH HELPERS
@@ -1949,14 +1948,7 @@ async def submit_contact_form(req: ContactFormRequest, background_tasks: Backgro
         "subject": req.subject, "message": req.message,
         "created_at": datetime.now(timezone.utc).isoformat()
     })
-    subject_lower = (req.subject or "").lower()
-    if "workshop request" in subject_lower:
-        to_email = "info@petalandpaw.co.uk"
-    elif "event enquiry" in subject_lower:
-        to_email = "events@petalandpaw.co.uk"
-    else:
-        to_email = "contact@petalandpaw.co.uk"
-    background_tasks.add_task(send_contact_form_email, req.name, req.email, req.subject, req.message, to_email)
+    background_tasks.add_task(send_contact_form_email, req.name, req.email, req.subject, req.message)
     return {"success": True, "message": "Message received. We'll get back to you soon."}
 
 # ============================================================
