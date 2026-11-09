@@ -114,7 +114,7 @@ export default function SubscriptionPage() {
     }
     const dDate = deliveryDate[planId];
     if (type === "one-time" && !dDate) {
-      toast.error("Please choose your estimated delivery date.");
+      toast.error("Please choose your preferred delivery date.");
       return false;
     }
     // Mobile Safari ignores HTML5 min, so the 3-day minimum is enforced here
@@ -479,7 +479,7 @@ export default function SubscriptionPage() {
                     </div>
                   ) : (
                     <div className="mb-4" data-testid={`delivery-date-${plan.slug}`}>
-                      <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Estimated Delivery Date</label>
+                      <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Preferred Delivery Date</label>
                       <input
                         type="date"
                         value={deliveryDate[plan.id] || ""}

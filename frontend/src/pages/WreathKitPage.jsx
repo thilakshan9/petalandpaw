@@ -44,7 +44,7 @@ export default function WreathKitPage() {
 
   const handlePayNow = async () => {
     if (!deliveryDate) {
-      toast.error("Please choose your estimated delivery date.");
+      toast.error("Please choose your preferred delivery date.");
       return;
     }
     if (isDeliveryDateTooSoon(deliveryDate)) {
@@ -164,7 +164,7 @@ export default function WreathKitPage() {
           </DialogDescription>
           <div className="mt-4 space-y-4">
             <div>
-              <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Estimated Delivery Date (required)</label>
+              <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Preferred Delivery Date (required)</label>
               <input
                 type="date"
                 value={deliveryDate}
