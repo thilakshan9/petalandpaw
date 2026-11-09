@@ -217,7 +217,7 @@ export default function CustomerDashboard() {
                     <div className="flex items-center gap-2">
                       <Package size={14} className="text-[#8DA399]" />
                       <span className="text-sm font-medium text-[#2C2C2C]">
-                        {order.metadata?.plan_name || "Order"}
+                        {order.metadata?.plan_name || order.item_names || "Order"}
                       </span>
                       <span className="text-[9px] uppercase tracking-widest font-semibold px-2 py-0.5 rounded-full bg-[#8DA399]/10 text-[#8DA399]">paid</span>
                       {order.metadata?.type && (

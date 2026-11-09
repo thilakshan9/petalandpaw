@@ -633,6 +633,13 @@ async def customer_orders(customer=Depends(get_customer)):
         if tx.get("payment_status") == "paid" and tx.get("metadata", {}).get("type") != "workshop":
             updated_txs.append(tx)
 
+    order_ids = [tx["order_id"] for tx in updated_txs if tx.get("order_id")]
+    if order_ids:
+        order_docs = await db.orders.find({"id": {"$in": order_ids}}, {"_id": 0, "id": 1, "items": 1}).to_list(len(order_ids))
+        names_by_order = {o["id"]: ", ".join(i.get("name", "") for i in o.get("items", [])) for o in order_docs}
+        for tx in updated_txs:
+            tx["item_names"] = names_by_order.get(tx.get("order_id"), "")
+
     subscriptions = []
     subscriptions_error = False
     try:
