@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Minus, Plus, ArrowRight, Leaf, Gift, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,7 +7,15 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/compone
 import { toast } from "sonner";
 import SEOHead from "@/components/SEOHead";
 import WreathKitSlideshow from "@/components/WreathKitSlideshow";
+import CheckoutChoiceDialog from "@/components/CheckoutChoiceDialog";
+import { useCustomerAuth } from "@/context/CustomerAuthContext";
 import { startStripeCheckout, earliestDeliveryDate, isDeliveryDateTooSoon, toIsoDate } from "@/lib/checkout";
+
+const RETURN_KEY = "pp_return_to_wreath_kit";
+
+function readReturnDetails() {
+  try { return JSON.parse(localStorage.getItem(RETURN_KEY)) || {}; } catch { return {}; }
+}
 
 const WREATH_KIT = {
   id: "wreath_kit",
@@ -36,25 +44,47 @@ const included = [
 ];
 
 export default function WreathKitPage() {
+  const { customer } = useCustomerAuth();
+  const navigate = useNavigate();
+  const [savedDetails] = useState(readReturnDetails);
   const [quantity, setQuantity] = useState(1);
   const [paymentOpen, setPaymentOpen] = useState(false);
-  const [deliveryDate, setDeliveryDate] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [choiceOpen, setChoiceOpen] = useState(false);
+  const [deliveryDate, setDeliveryDate] = useState(savedDetails.deliveryDate || "");
+  const [phoneNumber, setPhoneNumber] = useState(savedDetails.phoneNumber || "");
+  const [fullName, setFullName] = useState(savedDetails.fullName || customer?.name || "");
+  const [contactEmail, setContactEmail] = useState(savedDetails.contactEmail || customer?.email || "");
   const [paying, setPaying] = useState(false);
 
-  const handlePayNow = async () => {
+  useEffect(() => {
+    localStorage.removeItem(RETURN_KEY);
+  }, []);
+
+  const validateDetails = () => {
     if (!deliveryDate) {
       toast.error("Please choose your preferred delivery date.");
-      return;
+      return false;
     }
     if (isDeliveryDateTooSoon(deliveryDate)) {
       toast.error("Please choose an estimated delivery date at least 3 days from today.");
-      return;
+      return false;
+    }
+    if (!fullName.trim()) {
+      toast.error("Please enter your name.");
+      return false;
+    }
+    if (!/^\S+@\S+\.\S+$/.test(contactEmail.trim())) {
+      toast.error("Please enter a valid email address.");
+      return false;
     }
     if (!phoneNumber.trim()) {
       toast.error("Please enter your phone number.");
-      return;
+      return false;
     }
+    return true;
+  };
+
+  const payWithStripe = async () => {
     setPaying(true);
     try {
       await startStripeCheckout([{
@@ -63,11 +93,37 @@ export default function WreathKitPage() {
         price: WREATH_KIT.price,
         quantity,
         image_url: WREATH_KIT.image_url,
-      }], { deliveryDate, phoneNumber });
-    } catch {
-      toast.error("Failed to create checkout session.");
+      }], { deliveryDate, phoneNumber, fullName, contactEmail });
+    } catch (err) {
+      toast.error(err.message || "Failed to create checkout session.");
       setPaying(false);
     }
+  };
+
+  const handlePayNow = () => {
+    if (!validateDetails()) return;
+    if (!customer) {
+      setPaymentOpen(false);
+      setChoiceOpen(true);
+      return;
+    }
+    payWithStripe();
+  };
+
+  const handleChoiceSignIn = () => {
+    localStorage.setItem(RETURN_KEY, JSON.stringify({ deliveryDate, phoneNumber, fullName, contactEmail }));
+    navigate("/login");
+  };
+
+  const handleChoiceGuest = () => {
+    setChoiceOpen(false);
+    setPaymentOpen(true);
+    payWithStripe();
+  };
+
+  const handleChoiceOpenChange = (open) => {
+    setChoiceOpen(open);
+    if (!open) setPaymentOpen(true);
   };
 
   return (
@@ -176,6 +232,25 @@ export default function WreathKitPage() {
               <p className="text-[10px] text-[#9CA3AF] mt-1">Minimum 3 days notice required.</p>
             </div>
             <div>
+              <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Full Name (required)</label>
+              <Input
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                className="border-[#E5E0D6] text-sm py-5"
+                data-testid="wreath-kit-name-input"
+              />
+            </div>
+            <div>
+              <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Email (required)</label>
+              <Input
+                type="email"
+                value={contactEmail}
+                onChange={(e) => setContactEmail(e.target.value)}
+                className="border-[#E5E0D6] text-sm py-5"
+                data-testid="wreath-kit-email-input"
+              />
+            </div>
+            <div>
               <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-1.5 block">Phone Number (required)</label>
               <Input
                 type="tel"
@@ -197,6 +272,12 @@ export default function WreathKitPage() {
           </div>
         </DialogContent>
       </Dialog>
+      <CheckoutChoiceDialog
+        open={choiceOpen}
+        onOpenChange={handleChoiceOpenChange}
+        onSignIn={handleChoiceSignIn}
+        onGuest={handleChoiceGuest}
+      />
     </div>
   );
 }

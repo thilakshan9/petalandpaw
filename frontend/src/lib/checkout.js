@@ -41,7 +41,9 @@ export async function startStripeCheckout(items, details = {}) {
       phone_number: details.phoneNumber || "",
     }),
   });
-  const data = await res.json();
-  if (!data.url) throw new Error("No checkout URL returned");
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || !data.url) {
+    throw new Error(typeof data.detail === "string" ? data.detail : "Failed to create checkout session.");
+  }
   window.location.href = data.url;
 }
