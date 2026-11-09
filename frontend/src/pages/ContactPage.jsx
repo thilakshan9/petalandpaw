@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Mail, MapPin, Clock, Send, Instagram } from "lucide-react";
+import { Mail, MapPin, Clock, Send, Instagram, Phone } from "lucide-react";
 
 const TikTokIcon = ({ size = 18, className = "" }) => (
   <svg viewBox="0 0 24 24" fill="currentColor" width={size} height={size} className={className}>
@@ -62,6 +62,7 @@ export default function ContactPage() {
             <div className="space-y-6">
               {[
                 { icon: Mail, label: "Email", value: "info@petalandpaw.co.uk", href: "mailto:info@petalandpaw.co.uk" },
+                { icon: Phone, label: "Business Phone", value: "+44 7951 316063", href: "tel:+447951316063" },
                 { icon: Instagram, label: "Instagram", value: "@petalandpawflorist", href: "https://instagram.com/petalandpawflorist" },
                 { icon: TikTokIcon, label: "TikTok", value: "@petalandpawflorist", href: "https://tiktok.com/@petalandpawflorist" },
                 { icon: MapPin, label: "Location", value: "United Kingdom" },
