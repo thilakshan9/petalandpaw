@@ -33,6 +33,8 @@ export async function startStripeCheckout(items, details = {}) {
       })),
       origin_url: window.location.origin,
       order_type: "regular",
+      customer_email: details.contactEmail || "",
+      full_name: details.fullName || "",
       delivery_date: details.deliveryDate || "",
       personalized_message: details.personalizedMessage || "",
       special_notes: details.specialNotes || "",

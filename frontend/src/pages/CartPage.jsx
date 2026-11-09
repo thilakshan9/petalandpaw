@@ -29,6 +29,8 @@ export default function CartPage() {
   );
   const [personalizedMessage, setPersonalizedMessage] = useState(savedDetails.personalizedMessage || "");
   const [phoneNumber, setPhoneNumber] = useState(savedDetails.phoneNumber || "");
+  const [fullName, setFullName] = useState(savedDetails.fullName || customer?.name || "");
+  const [contactEmail, setContactEmail] = useState(savedDetails.contactEmail || customer?.email || "");
 
   useEffect(() => {
     localStorage.removeItem(RETURN_KEY);
@@ -56,6 +58,8 @@ export default function CartPage() {
         personalizedMessage,
         specialNotes,
         phoneNumber,
+        fullName,
+        contactEmail,
       });
     } catch { toast.error("Failed to create checkout session."); }
   };
@@ -69,6 +73,14 @@ export default function CartPage() {
     }
     if (isDeliveryDateTooSoon(finalDeliveryDate)) {
       toast.error("Please choose a delivery date at least 3 days from today.");
+      return;
+    }
+    if (!fullName.trim()) {
+      toast.error("Please enter your name.");
+      return;
+    }
+    if (!/^\S+@\S+\.\S+$/.test(contactEmail.trim())) {
+      toast.error("Please enter a valid email address.");
       return;
     }
     if (!phoneNumber.trim()) {
@@ -87,6 +99,8 @@ export default function CartPage() {
       deliveryDate: getDeliveryDate(),
       personalizedMessage,
       phoneNumber,
+      fullName,
+      contactEmail,
     }));
     navigate("/login");
   };
@@ -197,6 +211,32 @@ export default function CartPage() {
                   data-testid="cart-personalized-message-input"
                 />
                 <p className="text-[10px] text-[#9CA3AF] mt-1 text-right">{personalizedMessage.length}/500</p>
+              </div>
+
+              {/* Contact Details */}
+              <div data-testid="contact-details-section" className="space-y-4">
+                <div>
+                  <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-2 block">Full Name (required)</label>
+                  <Input
+                    type="text"
+                    placeholder="Jane Smith"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    className="border-[#E5E0D6] text-sm"
+                    data-testid="cart-name-input"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-2 block">Email (required)</label>
+                  <Input
+                    type="email"
+                    placeholder="you@example.com"
+                    value={contactEmail}
+                    onChange={(e) => setContactEmail(e.target.value)}
+                    className="border-[#E5E0D6] text-sm"
+                    data-testid="cart-email-input"
+                  />
+                </div>
               </div>
 
               {/* Phone Number */}

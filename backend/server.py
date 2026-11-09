@@ -80,6 +80,7 @@ class CheckoutRequest(BaseModel):
     items: List[OrderItem]
     origin_url: str
     customer_email: str = ""
+    full_name: str = ""
     order_type: str = "regular"
     delivery_date: str = ""
     referral_code: str = ""
@@ -971,7 +972,9 @@ WREATH_PET_TOY_PRICE = 8.99
 
 @api_router.post("/orders/checkout")
 async def create_checkout(req: CheckoutRequest, request: Request, background_tasks: BackgroundTasks, customer=Depends(get_optional_customer)):
-    buyer_email = customer["email"] if customer else req.customer_email
+    buyer_email = customer["email"] if customer else req.customer_email.strip()
+    if not customer and not buyer_email:
+        raise HTTPException(status_code=400, detail="An email address is required to check out.")
     total = 0.0
     validated_items = []
     for item in req.items:
@@ -1063,7 +1066,7 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
     order_doc = {
         "id": order_id, "items": validated_items, "total": float(total),
         "status": "todo", "stripe_session_id": session.id,
-        "customer_email": buyer_email, "order_type": req.order_type,
+        "customer_email": buyer_email, "full_name": req.full_name.strip(), "order_type": req.order_type,
         "delivery_date": req.delivery_date, "pet_notes": req.pet_notes,
         "personalized_message": req.personalized_message,
         "special_notes": req.special_notes,
