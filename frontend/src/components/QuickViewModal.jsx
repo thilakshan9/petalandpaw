@@ -1,16 +1,15 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ShieldCheck, Minus, Plus, ArrowRight, X } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/components/CartProvider";
 import { toast } from "sonner";
-import { startStripeCheckout } from "@/lib/checkout";
 
 export default function QuickViewModal({ product, open, onClose }) {
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
-  const [buying, setBuying] = useState(false);
+  const navigate = useNavigate();
 
   if (!product) return null;
 
@@ -27,17 +26,17 @@ export default function QuickViewModal({ product, open, onClose }) {
     setQuantity(1);
   };
 
-  const handleBuyNow = async () => {
-    setBuying(true);
-    try {
-      await startStripeCheckout([{
-        product_id: product.id, name: product.name, price: product.price,
-        quantity, image_url: product.image_url,
-      }]);
-    } catch {
-      toast.error("Failed to create checkout session.");
-      setBuying(false);
-    }
+  const handleBuyNow = () => {
+    addToCart({
+      product_id: product.id,
+      name: product.name,
+      price: product.price,
+      quantity,
+      image_url: product.image_url,
+    });
+    onClose();
+    setQuantity(1);
+    navigate("/cart");
   };
 
   return (
@@ -121,12 +120,11 @@ export default function QuickViewModal({ product, open, onClose }) {
 
             <Button
               onClick={handleBuyNow}
-              disabled={buying}
               variant="outline"
               className="rounded-full border-[#2C2C2C] text-[#2C2C2C] py-6 text-xs uppercase tracking-widest transition-all hover:scale-[1.02] w-full mb-3"
               data-testid="quick-view-buy-now"
             >
-              {buying ? "Redirecting to payment..." : <>Buy Now &mdash; £{(product.price * quantity).toFixed(2)}</>}
+              Buy Now &mdash; £{(product.price * quantity).toFixed(2)}
             </Button>
 
             <Link
