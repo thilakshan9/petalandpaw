@@ -106,6 +106,13 @@ export default function WreathKitPage() {
   };
 
   const handleChoiceSignIn = () => {
+    if (customer) {
+      setFullName(customer.name || "");
+      setContactEmail(customer.email || "");
+      setChoiceOpen(false);
+      setPaymentOpen(true);
+      return;
+    }
     localStorage.setItem(RETURN_KEY, JSON.stringify({ deliveryDate, phoneNumber, fullName, contactEmail }));
     navigate("/login");
   };
@@ -161,7 +168,7 @@ export default function WreathKitPage() {
                 </button>
               </div>
               <Button
-                onClick={() => (customer ? setPaymentOpen(true) : setChoiceOpen(true))}
+                onClick={() => setChoiceOpen(true)}
                 className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-8 py-6 text-sm uppercase tracking-widest transition-all hover:scale-105 flex-1"
                 data-testid="wreath-kit-buy-now-btn"
               >
