@@ -795,7 +795,7 @@ async def get_subscription_order_count(plan_slug: str):
 async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Request, customer=Depends(get_optional_customer)):
     is_recurring = req.checkout_mode == "subscription"
     if customer is None and is_recurring:
-        raise HTTPException(status_code=401, detail="Not authenticated")
+        raise HTTPException(status_code=401, detail="Please sign in to start a subscription.")
     customer_email = customer["email"] if customer else req.customer_email.strip().lower()
     if "@" not in customer_email:
         raise HTTPException(status_code=400, detail="A valid email address is required")
