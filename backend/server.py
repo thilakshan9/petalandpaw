@@ -569,11 +569,13 @@ async def customer_reset_password(req: ResetPasswordRequest):
 LIVE_SUBSCRIPTION_STATUSES = ("active", "trialing", "past_due")
 
 def _subscription_period_end(sub):
-    item = sub.items.data[0] if sub.items.data else None
+    items = sub["items"]["data"]
+    item = items[0] if items else None
     return getattr(sub, "current_period_end", None) or (getattr(item, "current_period_end", None) if item else None)
 
 def _subscription_summary(sub):
-    item = sub.items.data[0] if sub.items.data else None
+    items = sub["items"]["data"]
+    item = items[0] if items else None
     price = item.price if item else None
     recurring = (price.recurring if price else None) or {}
     interval = recurring.get("interval", "month")

@@ -104,7 +104,7 @@ export default function CartPage() {
           <ShoppingBag size={48} strokeWidth={1} className="mx-auto text-[#E5E0D6] mb-6" />
           <h1 className="font-['Playfair_Display'] text-3xl md:text-4xl font-medium text-[#2C2C2C] mb-4">Your cart is empty</h1>
           <p className="text-base font-light text-[#6B7280] mb-8">Time to find something beautiful for your home.</p>
-          <Link to="/shop">
+          <Link to="/subscriptions">
             <Button className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-8 py-6 text-sm uppercase tracking-widest" data-testid="continue-shopping-btn">Continue Shopping</Button>
           </Link>
         </div>
@@ -229,7 +229,7 @@ export default function CartPage() {
               <Button onClick={handleCheckout} className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-8 py-6 text-sm uppercase tracking-widest transition-all hover:scale-105 w-full" data-testid="checkout-btn">
                 Checkout <ArrowRight size={14} className="ml-2" />
               </Button>
-              <Link to="/shop" className="block text-center text-sm font-light text-[#6B7280] hover:text-[#2C2C2C] transition-colors" data-testid="continue-shopping-link">Continue Shopping</Link>
+              <Link to="/subscriptions" className="block text-center text-sm font-light text-[#6B7280] hover:text-[#2C2C2C] transition-colors" data-testid="continue-shopping-link">Continue Shopping</Link>
             </div>
           </div>
         </div>
