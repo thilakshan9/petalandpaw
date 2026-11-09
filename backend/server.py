@@ -14,6 +14,7 @@ from pathlib import Path
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict
 from datetime import datetime, timezone, timedelta
+from zoneinfo import ZoneInfo
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -200,6 +201,20 @@ def _send_email(to_email: str, subject: str, html_content: str, reply_to: str = 
         logger.error(f"Failed to send email: {e}")
         return False
 
+def _ordinal_day(n: int) -> str:
+    suffix = "th" if 11 <= n % 100 <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+    return f"{n}{suffix}"
+
+def _subscription_billing_note(frequency: str) -> str:
+    day = _ordinal_day(datetime.now(ZoneInfo("Europe/London")).day)
+    if frequency == "month":
+        return f"You will be charged on the {day} of every month."
+    if frequency == "2months":
+        return f"You will be charged on the {day} of every second month."
+    if frequency == "2weeks":
+        return "You will be charged every two weeks."
+    return ""
+
 async def send_order_confirmation_email(to_email: str, order_data: dict):
     items_html = ""
     for item in order_data.get("items", []):
@@ -215,6 +230,7 @@ async def send_order_confirmation_email(to_email: str, order_data: dict):
                 <strong>Total: £{order_data.get('total', 0):.2f}</strong>
             </p>
             {f'<p style="color: #8DA399;">Delivery date: {order_data.get("delivery_date", "")}</p>' if order_data.get("delivery_date") else ""}
+            {f'<p style="color: #4B5563;">{order_data.get("billing_note", "")}</p>' if order_data.get("billing_note") else ""}
         </div>
         <p style="color: #8DA399; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;">Petal & Paw - Pet-Safe Florals</p>
     </div>
@@ -550,6 +566,36 @@ async def customer_reset_password(req: ResetPasswordRequest):
     await db.password_resets.update_one({"token": req.token}, {"$set": {"used": True}})
     return {"message": "Password reset successfully"}
 
+LIVE_SUBSCRIPTION_STATUSES = ("active", "trialing", "past_due")
+
+def _subscription_period_end(sub):
+    item = sub.items.data[0] if sub.items.data else None
+    return getattr(sub, "current_period_end", None) or (getattr(item, "current_period_end", None) if item else None)
+
+def _subscription_summary(sub):
+    item = sub.items.data[0] if sub.items.data else None
+    price = item.price if item else None
+    recurring = (price.recurring if price else None) or {}
+    return {
+        "id": sub.id,
+        "status": sub.status,
+        "current_period_end": _subscription_period_end(sub),
+        "cancel_at_period_end": sub.cancel_at_period_end,
+        "plan_name": sub.metadata.get("plan_name", "Subscription"),
+        "amount": price.unit_amount / 100 if price and price.unit_amount is not None else 0,
+        "currency": price.currency if price else "gbp",
+        "interval": recurring.get("interval", "month"),
+        "interval_count": recurring.get("interval_count", 1) or 1,
+    }
+
+def _customer_live_subscriptions(email: str):
+    subscriptions = []
+    for stripe_cust in stripe.Customer.list(email=email, limit=10).data:
+        for sub in stripe.Subscription.list(customer=stripe_cust.id, limit=100).data:
+            if sub.status in LIVE_SUBSCRIPTION_STATUSES:
+                subscriptions.append(_subscription_summary(sub))
+    return subscriptions
+
 @api_router.get("/customer/orders")
 async def customer_orders(customer=Depends(get_customer)):
     """Get customer's past purchases and subscriptions from Stripe"""
@@ -579,52 +625,13 @@ async def customer_orders(customer=Depends(get_customer)):
         if tx.get("payment_status") == "paid" and tx.get("metadata", {}).get("type") != "workshop":
             updated_txs.append(tx)
 
-    # Search Stripe for subscriptions - try multiple methods
     subscriptions = []
-    found_sub_ids = set()
+    subscriptions_error = False
     try:
-        # Method 1: Search by Stripe Customer object
-        customers_list = stripe.Customer.list(email=email, limit=5)
-        for stripe_cust in customers_list.data:
-            subs = stripe.Subscription.list(customer=stripe_cust.id, limit=10)
-            for sub in subs.data:
-                if sub.id not in found_sub_ids:
-                    found_sub_ids.add(sub.id)
-                    subscriptions.append({
-                        "id": sub.id,
-                        "status": sub.status,
-                        "current_period_end": sub.current_period_end,
-                        "cancel_at_period_end": sub.cancel_at_period_end,
-                        "plan_name": sub.metadata.get("plan_name", "Subscription"),
-                        "amount": sub.items.data[0].price.unit_amount / 100 if sub.items.data else 0,
-                        "currency": sub.items.data[0].price.currency if sub.items.data else "gbp",
-                    })
-
-        # Method 2: Check subscription-type transactions in our DB and look up their Stripe sessions
-        if not subscriptions:
-            sub_txs = await db.payment_transactions.find(
-                {"metadata.type": "subscription", "customer_email": email}, {"_id": 0}
-            ).to_list(20)
-            for stx in sub_txs:
-                try:
-                    session = stripe.checkout.Session.retrieve(stx["session_id"])
-                    if session.subscription:
-                        sub = stripe.Subscription.retrieve(session.subscription)
-                        if sub.id not in found_sub_ids:
-                            found_sub_ids.add(sub.id)
-                            subscriptions.append({
-                                "id": sub.id,
-                                "status": sub.status,
-                                "current_period_end": sub.current_period_end,
-                                "cancel_at_period_end": sub.cancel_at_period_end,
-                                "plan_name": sub.metadata.get("plan_name", stx.get("metadata", {}).get("plan_name", "Subscription")),
-                                "amount": sub.items.data[0].price.unit_amount / 100 if sub.items.data else 0,
-                                "currency": sub.items.data[0].price.currency if sub.items.data else "gbp",
-                            })
-                except Exception:
-                    pass
+        subscriptions = _customer_live_subscriptions(email)
     except Exception as e:
         logger.error(f"Stripe subscription fetch error: {e}")
+        subscriptions_error = True
 
     # Workshop bookings (paid only) — surfaced separately in dashboard
     bookings = []
@@ -647,17 +654,23 @@ async def customer_orders(customer=Depends(get_customer)):
     except Exception as e:
         logger.error(f"Workshop bookings fetch error: {e}")
 
-    return {"transactions": updated_txs, "subscriptions": subscriptions, "bookings": bookings}
+    return {"transactions": updated_txs, "subscriptions": subscriptions, "subscriptions_error": subscriptions_error, "bookings": bookings}
 
 @api_router.post("/customer/cancel-subscription/{sub_id}")
 async def cancel_subscription(sub_id: str, customer=Depends(get_customer)):
     """Cancel a Stripe subscription at period end"""
     try:
+        sub = stripe.Subscription.retrieve(sub_id)
+        stripe_customer = stripe.Customer.retrieve(sub.customer)
+        if (getattr(stripe_customer, "email", None) or "").lower() != customer["email"].lower():
+            raise HTTPException(status_code=404, detail="Subscription not found")
         sub = stripe.Subscription.modify(sub_id, cancel_at_period_end=True)
-        return {"status": "cancelled", "cancel_at_period_end": True, "current_period_end": sub.current_period_end}
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Subscription cancel error: {e}")
         raise HTTPException(status_code=500, detail="Could not cancel subscription")
+    return {"status": "cancelled", "cancel_at_period_end": True, "current_period_end": _subscription_period_end(sub)}
 
 # ============================================================
 # PRODUCT ROUTES
@@ -888,7 +901,8 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
                      "personalized_message": req.personalized_message[:500] if req.personalized_message else "",
                      "pet_type": req.pet_type_other if req.pet_type == "other" else req.pet_type,
                      "preferred_delivery_date": req.delivery_date or "",
-                     "phone_number": req.phone_number[:48] if req.phone_number else ""},
+                     "phone_number": req.phone_number[:48] if req.phone_number else "",
+                     "delivery_frequency": req.delivery_frequency if is_recurring else ""},
         "created_at": datetime.now(timezone.utc).isoformat()
     })
     return {"url": session.url, "session_id": session.id}
@@ -941,7 +955,8 @@ WREATH_KIT_PRICE = 50.00
 WREATH_PET_TOY_PRICE = 8.99
 
 @api_router.post("/orders/checkout")
-async def create_checkout(req: CheckoutRequest, request: Request, background_tasks: BackgroundTasks):
+async def create_checkout(req: CheckoutRequest, request: Request, background_tasks: BackgroundTasks, customer=Depends(get_optional_customer)):
+    buyer_email = customer["email"] if customer else req.customer_email
     total = 0.0
     validated_items = []
     for item in req.items:
@@ -1000,8 +1015,8 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
                           "delivery_date": req.delivery_date or "",
                           "phone_number": req.phone_number[:48] if req.phone_number else ""}
         pid = {"metadata": cart_metadata}
-        if req.customer_email:
-            pid["receipt_email"] = req.customer_email
+        if buyer_email:
+            pid["receipt_email"] = buyer_email
         checkout_params = {
             "payment_method_types": ["card"],
             "line_items": [{"price_data": {"currency": "gbp", "unit_amount": int(total * 100),
@@ -1013,17 +1028,17 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
             "metadata": cart_metadata,
             "payment_intent_data": pid,
         }
-        if req.customer_email:
+        if buyer_email:
             try:
-                existing = stripe.Customer.list(email=req.customer_email, limit=1)
+                existing = stripe.Customer.list(email=buyer_email, limit=1)
                 if existing.data:
                     checkout_params["customer"] = existing.data[0].id
                 else:
-                    db_cust = await db.customers.find_one({"email": req.customer_email.strip().lower()}, {"_id": 0})
-                    sc = stripe.Customer.create(email=req.customer_email, name=db_cust["name"] if db_cust else "")
+                    db_cust = await db.customers.find_one({"email": buyer_email.strip().lower()}, {"_id": 0})
+                    sc = stripe.Customer.create(email=buyer_email, name=db_cust["name"] if db_cust else "")
                     checkout_params["customer"] = sc.id
             except Exception:
-                checkout_params["customer_email"] = req.customer_email
+                checkout_params["customer_email"] = buyer_email
         session = stripe.checkout.Session.create(**checkout_params)
     except stripe._error.AuthenticationError:
         raise HTTPException(status_code=503, detail="Payment service is not configured. Please contact support.")
@@ -1033,7 +1048,7 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
     order_doc = {
         "id": order_id, "items": validated_items, "total": float(total),
         "status": "todo", "stripe_session_id": session.id,
-        "customer_email": req.customer_email, "order_type": req.order_type,
+        "customer_email": buyer_email, "order_type": req.order_type,
         "delivery_date": req.delivery_date, "pet_notes": req.pet_notes,
         "personalized_message": req.personalized_message,
         "special_notes": req.special_notes,
@@ -1879,10 +1894,12 @@ async def get_order_status(session_id: str, request: Request, background_tasks: 
                     background_tasks.add_task(send_order_confirmation_email, order_receipt["customer_email"], order_receipt)
             elif customer_email and not raffle_entry and not booking and not voucher_record and not redemption:
                 tx_meta = tx.get("metadata", {})
+                billing_note = _subscription_billing_note(tx_meta.get("delivery_frequency", "")) if tx_meta.get("type") == "subscription" else ""
                 background_tasks.add_task(send_order_confirmation_email, customer_email, {
                     "items": [{"name": tx_meta.get("plan_name", "Subscription"), "quantity": 1, "price": tx.get("amount", 0)}],
                     "total": tx.get("amount", 0),
                     "delivery_date": tx_meta.get("preferred_delivery_date", ""),
+                    "billing_note": billing_note,
                 })
     await db.payment_transactions.update_one({"session_id": session_id}, {"$set": update_data}, upsert=True)
     result = {"status": status, "payment_status": payment_status,

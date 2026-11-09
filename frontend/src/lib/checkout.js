@@ -1,3 +1,5 @@
+import { authHeaders } from "@/context/CustomerAuthContext";
+
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export function earliestDeliveryDate() {
@@ -21,7 +23,7 @@ export function isDeliveryDateTooSoon(isoDate) {
 export async function startStripeCheckout(items, details = {}) {
   const res = await fetch(`${API}/orders/checkout`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...authHeaders() },
     body: JSON.stringify({
       items: items.map((i) => ({
         product_id: i.product_id, name: i.name, price: i.price,

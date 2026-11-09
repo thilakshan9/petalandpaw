@@ -10,10 +10,17 @@ import SEOHead from "@/components/SEOHead";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
+function frequencyLabel(sub) {
+  const count = sub.interval_count || 1;
+  if (sub.interval === "week") return count === 1 ? "week" : `${count} weeks`;
+  return count === 1 ? "month" : `${count} months`;
+}
+
 export default function CustomerDashboard() {
   const { customer, logout, loading: authLoading } = useCustomerAuth();
   const [orders, setOrders] = useState([]);
   const [subscriptions, setSubscriptions] = useState([]);
+  const [subscriptionsError, setSubscriptionsError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [cancelDialog, setCancelDialog] = useState(null);
   const [cancelInput, setCancelInput] = useState("");
@@ -27,13 +34,17 @@ export default function CustomerDashboard() {
     }
     if (customer) {
       fetch(`${API}/customer/orders`, { headers: authHeaders() })
-        .then((r) => r.ok ? r.json() : { transactions: [], subscriptions: [] })
+        .then((r) => r.ok ? r.json() : { transactions: [], subscriptions: [], subscriptions_error: true })
         .then((data) => {
           setOrders(data.transactions || []);
           setSubscriptions(data.subscriptions || []);
+          setSubscriptionsError(!!data.subscriptions_error);
           setLoading(false);
         })
-        .catch(() => setLoading(false));
+        .catch(() => {
+          setSubscriptionsError(true);
+          setLoading(false);
+        });
     }
   }, [customer, authLoading, navigate]);
 
@@ -131,6 +142,10 @@ export default function CustomerDashboard() {
           <h2 className="font-['Playfair_Display'] text-xl sm:text-2xl font-medium text-[#2C2C2C] mb-4">Subscriptions</h2>
           {loading ? (
             <div className="space-y-3">{[1,2].map(i => <div key={i} className="h-24 bg-[#F2F0EB] rounded-xl animate-pulse" />)}</div>
+          ) : subscriptionsError ? (
+            <div className="bg-white border border-[#E5E0D6] rounded-2xl p-6 text-center" data-testid="subscriptions-error">
+              <p className="text-sm font-light text-[#6B7280]">We couldn't load your subscriptions. Please refresh the page to try again.</p>
+            </div>
           ) : subscriptions.length === 0 ? (
             <div className="bg-white border border-[#E5E0D6] rounded-2xl p-6 text-center">
               <p className="text-sm font-light text-[#6B7280]">No subscriptions yet.</p>
@@ -151,11 +166,11 @@ export default function CustomerDashboard() {
 
                       <div className="space-y-1">
                         <p className="text-sm font-light text-[#6B7280]">
-                          Paying <span className="font-medium text-[#2C2C2C]">£{sub.amount?.toFixed(2)}</span>/month
+                          Paying <span className="font-medium text-[#2C2C2C]">£{sub.amount?.toFixed(2)}</span> every {frequencyLabel(sub)}
                         </p>
                         {sub.current_period_end && (
                           <p className="text-sm font-light text-[#6B7280]">
-                            Next monthly delivery: <span className="font-medium text-[#2C2C2C]">{new Date(sub.current_period_end * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                            Next delivery: <span className="font-medium text-[#2C2C2C]">{new Date(sub.current_period_end * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                           </p>
                         )}
                       </div>
@@ -165,7 +180,7 @@ export default function CustomerDashboard() {
                       )}
                     </div>
 
-                    {sub.status === "active" && !sub.cancel_at_period_end && (
+                    {!sub.cancel_at_period_end && (
                       <Button
                         onClick={() => { setCancelDialog(sub.id); setCancelInput(""); }}
                         variant="outline"
