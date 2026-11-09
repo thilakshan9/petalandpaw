@@ -168,6 +168,9 @@ export default function CustomerDashboard() {
                         <p className="text-sm font-light text-[#6B7280]">
                           Paying <span className="font-medium text-[#2C2C2C]">£{sub.amount?.toFixed(2)}</span> every {frequencyLabel(sub)}
                         </p>
+                        {sub.billing_note && (
+                          <p className="text-sm font-light text-[#6B7280]">{sub.billing_note}</p>
+                        )}
                         {sub.current_period_end && (
                           <p className="text-sm font-light text-[#6B7280]">
                             Next delivery: <span className="font-medium text-[#2C2C2C]">{new Date(sub.current_period_end * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span>

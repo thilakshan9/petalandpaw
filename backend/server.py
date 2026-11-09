@@ -576,6 +576,11 @@ def _subscription_summary(sub):
     item = sub.items.data[0] if sub.items.data else None
     price = item.price if item else None
     recurring = (price.recurring if price else None) or {}
+    interval = recurring.get("interval", "month")
+    interval_count = recurring.get("interval_count", 1) or 1
+    frequency = next((key for key, value in SUBSCRIPTION_FREQUENCIES.items()
+                      if value["interval"] == interval and value["interval_count"] == interval_count), "")
+    billing_anchor = getattr(sub, "billing_cycle_anchor", None)
     return {
         "id": sub.id,
         "status": sub.status,
@@ -584,8 +589,9 @@ def _subscription_summary(sub):
         "plan_name": sub.metadata.get("plan_name", "Subscription"),
         "amount": price.unit_amount / 100 if price and price.unit_amount is not None else 0,
         "currency": price.currency if price else "gbp",
-        "interval": recurring.get("interval", "month"),
-        "interval_count": recurring.get("interval_count", 1) or 1,
+        "interval": interval,
+        "interval_count": interval_count,
+        "billing_note": _subscription_billing_note(frequency, billing_anchor) if frequency and billing_anchor else "",
     }
 
 def _customer_live_subscriptions(email: str):
