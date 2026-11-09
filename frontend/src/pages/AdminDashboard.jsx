@@ -122,7 +122,7 @@ function OrderDetailDialog({ order }) {
       {order.full_name && <p className="text-xs text-[#6B7280]">Name: {order.full_name}</p>}
       {order.customer_email && <p className="text-xs text-[#6B7280]">Email: {order.customer_email}</p>}
       {order.phone_number && <p className="text-xs text-[#6B7280]">Phone: {order.phone_number}</p>}
-      {order.delivery_date && <p className="text-xs text-[#6B7280]">Delivery: {order.delivery_date}</p>}
+      {order.delivery_date && <p className="text-xs text-[#6B7280]">Estimated Delivery Date: {order.delivery_date}</p>}
       {order.pet_notes && <p className="text-xs text-[#6B7280]">Pet Notes: {order.pet_notes}</p>}
       {order.order_type && <p className="text-xs text-[#6B7280]">Type: {order.order_type}</p>}
       <p className="text-xs text-[#6B7280]">{order.created_at ? new Date(order.created_at).toLocaleString() : ""}</p>

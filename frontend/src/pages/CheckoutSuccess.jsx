@@ -274,7 +274,7 @@ export default function CheckoutSuccess() {
                 <div className="relative mt-8 pt-8 border-t border-[#E5E0D6]">
                   <div className="flex items-center justify-center gap-2 text-sm font-light text-[#6B7280]">
                     <Calendar size={14} className="text-[#8DA399]" />
-                    <span>Preferred delivery date: <strong className="font-medium text-[#2C2C2C]">{meta.preferred_delivery_date}</strong></span>
+                    <span>Estimated delivery date: <strong className="font-medium text-[#2C2C2C]">{meta.preferred_delivery_date}</strong></span>
                   </div>
                 </div>
               )}

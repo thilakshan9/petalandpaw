@@ -72,7 +72,7 @@ export default function CartPage() {
       return;
     }
     if (isDeliveryDateTooSoon(finalDeliveryDate)) {
-      toast.error("Please choose a delivery date at least 3 days from today.");
+      toast.error("Please choose an estimated delivery date at least 3 days from today.");
       return;
     }
     if (!fullName.trim()) {
@@ -178,7 +178,7 @@ export default function CartPage() {
 
               {/* Delivery Date */}
               <div data-testid="delivery-date-section">
-                <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-2 block">Delivery Date (required)</label>
+                <label className="text-xs uppercase tracking-widest font-semibold text-[#6B7280] mb-2 block">Estimated Delivery Date (required)</label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button variant="outline" className="w-full justify-start text-left font-light border-[#E5E0D6] rounded-lg" data-testid="delivery-date-btn">
