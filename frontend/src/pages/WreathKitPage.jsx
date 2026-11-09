@@ -102,11 +102,6 @@ export default function WreathKitPage() {
 
   const handlePayNow = () => {
     if (!validateDetails()) return;
-    if (!customer) {
-      setPaymentOpen(false);
-      setChoiceOpen(true);
-      return;
-    }
     payWithStripe();
   };
 
@@ -118,13 +113,8 @@ export default function WreathKitPage() {
   const handleChoiceGuest = () => {
     setChoiceOpen(false);
     setPaymentOpen(true);
-    payWithStripe();
   };
 
-  const handleChoiceOpenChange = (open) => {
-    setChoiceOpen(open);
-    if (!open) setPaymentOpen(true);
-  };
 
   return (
     <div className="py-8 sm:py-12 md:py-20" data-testid="wreath-kit-page">
@@ -171,7 +161,7 @@ export default function WreathKitPage() {
                 </button>
               </div>
               <Button
-                onClick={() => setPaymentOpen(true)}
+                onClick={() => (customer ? setPaymentOpen(true) : setChoiceOpen(true))}
                 className="rounded-full bg-[#2C2C2C] text-[#FAF9F6] hover:bg-[#2C2C2C]/90 px-8 py-6 text-sm uppercase tracking-widest transition-all hover:scale-105 flex-1"
                 data-testid="wreath-kit-buy-now-btn"
               >
@@ -274,7 +264,7 @@ export default function WreathKitPage() {
       </Dialog>
       <CheckoutChoiceDialog
         open={choiceOpen}
-        onOpenChange={handleChoiceOpenChange}
+        onOpenChange={setChoiceOpen}
         onSignIn={handleChoiceSignIn}
         onGuest={handleChoiceGuest}
       />
