@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { useCustomerAuth } from "@/context/CustomerAuthContext";
+import { useCustomerAuth, authHeaders } from "@/context/CustomerAuthContext";
 import { useCart } from "@/components/CartProvider";
 import SEOHead from "@/components/SEOHead";
 import CheckoutChoiceDialog from "@/components/CheckoutChoiceDialog";
@@ -213,9 +213,10 @@ export default function SubscriptionPage() {
     try {
       const res = await fetch(`${API}/subscriptions/checkout`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({
           plan_id: planId,
+          customer_email: customerEmail.trim(),
           origin_url: window.location.origin,
           add_pet_toy: !!petToy[planId],
           checkout_mode: orderType,

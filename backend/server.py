@@ -97,6 +97,7 @@ class SubscriptionCheckoutRequest(BaseModel):
     pet_type_other: str = ""
     delivery_date: str = ""
     phone_number: str = ""
+    customer_email: str = ""
 
 class StepBouquetRequest(BaseModel):
     size: str  # small, medium, large
@@ -349,6 +350,11 @@ async def get_optional_user(request: Request):
         return await get_current_user(request)
     except HTTPException:
         return None
+
+async def get_optional_customer(request: Request):
+    if not request.headers.get("Authorization"):
+        return None
+    return await get_customer(request)
 
 async def get_customer(request: Request):
     """Get customer from JWT token (Authorization header)"""
@@ -777,8 +783,13 @@ async def get_subscription_order_count(plan_slug: str):
     return {"count": count, "limit": stock_limit}
 
 @api_router.post("/subscriptions/checkout")
-async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Request, customer=Depends(get_customer)):
-    customer_email = customer["email"]
+async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Request, customer=Depends(get_optional_customer)):
+    is_recurring = req.checkout_mode == "subscription"
+    if customer is None and is_recurring:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    customer_email = customer["email"] if customer else req.customer_email.strip().lower()
+    if "@" not in customer_email:
+        raise HTTPException(status_code=400, detail="A valid email address is required")
     plan = await db.subscription_plans.find_one({"id": req.plan_id}, {"_id": 0})
     if not plan:
         raise HTTPException(status_code=404, detail="Plan not found")
@@ -794,7 +805,6 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
             raise
         except ValueError:
             raise HTTPException(status_code=400, detail="Invalid delivery date format")
-    is_recurring = req.checkout_mode == "subscription"
     total = float(plan.get("price", 0))
     if is_recurring:
         total = round(total * 0.9, 2)
@@ -845,7 +855,7 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
             if existing.data:
                 checkout_params["customer"] = existing.data[0].id
             else:
-                sc = stripe.Customer.create(email=customer_email, name=customer.get("name", ""))
+                sc = stripe.Customer.create(email=customer_email, name=(customer or {}).get("name", ""))
                 checkout_params["customer"] = sc.id
         except Exception:
             checkout_params["customer_email"] = customer_email
