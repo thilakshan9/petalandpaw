@@ -465,13 +465,12 @@ export default function WorkshopsPage() {
                           {dates.map((d, i) => {
                             const hit = seasonActive && isSeasonDate(d.date, season);
                             const border = i < dates.length - 1 ? "border-b border-[#E5E0D6]" : "";
-                            const rowClass = hit ? (isXmas ? "december-row" : "october-row") : "";
                             const rowText = isXmas ? XMAS.greenDeep : HW.purpleDeep;
                             const rowAccent = isXmas ? XMAS.green : HW.purple;
                             return (
                               <tr
                                 key={i}
-                                className={`${border} ${rowClass}`}
+                                className={border}
                                 data-testid={hit ? `${isXmas ? "december" : "october"}-row-${w.id}-${i}` : undefined}
                               >
                                 <td className="px-4 py-3 font-light" style={{ color: hit ? rowText : "#2C2C2C" }}>
@@ -525,13 +524,12 @@ export default function WorkshopsPage() {
                       <div className="sm:hidden divide-y divide-[#E5E0D6]">
                         {dates.map((d, i) => {
                           const hit = seasonActive && isSeasonDate(d.date, season);
-                          const rowClass = hit ? (isXmas ? "december-row" : "october-row") : "";
                           const rowText = isXmas ? XMAS.greenDeep : HW.purpleDeep;
                           const rowAccent = isXmas ? XMAS.green : HW.purple;
                           return (
                             <div
                               key={i}
-                              className={`px-4 py-3 ${rowClass}`}
+                              className="px-4 py-3"
                               title={hit ? "See this workshop on our seasonal page" : undefined}
                               data-testid={hit ? `${isXmas ? "december" : "october"}-row-${w.id}-${i}` : undefined}
                             >

@@ -229,21 +229,6 @@
 }
 .moon-glow { animation: moon-glow 6s ease-in-out infinite; }
 
-/* Highlighted October rows in workshop tables */
-.october-row {
-  background: rgba(107, 78, 113, 0.08);
-  cursor: pointer;
-  transition: background 0.25s ease;
-}
-.october-row:hover { background: rgba(107, 78, 113, 0.16); }
-
-.december-row {
-  background: rgba(46, 93, 63, 0.08);
-  cursor: pointer;
-  transition: background 0.25s ease;
-}
-.december-row:hover { background: rgba(46, 93, 63, 0.16); }
-
 /* Snow */
 @keyframes snow-fall {
   0%   { transform: translateY(-12vh) translateX(0) rotate(0deg); }

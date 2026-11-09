@@ -61,7 +61,7 @@ export default function CustomerAuthPage() {
       <div className="container mx-auto px-5 md:px-8 max-w-md">
         <div className="text-center mb-8 animate-fade-in-up">
           <h1 className="font-['Playfair_Display'] text-3xl sm:text-4xl font-medium tracking-tight text-[#2C2C2C] mb-2">
-            {mode === "login" ? "Welcome Back" : mode === "register" ? "Create Account" : "Forgot Password"}
+            {mode === "login" ? "Sign In" : mode === "register" ? "Create Account" : "Forgot Password"}
           </h1>
           <p className="text-sm font-light text-[#6B7280]">
             {mode === "login" ? "Sign in to view your orders and subscriptions" : mode === "register" ? "Join Petal & Paw to track your orders" : "Enter your email and we'll send you a reset link"}
