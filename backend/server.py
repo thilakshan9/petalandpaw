@@ -1896,6 +1896,10 @@ async def get_order_status(session_id: str, request: Request, background_tasks: 
                 order_update = {"status": "todo", "updated_at": datetime.now(timezone.utc).isoformat()}
                 if shipping:
                     order_update["shipping"] = shipping
+                if not order.get("customer_email"):
+                    stripe_email = (session.get("customer_details") or {}).get("email")
+                    if stripe_email:
+                        order_update["customer_email"] = stripe_email
                 await db.orders.update_one(
                     {"stripe_session_id": session_id}, {"$set": order_update}
                 )
