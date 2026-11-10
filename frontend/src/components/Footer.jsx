@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Leaf, Instagram } from "lucide-react";
+import { OPEN_COOKIE_SETTINGS_EVENT } from "@/lib/cookieConsent";
 
 function ScrollLink({ to, children, ...props }) {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-xs uppercase tracking-widest font-semibold mb-6 text-[#FAF9F6]/40">Shop</h4>
+            <h4 className="text-xs uppercase tracking-widest font-semibold mb-6 text-[#FAF9F6]/60">Shop</h4>
             <nav className="flex flex-col gap-3">
               <ScrollLink to="/gallery" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-shop">Gallery</ScrollLink>
               <ScrollLink to="/subscriptions" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-subscriptions">Shop</ScrollLink>
@@ -50,14 +51,14 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-xs uppercase tracking-widest font-semibold mb-6 text-[#FAF9F6]/40">Company</h4>
+            <h4 className="text-xs uppercase tracking-widest font-semibold mb-6 text-[#FAF9F6]/60">Company</h4>
             <nav className="flex flex-col gap-3">
               <ScrollLink to="/about" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-about">About Us</ScrollLink>
             </nav>
           </div>
 
           <div>
-            <h4 className="text-xs uppercase tracking-widest font-semibold mb-6 text-[#FAF9F6]/40">Support</h4>
+            <h4 className="text-xs uppercase tracking-widest font-semibold mb-6 text-[#FAF9F6]/60">Support</h4>
             <nav className="flex flex-col gap-3">
               <ScrollLink to="/contact" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-contact">Contact</ScrollLink>
               <ScrollLink to="/faq" className="text-sm font-light text-[#FAF9F6]/70 hover:text-[#FAF9F6] transition-colors" data-testid="footer-faq">FAQ</ScrollLink>
@@ -69,12 +70,20 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-[#FAF9F6]/10 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-[#FAF9F6]/40 font-light">
+          <p className="text-xs text-[#FAF9F6]/60 font-light">
             &copy; {new Date().getFullYear()} Petal & Paw. All rights reserved.
           </p>
-          <div className="flex items-center gap-6">
-            <span className="text-xs text-[#FAF9F6]/40 font-light">Privacy Policy</span>
-            <span className="text-xs text-[#FAF9F6]/40 font-light">Terms of Service</span>
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
+            <Link to="/privacy" className="text-xs text-[#FAF9F6]/60 font-light hover:text-[#FAF9F6] transition-colors" data-testid="footer-privacy-bottom">Privacy Policy</Link>
+            <Link to="/terms" className="text-xs text-[#FAF9F6]/60 font-light hover:text-[#FAF9F6] transition-colors">Terms of Service</Link>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new Event(OPEN_COOKIE_SETTINGS_EVENT))}
+              className="text-xs text-[#FAF9F6]/60 font-light hover:text-[#FAF9F6] transition-colors"
+              data-testid="footer-cookie-settings"
+            >
+              Cookie Settings
+            </button>
           </div>
         </div>
       </div>

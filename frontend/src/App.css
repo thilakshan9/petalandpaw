@@ -327,3 +327,24 @@
   }
   .pp-bats, .pp-snow, .sparkle-burst { display: none; }
 }
+
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: -100px;
+  z-index: 100;
+  padding: 12px 20px;
+  border-radius: 9999px;
+  background: #2C2C2C;
+  color: #FAF9F6;
+  font-size: 14px;
+  font-weight: 500;
+  transition: top 0.2s ease;
+}
+.skip-link:focus { top: 16px; outline: 2px solid #2C6E5A; outline-offset: 2px; }
+
+:focus-visible {
+  outline: 2px solid #2C6E5A;
+  outline-offset: 2px;
+}
+main:focus { outline: none; }

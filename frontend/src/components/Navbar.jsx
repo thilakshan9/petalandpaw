@@ -4,7 +4,7 @@ import { ShoppingBag, Menu, User } from "lucide-react";
 import { useCart } from "@/components/CartProvider";
 import { useCustomerAuth } from "@/context/CustomerAuthContext";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { flurrySnow, isChristmasActive } from "@/lib/halloween";
 
 const navLinks = [
@@ -84,13 +84,13 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Link to={customer ? "/account" : "/login"} onClick={scrollToTop} className="nav-icon-btn p-2 hover:bg-[#E8E4D9]/50 rounded-full transition-colors hidden md:flex" data-testid="nav-account">
+          <Link to={customer ? "/account" : "/login"} onClick={scrollToTop} aria-label="My account" className="nav-icon-btn p-2 hover:bg-[#E8E4D9]/50 rounded-full transition-colors hidden md:flex" data-testid="nav-account">
             <span className="relative inline-flex">
               <User size={20} strokeWidth={1.5} />
               {isChristmas && <SantaHat className="-top-2 left-1/2 -translate-x-1/2 w-3.5 h-auto" />}
             </span>
           </Link>
-          <Link to="/cart" onClick={scrollToTop} className="nav-icon-btn relative p-2 hover:bg-[#E8E4D9]/50 rounded-full transition-colors" data-testid="nav-cart">
+          <Link to="/cart" onClick={scrollToTop} aria-label={`Basket, ${itemCount} ${itemCount === 1 ? "item" : "items"}`} className="nav-icon-btn relative p-2 hover:bg-[#E8E4D9]/50 rounded-full transition-colors" data-testid="nav-cart">
             <ShoppingBag size={20} strokeWidth={1.5} />
             {itemCount > 0 && (
               <span className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-[#8DA399] text-white text-[10px] font-semibold rounded-full flex items-center justify-center">{itemCount}</span>
@@ -98,9 +98,10 @@ export default function Navbar() {
           </Link>
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="icon" data-testid="mobile-menu-toggle"><Menu size={20} strokeWidth={1.5} /></Button>
+              <Button variant="ghost" size="icon" aria-label="Open menu" data-testid="mobile-menu-toggle"><Menu size={20} strokeWidth={1.5} /></Button>
             </SheetTrigger>
             <SheetContent side="right" className="mobile-menu-sheet bg-[#FAF9F6] border-l border-[#E5E0D6] w-72">
+              <SheetTitle className="sr-only">Menu</SheetTitle>
               <div className="menu-candy-band absolute inset-x-0 top-0 h-2" aria-hidden="true" />
               <div className="flex flex-col gap-6 mt-12">
                 {navLinks.map((link) => (
