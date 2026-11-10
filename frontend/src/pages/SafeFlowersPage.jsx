@@ -78,6 +78,21 @@ export default function SafeFlowersPage() {
           </div>
         </div>
 
+        <div className="mt-8 sm:mt-10 bg-[#F2F0EB] border border-[#E5E0D6] rounded-2xl p-6 sm:p-8 animate-fade-in-up delay-200" data-testid="pet-safety-notice">
+          <h2 className="font-['Playfair_Display'] text-xl sm:text-2xl font-medium text-[#2C2C2C] mb-3">Pet Safety Notice</h2>
+          <div className="space-y-3 text-sm font-light leading-relaxed text-[#4B5563]">
+            <p>
+              While we make every effort to curate non-toxic flora according to ASPCA guidelines, individual pet reactions vary. Even certified "non-toxic" plants can cause mild stomach upset (such as vomiting or drooling) if swallowed, as pets cannot easily digest raw plant fibers or evergreen needles.
+            </p>
+            <p>
+              Petal and Paw Ltd is not liable for any illness or injury resulting from the handling or consumption of our products. Please keep all floral arrangement materials, sharp support wires, and berries out of reach for curious pets.
+            </p>
+            <p>
+              If you suspect ingestion of a toxic substance, contact your veterinarian immediately.
+            </p>
+          </div>
+        </div>
+
         {/* Source note */}
         <div className="text-center mt-12 sm:mt-16 animate-fade-in-up delay-200">
           <p className="text-sm font-light text-[#6B7280]">
