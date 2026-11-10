@@ -20,7 +20,7 @@ function makeFlake(i) {
 // persistent snowfall renders only when `persistent` is set.
 export default function Snow({ persistent = false }) {
   const baseFlakes = useMemo(
-    () => Array.from({ length: 50 }, (_, i) => makeFlake(i)),
+    () => Array.from({ length: 120 }, (_, i) => makeFlake(i)),
     []
   );
   const [flurry, setFlurry] = useState([]);
