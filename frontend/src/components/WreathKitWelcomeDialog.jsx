@@ -41,7 +41,7 @@ export default function WreathKitWelcomeDialog({ open, onOpenChange }) {
           </DialogHeader>
 
           <div className="flex items-center justify-between gap-4 pt-2">
-            <p className="font-['Playfair_Display'] text-2xl text-white">£50.00</p>
+            <p className="font-['Playfair_Display'] text-2xl text-white">£45.00</p>
             <Button
               onClick={handleCheckItOut}
               className="group rounded-full bg-white text-[#2C2C2C] hover:bg-[#F2F0EB] px-6 py-5 text-sm uppercase tracking-widest font-semibold transition-all hover:scale-105"

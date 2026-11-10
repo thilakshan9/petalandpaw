@@ -20,7 +20,7 @@ function readReturnDetails() {
 const WREATH_KIT = {
   id: "wreath_kit",
   name: "Wreath Making Kit",
-  price: 50,
+  price: 45,
   image_url: "/images/wreath-kit.jpg",
   images: ["/images/wreath-kit.jpg", "/images/wreath-kit-2.jpg", "/images/wreath-kit-3.jpg"],
 };
