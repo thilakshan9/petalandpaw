@@ -861,7 +861,7 @@ async def subscription_checkout(req: SubscriptionCheckoutRequest, request: Reque
     try:
         price_data = {
             "currency": "gbp",
-            "unit_amount": int(total * 100),
+            "unit_amount": int(round(total * 100)),
             "product_data": {"name": plan["name"]},
         }
         if is_recurring:
@@ -1040,7 +1040,7 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
             pid["receipt_email"] = buyer_email
         checkout_params = {
             "payment_method_types": ["card"],
-            "line_items": [{"price_data": {"currency": "gbp", "unit_amount": int(total * 100),
+            "line_items": [{"price_data": {"currency": "gbp", "unit_amount": int(round(total * 100)),
                 "product_data": {"name": ", ".join(i["name"] for i in validated_items)[:250]}}, "quantity": 1}],
             "mode": "payment",
             "success_url": success_url,
@@ -1128,7 +1128,7 @@ async def create_workshop_checkout(req: WorkshopCheckoutRequest, request: Reques
             "line_items": [{
                 "price_data": {
                     "currency": "gbp",
-                    "unit_amount": int(req.price * 100),
+                    "unit_amount": int(round(req.price * 100)),
                     "product_data": {
                         "name": f"{req.workshop_name} - {req.workshop_location}",
                         "description": f"{req.workshop_date} at {req.workshop_time}",
@@ -1293,7 +1293,7 @@ async def create_raffle_checkout(req: RaffleCheckoutRequest, request: Request):
             "line_items": [{
                 "price_data": {
                     "currency": "gbp",
-                    "unit_amount": int(unit_price * 100),
+                    "unit_amount": int(round(unit_price * 100)),
                     "product_data": {
                         "name": "Camp Beagle Raffle Ticket",
                         "description": f"Raffle ticket(s): {', '.join(ticket_numbers)}",
@@ -1521,7 +1521,7 @@ async def create_voucher_checkout(req: VoucherCheckoutRequest, request: Request)
             "line_items": [{
                 "price_data": {
                     "currency": "gbp",
-                    "unit_amount": int(amount * 100),
+                    "unit_amount": int(round(amount * 100)),
                     "product_data": {
                         "name": f"Petal & Paw Voucher - £{amount:.2f}",
                         "description": "Redeemable against any flower arranging workshop.",
