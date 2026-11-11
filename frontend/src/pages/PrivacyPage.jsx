@@ -1,5 +1,4 @@
 import SEOHead from "@/components/SEOHead";
-import { OPEN_COOKIE_SETTINGS_EVENT } from "@/lib/cookieConsent";
 
 const headingClass = "font-['Playfair_Display'] text-xl font-medium text-[#2C2C2C] mb-3";
 const paragraphClass = "text-sm font-light leading-[1.8] text-[#4B5563]";
@@ -80,10 +79,9 @@ export default function PrivacyPage() {
             <List items={[
               "Basket contents (local storage): strictly necessary, kept until you empty your basket or clear your browser",
               "Login session (cookie): strictly necessary, kept until you sign out or the session expires",
-              "Cookie preferences (local storage): strictly necessary, remembers your choice on the cookie banner",
             ]} />
             <p className={`${paragraphClass} mt-3`}>
-              You can change your cookie choices at any time using the "Cookie Settings" link in the footer. If we add optional cookies in future, we will ask for your consent first.
+              If we add optional cookies in future, such as analytics or marketing, we will ask for your consent first and update this section.
             </p>
           </Section>
 
@@ -147,13 +145,6 @@ export default function PrivacyPage() {
             <p className={paragraphClass}>
               If you have any questions about this policy or how we handle your data, please email contact@petalandpaw.co.uk.
             </p>
-            <button
-              type="button"
-              onClick={() => window.dispatchEvent(new Event(OPEN_COOKIE_SETTINGS_EVENT))}
-              className="mt-4 text-sm font-medium text-[#2C6E5A] underline underline-offset-2 hover:text-[#1F4F40]"
-            >
-              Manage cookie settings
-            </button>
           </Section>
         </div>
       </div>

@@ -1,6 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Leaf, Instagram } from "lucide-react";
-import { OPEN_COOKIE_SETTINGS_EVENT } from "@/lib/cookieConsent";
 
 function ScrollLink({ to, children, ...props }) {
   const navigate = useNavigate();
@@ -76,14 +75,6 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
             <Link to="/privacy" className="text-xs text-[#FAF9F6]/60 font-light hover:text-[#FAF9F6] transition-colors" data-testid="footer-privacy-bottom">Privacy Policy</Link>
             <Link to="/terms" className="text-xs text-[#FAF9F6]/60 font-light hover:text-[#FAF9F6] transition-colors">Terms of Service</Link>
-            <button
-              type="button"
-              onClick={() => window.dispatchEvent(new Event(OPEN_COOKIE_SETTINGS_EVENT))}
-              className="text-xs text-[#FAF9F6]/60 font-light hover:text-[#FAF9F6] transition-colors"
-              data-testid="footer-cookie-settings"
-            >
-              Cookie Settings
-            </button>
           </div>
         </div>
       </div>
