@@ -134,7 +134,7 @@ export default function CartPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-12">
           <div className="lg:col-span-2 space-y-4">
             {items.map((item) => (
-              <div key={item.product_id} className="flex gap-4 md:gap-6 bg-white border border-[#E5E0D6] rounded-xl p-4 md:p-6 animate-fade-in-up" data-testid={`cart-item-${item.product_id}`}>
+              <div key={`${item.product_id}-${item.add_pet_toy ? "toy" : "notoy"}-${item.pet_type || ""}-${item.theme || ""}`} className="flex gap-4 md:gap-6 bg-white border border-[#E5E0D6] rounded-xl p-4 md:p-6 animate-fade-in-up" data-testid={`cart-item-${item.product_id}`}>
                 {item.image_url && (
                   <div className="w-20 h-20 md:w-24 md:h-24 rounded-lg overflow-hidden bg-[#F2F0EB] flex-shrink-0">
                     <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
@@ -160,11 +160,11 @@ export default function CartPage() {
                   )}
                   <div className="flex items-center gap-3 mt-3">
                     <div className="flex items-center border border-[#E5E0D6] rounded-full">
-                      <button onClick={() => updateQuantity(item.product_id, item.quantity - 1)} className="p-2 hover:bg-[#F2F0EB] rounded-l-full transition-colors" data-testid={`cart-decrease-${item.product_id}`}><Minus size={12} /></button>
+                      <button onClick={() => updateQuantity(item, item.quantity - 1)} className="p-2 hover:bg-[#F2F0EB] rounded-l-full transition-colors" data-testid={`cart-decrease-${item.product_id}`}><Minus size={12} /></button>
                       <span className="w-8 text-center text-sm">{item.quantity}</span>
-                      <button onClick={() => updateQuantity(item.product_id, item.quantity + 1)} className="p-2 hover:bg-[#F2F0EB] rounded-r-full transition-colors" data-testid={`cart-increase-${item.product_id}`}><Plus size={12} /></button>
+                      <button onClick={() => updateQuantity(item, item.quantity + 1)} className="p-2 hover:bg-[#F2F0EB] rounded-r-full transition-colors" data-testid={`cart-increase-${item.product_id}`}><Plus size={12} /></button>
                     </div>
-                    <button onClick={() => removeFromCart(item.product_id)} className="p-2 text-[#6B7280] hover:text-red-500 transition-colors" data-testid={`cart-remove-${item.product_id}`}><Trash2 size={14} /></button>
+                    <button onClick={() => removeFromCart(item)} className="p-2 text-[#6B7280] hover:text-red-500 transition-colors" data-testid={`cart-remove-${item.product_id}`}><Trash2 size={14} /></button>
                   </div>
                 </div>
                 <div className="text-right"><p className="text-lg font-light text-[#2C2C2C]">£{(item.price * item.quantity).toFixed(2)}</p></div>

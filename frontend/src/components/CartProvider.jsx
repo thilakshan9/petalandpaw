@@ -2,6 +2,15 @@ import { createContext, useContext, useState, useEffect, useCallback } from "rea
 
 const CartContext = createContext(null);
 
+function lineKey(item) {
+  return [
+    item.product_id,
+    item.add_pet_toy ? "toy" : "notoy",
+    item.pet_type || "",
+    item.theme || "",
+  ].join("|");
+}
+
 export function CartProvider({ children }) {
   const [items, setItems] = useState(() => {
     const saved = localStorage.getItem("petal-paw-cart");
@@ -14,15 +23,11 @@ export function CartProvider({ children }) {
 
   const addToCart = useCallback((product) => {
     setItems((prev) => {
-      const sameOptions = (i) =>
-        i.product_id === product.product_id &&
-        !!i.add_pet_toy === !!product.add_pet_toy &&
-        (i.pet_type || "") === (product.pet_type || "") &&
-        (i.theme || "") === (product.theme || "");
-      const existing = prev.find(sameOptions);
+      const newKey = lineKey(product);
+      const existing = prev.find((i) => lineKey(i) === newKey);
       if (existing) {
         return prev.map((i) =>
-          sameOptions(i)
+          lineKey(i) === newKey
             ? { ...i, quantity: i.quantity + (product.quantity || 1) }
             : i
         );
@@ -31,18 +36,28 @@ export function CartProvider({ children }) {
     });
   }, []);
 
-  const removeFromCart = useCallback((productId) => {
-    setItems((prev) => prev.filter((i) => i.product_id !== productId));
+  const removeFromCart = useCallback((item) => {
+    const targetKey = typeof item === "string" ? null : lineKey(item);
+    setItems((prev) => {
+      if (targetKey) return prev.filter((i) => lineKey(i) !== targetKey);
+      // Legacy callers that pass a product id: remove all lines of that product
+      return prev.filter((i) => i.product_id !== item);
+    });
   }, []);
 
-  const updateQuantity = useCallback((productId, quantity) => {
+  const updateQuantity = useCallback((item, quantity) => {
+    const targetKey = typeof item === "string" ? null : lineKey(item);
     if (quantity <= 0) {
-      setItems((prev) => prev.filter((i) => i.product_id !== productId));
+      setItems((prev) => {
+        if (targetKey) return prev.filter((i) => lineKey(i) !== targetKey);
+        return prev.filter((i) => i.product_id !== item);
+      });
       return;
     }
-    setItems((prev) =>
-      prev.map((i) => (i.product_id === productId ? { ...i, quantity } : i))
-    );
+    setItems((prev) => {
+      if (targetKey) return prev.map((i) => (lineKey(i) === targetKey ? { ...i, quantity } : i));
+      return prev.map((i) => (i.product_id === item ? { ...i, quantity } : i));
+    });
   }, []);
 
   const clearCart = useCallback(() => setItems([]), []);
