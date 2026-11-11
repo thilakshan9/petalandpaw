@@ -15,7 +15,7 @@ export default function Layout({ children }) {
       <Snow persistent />
       <Bats active={season === "halloween" && seasonalPage} />
       <Navbar />
-      <main id="main-content" tabIndex={-1} className="flex-1">{children}</main>
+      <main key={pathname} id="main-content" tabIndex={-1} className="flex-1 animate-page-enter">{children}</main>
       <Footer />
     </div>
   );

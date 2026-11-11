@@ -4,11 +4,13 @@ import { ArrowRight, ShieldCheck, Leaf, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SEOHead from "@/components/SEOHead";
 import WreathKitWelcomeDialog from "@/components/WreathKitWelcomeDialog";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 let welcomeShownThisLoad = false;
 
 export default function HomePage() {
   const [welcomeOpen, setWelcomeOpen] = useState(false);
+  useScrollReveal();
 
   useEffect(() => {
     if (welcomeShownThisLoad) return undefined;
@@ -81,10 +83,10 @@ export default function HomePage() {
       <section className="py-14 sm:py-24 md:py-36" data-testid="feature-workshops">
         <div className="container mx-auto px-5 md:px-8 max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-20 items-center">
-            <div className="aspect-[4/5] max-h-[60vh] lg:max-h-none rounded-2xl overflow-hidden animate-fade-in-up">
+            <div className="aspect-[4/5] max-h-[60vh] lg:max-h-none rounded-2xl overflow-hidden reveal" data-reveal>
               <img src="https://lh3.googleusercontent.com/d/15hT9Xj4AGJ5KeVraHebBySB-q8cS_CwO=w800" alt="Flower arranging workshops" className="w-full h-full object-cover" />
             </div>
-            <div className="animate-fade-in-up delay-200">
+            <div className="reveal" data-reveal>
               <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 sm:mb-4 block">Learn & Create</span>
               <h2 className="font-['Playfair_Display'] text-2xl sm:text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C] mb-4 sm:mb-6">
                 Workshops
@@ -106,7 +108,7 @@ export default function HomePage() {
       <section className="py-14 sm:py-24 md:py-36 bg-white" data-testid="feature-subscriptions">
         <div className="container mx-auto px-5 md:px-8 max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-20 items-center">
-            <div className="order-2 lg:order-1 animate-fade-in-up delay-200">
+            <div className="order-2 lg:order-1 reveal" data-reveal>
               <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 sm:mb-4 block">Monthly Delivery</span>
               <h2 className="font-['Playfair_Display'] text-2xl sm:text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C] mb-4 sm:mb-6">
                 Non-Toxic Subscriptions
@@ -120,7 +122,7 @@ export default function HomePage() {
                 </Button>
               </Link>
             </div>
-            <div className="order-1 lg:order-2 aspect-[4/5] max-h-[60vh] lg:max-h-none rounded-2xl overflow-hidden animate-fade-in-up">
+            <div className="order-1 lg:order-2 aspect-[4/5] max-h-[60vh] lg:max-h-none rounded-2xl overflow-hidden reveal" data-reveal>
               <img src="https://lh3.googleusercontent.com/d/1370ARPVzWwmFKtFgU16SPBLPplTtGn9l=w800" alt="Letterbox flower subscription" className="w-full h-full object-cover" />
             </div>
           </div>
@@ -131,10 +133,10 @@ export default function HomePage() {
       <section className="py-14 sm:py-24 md:py-36" data-testid="feature-petsafe">
         <div className="container mx-auto px-5 md:px-8 max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-20 items-center">
-            <div className="aspect-[4/5] max-h-[60vh] lg:max-h-none rounded-2xl overflow-hidden animate-fade-in-up">
+            <div className="aspect-[4/5] max-h-[60vh] lg:max-h-none rounded-2xl overflow-hidden reveal" data-reveal>
               <img src="https://lh3.googleusercontent.com/d/16IURvclMQzZnIucglfEbfgsZFeegijRb=w800" alt="Cat with safe flowers" className="w-full h-full object-cover" />
             </div>
-            <div className="animate-fade-in-up delay-200">
+            <div className="reveal" data-reveal>
               <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 sm:mb-4 block">Every Stem Non-Toxic</span>
               <h2 className="font-['Playfair_Display'] text-2xl sm:text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C] mb-4 sm:mb-6">
                 Safe for Every Member of Your Family
