@@ -1002,10 +1002,12 @@ async def create_checkout(req: CheckoutRequest, request: Request, background_tas
             else:
                 plan = await db.subscription_plans.find_one({"id": item.product_id}, {"_id": 0})
                 if plan:
+                    unit_price = float(plan["price"]) + (float(plan.get("pet_toy_price", 8.99)) if item.add_pet_toy else 0)
                     validated_items.append({"product_id": plan["id"], "name": plan["name"],
-                        "price": float(plan["price"]), "quantity": item.quantity,
-                        "image_url": plan.get("image_url", "")})
-                    total += float(plan["price"]) * item.quantity
+                        "price": unit_price, "quantity": item.quantity,
+                        "image_url": plan.get("image_url", ""),
+                        "add_pet_toy": item.add_pet_toy, "pet_type": item.pet_type})
+                    total += unit_price * item.quantity
     if not validated_items:
         raise HTTPException(status_code=400, detail="No valid items in cart")
 

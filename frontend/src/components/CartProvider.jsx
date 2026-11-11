@@ -14,10 +14,15 @@ export function CartProvider({ children }) {
 
   const addToCart = useCallback((product) => {
     setItems((prev) => {
-      const existing = prev.find((i) => i.product_id === product.product_id);
+      const sameOptions = (i) =>
+        i.product_id === product.product_id &&
+        !!i.add_pet_toy === !!product.add_pet_toy &&
+        (i.pet_type || "") === (product.pet_type || "") &&
+        (i.theme || "") === (product.theme || "");
+      const existing = prev.find(sameOptions);
       if (existing) {
         return prev.map((i) =>
-          i.product_id === product.product_id
+          sameOptions(i)
             ? { ...i, quantity: i.quantity + (product.quantity || 1) }
             : i
         );
