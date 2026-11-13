@@ -466,7 +466,6 @@ export default function WorkshopsPage() {
                             const hit = seasonActive && isSeasonDate(d.date, season);
                             const border = i < dates.length - 1 ? "border-b border-[#E5E0D6]" : "";
                             const rowText = isXmas ? XMAS.greenDeep : HW.purpleDeep;
-                            const rowAccent = isXmas ? XMAS.green : HW.purple;
                             return (
                               <tr
                                 key={i}
@@ -480,10 +479,9 @@ export default function WorkshopsPage() {
                                   )}
                                 </td>
                                 <td className="px-4 py-3 font-light text-[#6B7280]">{d.day}</td>
-                                <td className="px-4 py-3 font-light" style={{ color: hit ? rowAccent : "#6B7280" }}>
+                                <td className="px-4 py-3 font-light text-[#6B7280]">
                                   <span className="inline-flex items-center gap-1.5">
                                     {d.time || w.time}
-                                    {hit && <ArrowRight size={12} />}
                                   </span>
                                 </td>
                                 <td className="px-4 py-3 text-right">
@@ -525,7 +523,6 @@ export default function WorkshopsPage() {
                         {dates.map((d, i) => {
                           const hit = seasonActive && isSeasonDate(d.date, season);
                           const rowText = isXmas ? XMAS.greenDeep : HW.purpleDeep;
-                          const rowAccent = isXmas ? XMAS.green : HW.purple;
                           return (
                             <div
                               key={i}
@@ -543,10 +540,9 @@ export default function WorkshopsPage() {
                                 <span className="font-light text-xs text-[#6B7280]">{d.day}</span>
                               </div>
                               <div className="flex items-center justify-between gap-2">
-                                <span className="font-light text-sm" style={{ color: hit ? rowAccent : "#6B7280" }}>
+                                <span className="font-light text-sm text-[#6B7280]">
                                   <span className="inline-flex items-center gap-1.5">
                                     {d.time || w.time}
-                                    {hit && <ArrowRight size={12} />}
                                   </span>
                                 </span>
                                 {w.bookingType === "external" && (d.bookingUrl || w.bookingUrl) ? (

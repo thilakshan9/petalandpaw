@@ -134,7 +134,15 @@ export default function WreathKitPage() {
           <WreathKitSlideshow images={WREATH_KIT.images} alt="Wreath making kit" />
 
           <div className="animate-fade-in-up delay-50">
-            <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 block">Christmas Kit</span>
+            <div className="flex items-center gap-3 mb-3">
+              <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399]">Christmas Kit</span>
+              <span
+                className="inline-flex items-center gap-1 bg-[#B8926A]/10 text-[#B8926A] border border-[#B8926A]/30 text-[10px] uppercase tracking-widest font-semibold px-3 py-1 rounded-full"
+                data-testid="wreath-kit-low-stock"
+              >
+                Low Stock
+              </span>
+            </div>
             <h1 className="font-['Playfair_Display'] text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C] mb-4">
               Wreath Making Kit
             </h1>
