@@ -134,14 +134,8 @@ export default function WreathKitPage() {
           <WreathKitSlideshow images={WREATH_KIT.images} alt="Wreath making kit" />
 
           <div className="animate-fade-in-up delay-50">
-            <div className="flex items-center gap-3 mb-3">
+            <div className="flex items-center mb-3">
               <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399]">Christmas Kit</span>
-              <span
-                className="inline-flex items-center gap-1 bg-[#B8926A]/10 text-[#B8926A] border border-[#B8926A]/30 text-[10px] uppercase tracking-widest font-semibold px-3 py-1 rounded-full"
-                data-testid="wreath-kit-low-stock"
-              >
-                Low Stock
-              </span>
             </div>
             <h1 className="font-['Playfair_Display'] text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight text-[#2C2C2C] mb-4">
               Wreath Making Kit
@@ -149,9 +143,18 @@ export default function WreathKitPage() {
             <p className="text-base font-light text-[#6B7280] leading-[1.6] mb-6">
               A little festive creativity, delivered to your door. Create your own wreath with fresh foliage, decorations and easy step-by-step instructions.
             </p>
-            <p className="font-['Playfair_Display'] text-2xl text-[#2C2C2C] mb-8" data-testid="wreath-kit-price">
+            <p className="font-['Playfair_Display'] text-2xl text-[#2C2C2C] mb-3" data-testid="wreath-kit-price">
               £{WREATH_KIT.price.toFixed(2)}
             </p>
+            <div className="mb-8">
+              <span
+                className="inline-flex items-center gap-1.5 bg-[#DC2626] text-white text-[11px] sm:text-xs uppercase tracking-widest font-semibold px-4 py-1.5 rounded-full shadow-sm"
+                data-testid="wreath-kit-low-stock"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-white/90" aria-hidden="true"></span>
+                Low Stock
+              </span>
+            </div>
 
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex items-center border border-[#E5E0D6] rounded-full w-fit" data-testid="wreath-kit-quantity">
