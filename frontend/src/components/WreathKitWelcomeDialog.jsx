@@ -40,11 +40,17 @@ export default function WreathKitWelcomeDialog({ open, onOpenChange }) {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex items-center justify-between gap-4 pt-2">
-            <p className="font-['Playfair_Display'] text-2xl text-white">£45.00</p>
+          <div className="flex flex-col gap-3 pt-2">
+            <div className="flex items-baseline gap-2.5">
+              <p className="font-['Playfair_Display'] text-2xl text-white">£35.00</p>
+              <p className="font-['Playfair_Display'] text-lg text-white/60 line-through">£45.00</p>
+              <span className="rounded-full border border-[#F5E6B8]/40 bg-[#F5E6B8]/15 px-2.5 py-0.5 text-[10px] uppercase tracking-widest font-semibold text-[#F5E6B8]">
+                Save £10
+              </span>
+            </div>
             <Button
               onClick={handleCheckItOut}
-              className="group rounded-full bg-white text-[#2C2C2C] hover:bg-[#F2F0EB] px-6 py-5 text-sm uppercase tracking-widest font-semibold transition-all hover:scale-105"
+              className="group w-fit rounded-full bg-white text-[#2C2C2C] hover:bg-[#F2F0EB] px-6 py-5 text-sm uppercase tracking-widest font-semibold transition-all hover:scale-105"
               data-testid="wreath-kit-welcome-close-btn"
             >
               Let's check this out
