@@ -20,7 +20,8 @@ function readReturnDetails() {
 const WREATH_KIT = {
   id: "wreath_kit",
   name: "Wreath Making Kit",
-  price: 45,
+  price: 35,
+  originalPrice: 45,
   image_url: "/images/wreath-kit.jpg",
   images: ["/images/wreath-kit.jpg", "/images/wreath-kit-2.jpg", "/images/wreath-kit-3.jpg"],
 };
@@ -143,9 +144,17 @@ export default function WreathKitPage() {
             <p className="text-base font-light text-[#6B7280] leading-[1.6] mb-6">
               A little festive creativity, delivered to your door. Create your own wreath with fresh foliage, decorations and easy step-by-step instructions.
             </p>
-            <p className="font-['Playfair_Display'] text-2xl text-[#2C2C2C] mb-3" data-testid="wreath-kit-price">
-              £{WREATH_KIT.price.toFixed(2)}
-            </p>
+            <div className="flex items-baseline gap-3 mb-2" data-testid="wreath-kit-price">
+              <p className="font-['Playfair_Display'] text-2xl text-[#2C2C2C]">
+                £{WREATH_KIT.price.toFixed(2)}
+              </p>
+              <p className="font-['Playfair_Display'] text-lg text-[#6B7280] line-through">
+                £{WREATH_KIT.originalPrice.toFixed(2)}
+              </p>
+              <span className="bg-[#B8926A]/10 text-[#B8926A] border border-[#B8926A]/30 text-[10px] uppercase tracking-widest font-semibold px-2.5 py-0.5 rounded-full">
+                Save £{(WREATH_KIT.originalPrice - WREATH_KIT.price).toFixed(2)}
+              </span>
+            </div>
             <div className="mb-8">
               <span
                 className="inline-flex items-center gap-1.5 bg-[#DC2626] text-white text-[11px] sm:text-xs uppercase tracking-widest font-semibold px-4 py-1.5 rounded-full shadow-sm"
