@@ -131,3 +131,7 @@ URL format: `https://lh3.googleusercontent.com/d/{FILE_ID}=w{WIDTH}`
 - **Guest vs Sign-In flow** mirrors subscriptions: clicking Book Now (logged-out) opens a guest dialog. "Sign In / Create Account" saves `pp_pending_workshop_checkout` to localStorage and routes to `/login`; after auth the booking dialog auto-resumes with name/email/quantity preserved.
 - **Logged-in linkage**: `customer_id` is now sent on the workshop checkout request and stored on the booking. `GET /api/customer/orders` returns a `bookings` array (paid only) which renders in a new **Workshop Bookings** section in the Customer Dashboard (`/account`). Workshop entries are filtered out of "Past Purchases" to avoid duplicates.
 - **iPhone delivery-date fix**: mobile Safari ignores HTML5 `min` on date inputs, so the 3-day enforcement now runs (a) on date selection with a toast + reset, (b) on the checkout-click handler, and (c) server-side in `/api/subscriptions/checkout` returning a 400 with a helpful message.
+
+### Trustpilot Reviews (Nov 2026)
+- Homepage section `TrustpilotReviews.jsx` placed after promise strip: featured quote + auto-scrolling marquee of 10 hand-picked real 5-star reviews (pauses on hover, reduced-motion safe), each linking to the review on Trustpilot; "Read more on Trustpilot" + "Leave us a review" buttons.
+- Per owner's request: NO overall TrustScore or review count shown (static, not a live feed). Edit the REVIEWS array to swap reviews.

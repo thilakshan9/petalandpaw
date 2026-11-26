@@ -6,7 +6,7 @@ from datetime import datetime
 import json
 
 class PetalPawTester:
-    def __init__(self, base_url="https://pumpkin-patch-4.preview.emergentagent.com"):
+    def __init__(self, base_url="https://review-showcase-37--3ujfngvi.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.tests_run = 0
@@ -419,7 +419,7 @@ class PetalPawTester:
                     "quantity": 1
                 }
             ],
-            "origin_url": "https://pumpkin-patch-4.preview.emergentagent.com",
+            "origin_url": "https://review-showcase-37--3ujfngvi.preview.emergentagent.com",
             "order_type": "regular",
             "delivery_date": "2026-10-15",
             "personalized_message": "",
@@ -588,7 +588,7 @@ class PetalPawTester:
                     "quantity": 1
                 }
             ],
-            "origin_url": "https://pumpkin-patch-4.preview.emergentagent.com",
+            "origin_url": "https://review-showcase-37--3ujfngvi.preview.emergentagent.com",
             "order_type": "regular",
             "delivery_date": "2026-12-18",
             "special_notes": "Christmas: Golden Pinecone Wreath (deliver 2026-12-18)"
@@ -638,7 +638,7 @@ class PetalPawTester:
                     "quantity": 1
                 }
             ],
-            "origin_url": "https://pumpkin-patch-4.preview.emergentagent.com",
+            "origin_url": "https://review-showcase-37--3ujfngvi.preview.emergentagent.com",
             "order_type": "regular",
             "delivery_date": "2026-12-18",
             "special_notes": "Price manipulation test"
@@ -684,7 +684,7 @@ class PetalPawTester:
                     "quantity": 1
                 }
             ],
-            "origin_url": "https://pumpkin-patch-4.preview.emergentagent.com",
+            "origin_url": "https://review-showcase-37--3ujfngvi.preview.emergentagent.com",
             "order_type": "regular",
             "delivery_date": "2026-10-15",
             "special_notes": "Regression test: Halloween bouquet"

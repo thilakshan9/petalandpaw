@@ -4,6 +4,7 @@ import { ArrowRight, ShieldCheck, Leaf, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SEOHead from "@/components/SEOHead";
 import WreathKitWelcomeDialog from "@/components/WreathKitWelcomeDialog";
+import TrustpilotReviews from "@/components/TrustpilotReviews";
 import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 let welcomeShownThisLoad = false;
@@ -78,6 +79,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Trustpilot Reviews */}
+      <TrustpilotReviews />
 
       {/* Feature: Workshops */}
       <section className="py-14 sm:py-24 md:py-36" data-testid="feature-workshops">

@@ -383,3 +383,24 @@
   outline-offset: 2px;
 }
 main:focus { outline: none; }
+
+/* Trustpilot reviews marquee */
+@keyframes reviews-marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-50% - 0.625rem)); }
+}
+.reviews-marquee {
+  animation: reviews-marquee-scroll 70s linear infinite;
+}
+.reviews-marquee-mask:hover .reviews-marquee,
+.reviews-marquee-mask:focus-within .reviews-marquee {
+  animation-play-state: paused;
+}
+.reviews-marquee-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reviews-marquee { animation: none; }
+  .reviews-marquee-mask { overflow-x: auto; }
+}
