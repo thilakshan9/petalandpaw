@@ -133,5 +133,5 @@ URL format: `https://lh3.googleusercontent.com/d/{FILE_ID}=w{WIDTH}`
 - **iPhone delivery-date fix**: mobile Safari ignores HTML5 `min` on date inputs, so the 3-day enforcement now runs (a) on date selection with a toast + reset, (b) on the checkout-click handler, and (c) server-side in `/api/subscriptions/checkout` returning a 400 with a helpful message.
 
 ### Trustpilot Reviews (Nov 2026)
-- Homepage section `TrustpilotReviews.jsx` placed after promise strip: featured quote + auto-scrolling marquee of 10 hand-picked real 5-star reviews (pauses on hover, reduced-motion safe), each linking to the review on Trustpilot; "Read more on Trustpilot" + "Leave us a review" buttons.
+- v2: compact strip `TrustpilotReviews.jsx` visible on first load — overlays bottom of hero on desktop (glass bar, hero content nudged up md:pb-28), sits directly under hero on mobile. 12 real 5-star reviews with reviewer names (first name + initial), auto-scrolling marquee (pauses on hover), each card links to its Trustpilot review; "Read all reviews" link. Owner's own review (Thilakshan B.) deliberately excluded.
 - Per owner's request: NO overall TrustScore or review count shown (static, not a live feed). Edit the REVIEWS array to swap reviews.

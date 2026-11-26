@@ -35,7 +35,7 @@ export default function HomePage() {
           className="absolute inset-0 w-full h-full object-cover object-[center_70%]"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#FAF9F6]/90 via-[#FAF9F6]/60 to-[#FAF9F6]/20 md:from-[#FAF9F6]/80 md:via-[#FAF9F6]/40 md:to-transparent" />
-        <div className="relative h-full container mx-auto px-5 md:px-8 max-w-7xl flex items-end pb-12 sm:items-center sm:pb-0">
+        <div className="relative h-full container mx-auto px-5 md:px-8 max-w-7xl flex items-end pb-12 sm:items-center sm:pb-0 md:pb-28">
           <div className="max-w-xl animate-fade-in-up">
             <span className="text-[10px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#8DA399] mb-3 sm:mb-4 block">
               Non-Toxic Florals
@@ -62,6 +62,9 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Trustpilot Reviews (overlays hero bottom on desktop, sits below hero on mobile) */}
+      <TrustpilotReviews />
+
       {/* Promise Strip */}
       <section className="bg-white border-b border-[#E5E0D6]/50 py-4 sm:py-6" data-testid="promise-section">
         <div className="container mx-auto px-5 md:px-8 max-w-7xl">
@@ -79,9 +82,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* Trustpilot Reviews */}
-      <TrustpilotReviews />
 
       {/* Feature: Workshops */}
       <section className="py-14 sm:py-24 md:py-36" data-testid="feature-workshops">

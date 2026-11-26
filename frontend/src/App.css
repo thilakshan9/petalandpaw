@@ -387,10 +387,10 @@ main:focus { outline: none; }
 /* Trustpilot reviews marquee */
 @keyframes reviews-marquee-scroll {
   from { transform: translateX(0); }
-  to { transform: translateX(calc(-50% - 0.625rem)); }
+  to { transform: translateX(calc(-50% - 0.5rem)); }
 }
 .reviews-marquee {
-  animation: reviews-marquee-scroll 70s linear infinite;
+  animation: reviews-marquee-scroll 80s linear infinite;
 }
 .reviews-marquee-mask:hover .reviews-marquee,
 .reviews-marquee-mask:focus-within .reviews-marquee {
